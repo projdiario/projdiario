@@ -1,0 +1,14 @@
+language: r
+cache: packages
+sudo: false
+warnings_are_errors: false
+
+before_install:
+  - cd R/rDOU
+
+r_github_packages:
+  - jimhester/covr
+  
+after_success:
+  - Rscript -e 'covr::codecov()'
+  
