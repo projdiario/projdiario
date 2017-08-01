@@ -1,4 +1,4 @@
-﻿
+
 \.Rproj\.user/
 
 .Rhistory
@@ -12,7 +12,5 @@ R/exploratorios
 python/pylog
 
 .Rproj.user
-
-R/rDOU/DOU47\.html
-
 *.zip
+
