@@ -1,0 +1,19 @@
+language: r
+cache: packages
+sudo: false
+warnings_are_errors: false
+
+r_github_packages:
+  - jimhester/covr
+
+before_install:
+  - Rscript -e 'install.packages("devtools", dependencies = TRUE)'
+install:
+  - R -e 'devtools::install_deps(dependencies = TRUE)'
+
+script:
+  - R CMD build .
+  - R CMD check *tar.gz
+  
+after_success:
+  - Rscript -e 'covr::codecov()'
