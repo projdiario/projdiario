@@ -46,10 +46,3 @@ jsCode <<- "shinyjs.pegaTexto = function() {
 
             };"
 
-sapply(c('shiny', 'shinyjs'), function(pacote) {
-  if (!require(pacote, character.only = TRUE)) {
-    install.packages(pacote, dependencies = TRUE, verbose = FALSE,
-                     repos = 'http://cran.fiocruz.br', quiet = TRUE)
-    invisible(require(pacote, character.only = TRUE))
-  }
-})

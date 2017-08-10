@@ -86,7 +86,7 @@ function(input, output, session) {
   
   output$meta_info <- renderUI({
     observacao <- normas[valores$num, ]
-    fluidRow(style = 'padding:15px',
+    fluidRow(id = "norm-form",
       fluidRow(
         column(4, numericInput('num_norma', 'Número: ', observacao$NU_LEGISLACAO, 1)),
         column(4, numericInput('num_pag', 'Página: ', observacao$NU_PAGINA, 1)),
