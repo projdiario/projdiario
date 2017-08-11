@@ -1,0 +1,18 @@
+{
+  "name": "validador",
+  "version": "0.0.3",
+  "description": "App para validação dos dados extraidos do DOU",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "package": "electron-packager ./ Validador --platform=win32 --out ./ --version 0.30.2 --overwrite --icon=./logo.jpg"
+  },
+  "author": "Tomás Barcellos e Luisa Puppin",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "child_process": "^1.0.2",
+    "electron": "^1.7.5",
+    "electron-packager": "^8.7.2",
+    "electron-winstaller": "^2.6.3"
+  }
+}
