@@ -1,5 +1,5 @@
 rm(list=ls())
-shell('start firefox http://127.0.0.1:6312/')
+# shell('start firefox http://127.0.0.1:6312/')
 cat('\014')
 
 normas <- readRDS('normas2_teste.RDS')
@@ -46,10 +46,3 @@ jsCode <<- "shinyjs.pegaTexto = function() {
 
             };"
 
-sapply(c('shiny', 'shinyjs'), function(pacote) {
-  if (!require(pacote, character.only = TRUE)) {
-    install.packages(pacote, dependencies = TRUE, verbose = FALSE,
-                     repos = 'http://cran.fiocruz.br', quiet = TRUE)
-    invisible(require(pacote, character.only = TRUE))
-  }
-})

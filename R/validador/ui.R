@@ -1,52 +1,50 @@
+positionNavbar <- 'window.onscroll = function() {moveNavbar()};
+  function moveNavbar() {
+var elmnt = document.body;
+var hh = document.getElementById("navbar");
+var y = elmnt.scrollTop;
+var m = hh.scrollHeight;
+if (y > m+15) {
+document.getElementById("navbar").className = "nav-fix";
+} else {
+document.getElementById("navbar").className = "nav-rel";
+}
+};'
+
 fluidPage(
   useShinyjs(),
   extendShinyjs(text = jsCode),
-  tags$style(
-    "
-    table {
-    border: 1px solid black;
-    border-collapse: collapse;
-    width: 100%;
-    }
-    th, td {
-    border: 1px solid black;
-    padding: 8px;
-    text-align: left;
-    }
-    tr:hover{background-color:#f5f5f5}"
+  tags$link(href = 'validador.css', type = "text/css", rel = 'stylesheet', media = 'all'),
+  tags$ul(id = "navbar", class = "nav-rel",
+          tags$div(id = "nav-left",
+                   tags$li(id = "webname",
+                           tags$h3("Validador", style = "font-weight: bold; font-style: oblique;"),
+                           tags$h6("Versão 1.0.0", style = "padding: 0px;")),
+                   tags$li(actionButton("nova", "Inserir nova norma", icon = icon('file', lib = 'glyphicon')))),
+          tags$li(class = "right", textOutput('info'))
   ),
   tags$div(
-    style = "position: fixed; top: 0; width: 100%; background: #c2cff6; padding: 5px; z-index: 10;",
-    align = "center",
-    actionButton("nova", "Inserir nova norma", style = "float: left;"),
-    actionButton("aceita", "Aceitar",
-                 style = "background: lightgreen; border-color: lightgreen; margin-right: 10px;"),
-    actionButton("pula", "Decidir depois", 
-                 style = "margin-right: 10px;"),
-    actionButton("recusa", "Recusar", 
-                 style = "background: lightcoral; border-color: lightcoral;")
-  ),
-  tags$div(
-    class = "main", style = "margin-top: 50px",
-    fluidRow(style = "margin-top: 50px;", 
-             HTML('<hr style="margin-top: 0px;margin-bottom: 5px;">'),
-             column(4, textOutput('pag'), align = "left"),
-             column(8, textOutput('info'), align = "right", style = "float: right")
-    ),
-    HTML('<hr style="margin-top: 5px; margin-bottom: 5px;">'),
+    class = "main",
     fluidRow(
       column(6,
+             textOutput('pag'),
              uiOutput('meta_info'),
+             tags$div(id = "norm-btns",
+                      actionButton("aceita", "Aceitar", class = "btn-custom1 green",
+                                   icon = icon("ok", lib = "glyphicon")),
+                      actionButton("pula", "Decidir depois", class = "btn-custom1",
+                                   icon = icon("hourglass", lib = "glyphicon")),
+                      actionButton("recusa", "Recusar", class = "btn-custom1 red",
+                                   icon = icon("remove", lib = "glyphicon"))),
              uiOutput('editor')
       ),
-      column(6, uiOutput('pdf'),
-             fluidRow(style = 'display: -webkit-box; margin-top: -570px; margin-left: 15px;',
-                      div(style = 'display: inherit; ',
-                          numericInput('pag_pdf', 'Página:  ', value = 1, min = 1, width = '50%')
-                      )
-             )
+      column(6, 
+             fluidRow(id = "pag-pdf",
+                      numericInput('pag_pdf', 'Página:', value = 1, min = 1)),
+             uiOutput('pdf')
       )
     )
   ),
-  fluidRow(textInput('entrada', 'Teste de texto', ''), style = 'display:none;')
+  fluidRow(textInput('entrada', 'Teste de texto', ''), style = 'display:none;'),
+  tags$script(HTML(positionNavbar))
 )
