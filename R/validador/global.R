@@ -1,5 +1,5 @@
 rm(list=ls())
-shell('start firefox http://127.0.0.1:6312/')
+# shell('start firefox http://127.0.0.1:6312/')
 cat('\014')
 
 normas <- readRDS('normas2_teste.RDS')

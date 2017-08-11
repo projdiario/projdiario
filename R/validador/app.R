@@ -1,4 +1,4 @@
-sapply(c('shiny', 'shinyjs'), function(pacote) {
+sapply(c('shiny', 'shinyjs', 'httr'), function(pacote) {
   if (!require(pacote, character.only = TRUE)) {
     install.packages(pacote, dependencies = TRUE, verbose = FALSE,
                      repos = 'http://cran.fiocruz.br', quiet = TRUE)

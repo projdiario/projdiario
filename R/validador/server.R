@@ -58,11 +58,12 @@ function(input, output, session) {
     jornal <- paste0('jornal=', observacao$ID_TIPO_SECAO)
     pagina <- paste0('&pagina=', input$pag_pdf)
     data_url <- paste0('&data=', format(observacao$DT_PUBLICACAO, format = '%d/%m/%Y') )
-    fim <- '&captchafield=firistAccess#zoom=125'
-    
+    fim <- '&captchafield=firistAccess'
     url <- paste0(base_url, jornal, pagina, data_url, fim)
-    
-    HTML(paste0('<iframe style="height:600px; width:100%" src="', url, '"></iframe>'))
+    destino <- './www/pdfjs/web/pagina.pdf'
+    httr::RETRY(verb = "GET", url = url, httr::write_disk(destino, overwrite = TRUE))    
+
+    HTML(paste0('<iframe style="height:600px; width:100%" src="./pdfjs/web/viewer.html#zoom=125"></iframe>'))
   })
   
   output$editor <- renderUI({
