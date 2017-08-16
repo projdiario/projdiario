@@ -14,7 +14,13 @@ pega_dados_dou <- function(arquivos, debug = FALSE) {
   # arquivos <- dir(path = "dados/txt", pattern = "DOU.+.txt$", full.names = TRUE)
   # lista_arquivos <- split(arquivos, stringr::str_extract(arquivos, "[0-9]{4}_[0-9]{2}_[0-9]{2}") %>% as.factor())
   # arquivos <- lista_arquivos[[58]] ; rm(lista_arquivos)
-  conteudo <- lapply(arquivos, readLines, encoding = 'latin1') %>% unlist()
+  if (grepl('win', sessionInfo()[['platform']]) ) {
+    encodificacao <- 'UTF-8'
+  } else {
+    encodificacao <- 'latin1'
+  }
+  
+  conteudo <- lapply(arquivos, readLines, encoding = encodificacao) %>% unlist()
 
   lim_orgaos <- grep("\\.\\.\\.*? *?[0-9]+", readLines(arquivos[1], encoding = 'latin1')) %>% range()
   orgaos <- conteudo[lim_orgaos[1]:lim_orgaos[2]] %>% paste(collapse = "") %>%

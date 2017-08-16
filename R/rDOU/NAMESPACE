@@ -14,5 +14,3 @@ export(procura_html)
 export(procura_inicio)
 export(remove_tags)
 export(tira_estilo)
-import(magrittr)
-
