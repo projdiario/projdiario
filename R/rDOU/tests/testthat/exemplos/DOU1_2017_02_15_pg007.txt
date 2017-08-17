@@ -1,0 +1,95 @@
+<table><tr><td></td><td>Ministério da Ciência, Tecnologia, Inovações e Comunicações</td></tr><tr><td>.</td><td></td></tr></table><br>GABINETE DO MINISTRO
+PORTARIA Nº 388, DE 3 DE FEVEREIRO DE 2017
+       O MINISTRO DE ESTADO DA CIÊNCIA, TECNOLOGIA, INOVAÇÕES E COMUNICAÇÕES, no uso de suas atribuições, observado o disposto no Decreto nº 5.371, de 17 de fevereiro de 2005, e na Portaria nº 6.738, de 21 de dezembro de 2015, resolve:
+       Art. 1º Autorizar FUNDAÇÃO DJALMA MARINHO a executar o Serviço de Retransmissão de Televisão, ancilar ao Serviço de Radiodifusão de Sons e Imagens, em caráter secundário, com utilização de tecnologia digital no Município de SANTA CRUZ, Estado do RIO GRANDE DO NORTE, por meio do canal 18(dezoito), visando a retransmissão dos seus próprios sinais, por recepção via satélite.
+       Art. 2º Aprovar o local de instalação da estação e a utilização dos equipamentos, e autorizar o funcionamento em caráter provisório, condicionado à autorização para uso da radiofrequência, nos termos do Processo nº 53900.015243/2016-31 e da Nota Técnica nº 938/2017/SEI-MCTIC.
+       Art. 3º Esta Portaria entra em vigor na data de sua publicação.
+GILBERTO KASSAB
+PORTARIA Nº 389, DE 3 DE FEVEREIRO DE 2017
+       O MINISTRO DE ESTADO DA CIÊNCIA, TECNOLOGIA, INOVAÇÕES E COMUNICAÇÕES, no uso de suas atribuições, observado o disposto no Decreto nº 5.371, de 17 de fevereiro de 2005, e na Portaria nº 6.738, de 21 de dezembro de 2015, resolve:
+       Art. 1º Autorizar FUNDAÇÃO DJALMA MARINHO a executar o Serviço de Retransmissão de Televisão, ancilar ao Serviço de Radiodifusão de Sons e Imagens, em caráter secundário, com utilização de tecnologia digital no Município de CAICÓ, Estado do RIO GRANDE DO NORTE, por meio do canal 18 (dezoito), visando a retransmissão dos seus próprios sinais, por recepção via satélite.
+       Art. 2º Aprovar o local de instalação da estação e a utilização dos equipamentos, e autorizar o funcionamento em caráter provisório, condicionado à autorização para uso da radiofrequência, nos termos do Processo nº 53900.015234/2016-40 e da Nota Técnica nº 874/2017/SEI-MCTIC.
+       Art. 3º Esta Portaria entra em vigor na data de sua publicação.
+GILBERTO KASSAB
+PORTARIA Nº 517, DE 3 DE FEVEREIRO DE 2017
+       O MINISTRO DE ESTADO DA CIÊNCIA, TECNOLOGIA, INOVAÇÕES E COMUNICAÇÕES, no uso de suas atribuições, observado o disposto no Decreto nº 5.371, de 17 de fevereiro de 2005, e na Portaria nº 6.738, de 21 de dezembro de 2015, resolve:
+Art. 1º Autorizar EMPRESA DE RÁDIO E TELEVISÃO
+NOSSO MUNDO LTDA a executar o Serviço de Retransmissão de Televisão, ancilar ao Serviço de Radiodifusão de Sons e Imagens, em caráter secundário, com utilização de tecnologia digital no Município de MONTES CLAROS DE GOIÁS, Estado de GOIÁS, por meio do canal 17 (dezessete), visando a retransmissão dos sinais gerados pela
+FUNDAÇÃO CULTURAL NOSSA SENHORA DE LOURDES, concessionária do Serviço de Radiodifusão de Sons e Imagens, canal 31 E (trinta e um educativo), no município de MARINGÁ, estado do PARANÁ, por recepção via satélite.
+       Art. 2º Aprovar o local de instalação da estação e a utilização dos equipamentos, e autorizar o funcionamento em caráter provisório para funcionamento em tecnologia analógica, condicionado à autorização para uso da radiofrequência, nos termos do Processo nº 53900.041746/2016-61 e da Nota Técnica nº 1249/2017/SEI-MCTIC.
+       Parágrafo único. A Entidade deverá encaminhar o projeto técnico para funcionamento em tecnologia digital à Agência Nacional de Telecomunicações no prazo máximo de nove meses antes da data prevista para o desligamento do sinal analógico na localidade, conforme cronograma definido pelo Ministério da Ciência, Tecnologia, Inovações e Comunicações, ou a qualquer tempo, após a autorização do respectivo serviço, respeitado o prazo máximo.
+       Art. 3º Esta Portaria entra em vigor na data de sua publicação.
+GILBERTO KASSAB
+AGÊNCIA NACIONAL DE TELECOMUNICAÇÕES CONSELHO DIRETOR
+RESOLUÇÃO Nº 674, DE 13 DE FEVEREIRO DE 2017
+Aprova o Regulamento sobre Canalização e Condições de Uso de Radiofrequências na Faixa de 148 MHz a 174 MHz.
+O CONSELHO DIRETOR DA AGÊNCIA NACIONAL DE
+TELECOMUNICAÇÕES, no uso das atribuições que lhe foram conferidas pelo art. 22 da Lei nº 9.472, de 16 de julho de 1997, e pelo art. 35 do Regulamento da Agência Nacional de Telecomunicações, aprovado pelo Decreto nº 2.338, de 7 de outubro de 1997,
+       CONSIDERANDO o disposto no inciso VIII do art. 19 da Lei nº 9.472, de 1997, cabe à Anatel administrar o espectro de
+radiofrequências, expedindo as respectivas normas; CONSIDERANDO os termos dos arts. 159 e 161 da Lei nº 9.472, de 1997, segundo os quais, na destinação de faixas de radiofrequências será considerado o emprego racional e econômico do espectro e que, a qualquer tempo, poderá ser modificada, desde que o interesse público ou o cumprimento de convenções ou tratados internacionais assim o determine;
+       CONSIDERANDO o fato do espectro de radiofrequências ser um recurso limitado, constituindo-se em bem público, administrado pela Agência;
+CONSIDERANDO a necessidade de adequar o uso de ra-
+diofrequências nas referidas faixas, face à evolução tecnológica;
+       CONSIDERANDO a necessidade de otimizar o uso das faixas de radiofrequências, viabilizando diversas aplicações;
+       CONSIDERANDO o pleito de Órgãos de Segurança Pública, de Serviço de Atendimento Móvel de Urgência, de Metroviários e Ferroviários, e de empresas que atuam nas áreas de água, energia elétrica e gás, no sentido de expandir os atuais sistemas;
+	CONSIDERANDO	a	decisão constante	do	Acórdão	nº
+111/2015-CD, por meio do qual foi autorizado à Polícia Militar de
+Minas Gerais (PM/MG) e à Secretaria de Estado da Saúde de Santa Catarina (SAMU/SC) o uso de radiofrequências com equipamentos analógicos pelo prazo de 2 (dois) anos, em caráter excepcional;
+       CONSIDERANDO os comentários recebidos decorrentes da Consulta Pública nº 18, de 11 de julho de 2016, publicada no Diário Oficial da União do dia 12 de julho de 2016;
+CONSIDERANDO deliberação tomada em sua Reunião nº
+819, de 9 de fevereiro de 2017;
+CONSIDERANDO o constante dos autos do Processo nº
+53500.018565/2014-82,
+R E S O LV E :
+       Art. 1º Aprovar, na forma do Anexo, o Regulamento sobre Canalização e Condições de Uso de Radiofrequências na Faixa de 148 MHz a 174 MHz.
+Art. 2º Manter a destinação das subfaixas de 148,00 MHz a
+149,90 MHz, de 152,00 MHz a 152,60 MHz, de 152,60 MHz a
+153,00 MHz, de 153,60 MHz a 154,50 MHz, de 157,45 MHz a
+159,40 MHz, de 159,40 MHz a 160,60 MHz, de 160,875 MHz a 160,925 MHz, de 160,975 MHz a 161,475 MHz, de 162,05 MHz a 164,00 MHz, de 165,60 MHz a 169,20 MHz, e de 170,20 MHz a 174,00 MHz ao Serviço Limitado Privado e ao Serviço Limitado Especializado, em caráter primário, sem exclusividade.
+       Art. 3º Manter a destinação das subfaixas de 164,60 MHz a 165,60 MHz e de 169,20 MHz a 170,20 MHz ao Serviço Telefônico Fixo Comutado, em caráter primário.
+       Art. 4º Manter a destinação das subfaixas de 156,025 MHz a 157,425 MHz, de 160,625 MHz a 160,875 MHz, de 160,925 MHz a 160,975 MHz e de 161,475 MHz a 162,050 MHz ao Serviço Limitado Móvel Marítimo, em caráter primário.
+       § 1º A canalização e as condições de uso das subfaixas mencionadas no caput são estabelecidas em regulamentação específica.
+     § 2º A radiofrequência 156,80 MHz é a frequência internacional utilizada para segurança e chamada no serviço limitado móvel marítimo, observadas as faixas de guarda de 156,7625 MHz a
+       156,7875 MHz e 156,8125 MHz a 156,8375 MHz, podendo também ser utilizada para serviços de radiocomunicação de terra, para operações de busca e salvamento de veículos especiais tripulados.
+Art. 5º Estabelecer que as subfaixas de radiofrequências de
+149,90 MHz a 150,05 MHz, de 150,05 MHz a 152,00 MHz, de 153,00 MHz a 153,60 MHz, de 154,50 MHz a 156,00 MHz e de 164,00 MHz a 164,60 MHz terão suas características técnicas definidas em regulamentações específicas, ficando mantidas as atuais destinações.
+       Art. 6º Estabelecer que o uso das subfaixas de radiofrequências de 164,60 MHz a 165,60 MHz e de 169,20 MHz a 170,20 MHz deverá atender, adicionalmente ao estabelecido neste Regulamento, ao "Acordo entre os Governos da República Federativa do Brasil, da República Argentina e da República Oriental do Uruguai, para o Serviço de Telefonia Rural, na Faixa de 164,600 a 173,355 MHz, assinado em Brasília, em 23 de fevereiro de 1987", aprovado pelo Decreto Legislativo nº 56, de 4 de outubro de 1989.
+       Art. 7º Revogar a Resolução nº 568, de 15 de junho de 2011, publicada no Diário Oficial da União de 28 de junho de 2011.
+       Art. 8º Esta Resolução entra em vigor na data de sua publicação.
+JUAREZ MARTINHO QUADROS DO NASCIMENTO
+Presidente do Conselho
+ANEXO I
+       REGULAMENTO SOBRE CANALIZAÇÃO E CONDIÇÕES DE USO DE RADIOFREQUÊNCIAS NA FAIXA DE 148
+MHZ A 174 MHZ
+CAPÍTULO I
+DAS DISPOSIÇÕES GERAIS
+       Art. 1º Este Regulamento estabelece a canalização e as condições de uso da faixa de 148 MHz a 174 MHz, para sistemas analógicos ou digitais dos Serviços Fixo e Móvel, conforme definido no Regulamento de Radiocomunicações da União Internacional de Telecomunicações - UIT. CAPÍTULO II
+DA CANALIZAÇÃO
+       Art. 2º As frequências nominais das portadoras dos canais de radiofrequências estão apresentadas nas Tabelas dos Anexos A, B e C.
+       § 1º Nos sistemas duplex, as estações terminais móveis ou fixas farão uso, na transmissão, das radiofrequências nas faixas de 148,00 MHz a 148,40 MHz, de 149,00 MHz a 149,90 MHz, de 157,45 MHz a 159,40 MHz e de 164,60 MHz a 169,20 MHz, enquanto que as estações rádio base correspondentes, farão uso, para transmissão, das radiofrequências nas faixas de 152,60 MHz a 153,00 MHz, de 153,60 MHz a 154,50 MHz, de 162,05 MHz a 164,00 MHz e de 169,20 MHz a 173,80 MHz, respectivamente.
+       § 2º Em casos excepcionais, a Anatel poderá autorizar o uso diverso do sentido de transmissão definido no caput, desde que devidamente fundamentado e não importe em prejuízo à administração do espectro e nem cause interferência prejudicial em serviços regularmente autorizados.
+CAPÍTULO III
+DAS CARACTERÍSTICAS TÉCNICAS
+       Art. 3º A largura de faixa ocupada pelo canal deve ser a menor possível de modo a reduzir a possibilidade de interferência entre canais adjacentes, e não pode ser superior aos valores apresentados nas Tabelas 1 e 2, abaixo, de acordo com as faixas de frequências correspondentes.
+Tabela 1 - Sistemas Simplex
+<table><tr><td>FAIXA DE FREQUÊNCIA (MHz)</td><td>LARGURA DE FAIXA DO CANAL (kHz)</td></tr><tr><td>148,40 - 149,00</td><td>20,0</td></tr><tr><td>152,00 - 152,60</td><td>20,0</td></tr><tr><td>159,40 - 160,60</td><td>20,0</td></tr><tr><td>160,975 - 161,475</td><td>20,0</td></tr><tr><td>173,80 - 174,00</td><td>20,0</td></tr></table><br>Tabela 2 - Sistemas Duplex
+<table><tr><td>FAIXA DE FREQUÊNCIA (MHz)</td><td>LARGURA DE FAIXA DO CANAL (kHz)</td></tr><tr><td>148,00 - 148,40 / 152,60 - 153,00</td><td>20,0</td></tr><tr><td>149,00 - 149,90 / 153,60 - 154,50</td><td>20,0</td></tr><tr><td>157,45 - 159,40 / 162,05 - 164,00</td><td>12,5</td></tr><tr><td>164,60 - 165,60 / 169,20 - 170,20</td><td>20,0</td></tr><tr><td>165,60 - 169,20 / 170,20 - 173,80</td><td>12,5</td></tr></table><br>       Art. 4º A potência equivalente isotropicamente radiada (EIRP) de cada transmissor, deve ser a mínima necessária à realização do serviço com qualidade satisfatória.
+       Parágrafo único. A adoção de valores de potência reduzida, associada ao uso de antenas de maior ganho, deve ser um dos objetivos de projeto.
+       Art. 5º Para a otimização do projeto nas aplicações do serviço fixo, deverão ser utilizadas antenas direcionais com a menor abertura possível do lóbulo principal no plano horizontal.
+       Parágrafo único. Excepcionalmente, a Anatel poderá autorizar o uso de sistema radiante diverso do estabelecido no caput, após análise de projeto técnico, elaborado por profissional habilitado, acompanhado de justificativa devidamente fundamentada.
+CAPÍTULO IV
+DAS CONDIÇÕES ESPECÍFICAS DE USO
+       Art. 6º As faixas de radiofrequências estabelecidas neste Regulamento, para sistemas duplex, devem ser consignadas aos pares, sendo as frequências de ida e volta vinculadas ao mesmo canal.
+       § 1º Sistemas que utilizem somente uma frequência, sistemas simplex, devem utilizar, preferencialmente, as faixas de radiofrequências para eles destinada.
+       § 2º Excepcionalmente, a Anatel poderá autorizar o uso de canais das faixas duplex para sistemas simplex, sendo que, quando da solicitação de mais de um canal para o mesmo sistema, deverão ser consignadas a radiofrequências de ida e de volta do mesmo canal, assim sucessivamente, até completar o número total de canais a serem autorizados.
+       Art. 7º Os canais 1100 a 1179 da Tabela C.2 do Anexo C serão autorizados, preferencialmente, para uso por sistemas de Segurança Pública, no Distrito federal, nas capitais e suas respectivas regiões metropolitanas.
+       Art. 8º Os canais 70, 72, 80, 87 e 92 da Tabela B.2 do Anexo B serão autorizados, preferencialmente, para uso por sistemas de fiscalização e repressão ao contrabando e descaminho, em todo o território nacional, exceto aplicações de Segurança Pública.
+       Art. 9º Os canais 958, 972, 985, 994, 998, 1003, 1007, 1013, 1014, 1016, 1021, 1024, 1027, 1032, 1064, 1085, 1088, 1094, 1218 e 1220 da Tabela C.2 do Anexo C serão autorizados, preferencialmente, para uso por sistemas do serviço de atendimento móvel de urgência (SAMU), em todo o território nacional.
+       Art. 10. Os canais 473, 475, 483, 484, 487, 489, 493, 495, 497, 503, 509, 510, 511, 512, 513, 514, 518, 519, 520, 524, 527, 529, 532, 535, 537, 539, 542, 546, 548, 550, 554, 555, 559, 564, 567, 569, 574, 580, 582, 584, 590, 594, 600, 607, 617, 618, 620, 624 e 628 da Tabela C.1.A do Anexo C serão autorizados, preferencialmente, para uso por sistemas de comunicações ferroviárias e metroviárias, em todo o território nacional.
+§ 1º Adicionalmente aos canais mencionados no caput, os canais 474, 482, 488, 504, 505, 560, 561, 562, 577, 578 e 589 da
+Tabela C.1.A do Anexo C serão autorizados, preferencialmente, para uso por sistemas de comunicações ferroviárias e metroviárias, no estado de São Paulo.
+       § 2º Em todo o território nacional, exceto o estado de São Paulo, os canais 474, 482,488, 504, 505, 560, 561, 562, 577, 578 e 589 da Tabela C.1.A do Anexo C serão autorizados, preferencialmente, para uso por sistemas de empresas que atuam no provimento de saneamento, energia elétrica e gás.
+       § 3º Nas regiões que não compreendam as capitais dos estados e do Distrito Federal e suas respectivas regiões metropolitanas, o uso dos canais mencionados no caput e no § 1º será feito de forma compartilhada com as empresas provedoras de água, energia elétrica e gás.
+       
+
+Este documento pode ser verificado no endereço eletrônico http://www.in.gov.br/autenticidade.html , Documento assinado digitalmente conforme MP no- 2.200-2 de 24/08/2001, que institui a pelo código 00012017021500007	Infraestrutura de Chaves Públicas Brasileira - ICP-Brasil.
