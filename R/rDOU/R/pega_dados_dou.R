@@ -14,7 +14,7 @@ pega_dados_dou <- function(arquivos, debug = FALSE) {
   # arquivos <- dir(path = "dados/txt", pattern = "DOU.+.txt$", full.names = TRUE)
   # lista_arquivos <- split(arquivos, stringr::str_extract(arquivos, "[0-9]{4}_[0-9]{2}_[0-9]{2}") %>% as.factor())
   # arquivos <- lista_arquivos[[58]] ; rm(lista_arquivos)
-  if (grepl('win', sessionInfo()[['platform']]) ) {
+  if (grepl('win', Sys.info()["sysname"], ignore.case = TRUE) ) {
     encodificacao <- 'UTF-8'
   } else {
     encodificacao <- 'latin1'
@@ -22,7 +22,7 @@ pega_dados_dou <- function(arquivos, debug = FALSE) {
   
   conteudo <- lapply(arquivos, readLines, encoding = encodificacao) %>% unlist()
 
-  lim_orgaos <- grep("\\.\\.\\.*? *?[0-9]+", readLines(arquivos[1], encoding = 'latin1')) %>% range()
+  lim_orgaos <- grep("\\.\\.\\.*? *?[0-9]+", readLines(arquivos[1], encoding = encodificacao)) %>% range()
   orgaos <- conteudo[lim_orgaos[1]:lim_orgaos[2]] %>% paste(collapse = "") %>%
     stringr::str_split("\\.") %>%
     extract2(1) %>% extract(. != "") %>%

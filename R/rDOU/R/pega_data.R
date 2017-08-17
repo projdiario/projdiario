@@ -8,7 +8,7 @@
 
 
 pega_data <- function(vetor) {
-  if (grepl('win', sessionInfo()[['platform']]) ) {
+  if (grepl('win', Sys.info()["sysname"], ignore.case = TRUE) ) {
     res <- stringr::str_extract(stringr::str_to_lower(vetor)[1],
                                 "[0-9]{1,2} de [a-z]+ de [0-9]{4}") %>%
       as.Date('%d de %B de %Y')
