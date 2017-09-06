@@ -30,7 +30,7 @@ function(input, output, session) {
   observeEvent(input$entradaPrincipal, {
     if (input$entradaPrincipal != '') {
       valores$html <- gsub(pattern = '&.+{1,5};', replacement = '', input$entradaPrincipal)
-      valores$aprovados <- rbind(valores$aprovados, inclui_dado(valores))
+      valores$aprovados <- rbind(valores$aprovados, incluir_dado(valores))
       saveRDS(object = valores$aprovados, 'log.RDS')
       valores$num <- valores$num + 1
     }
@@ -134,7 +134,7 @@ function(input, output, session) {
     shinyjs::alert('Norma incluída')
     if (input$entradaNova != '' &  valores$aval == 'Aceito') {
       valores$html <- input$entradaNova
-      valores$aprovados <- rbind(valores$aprovados, inclui_dado(valores, valores$nova))
+      valores$aprovados <- rbind(valores$aprovados, incluir_dado(valores, valores$nova))
       saveRDS(object = valores$aprovados, 'log.RDS')
     }
     valores$nova <- valores$nova + 1
