@@ -136,11 +136,12 @@ pega_normas_dou <- function(arquivos, debug = FALSE) {
   data_dou <- stringr::str_extract(arquivos, "[0-9]{4}_[0-9]{2}_[0-9]{2}") %>%
     as.Date(format = "%Y_%m_%d") %>% unique()
   
-  meio <- stringr::str_sub(arquivos, 10, 13) %>% unique()
+  meio <- arquivos[1] %>% stringr::str_split('/') %>%
+    extract2(1) %>% extract(length(.)) %>% stringr::str_sub(1, 4)
   tipo_secao <- switch(meio, "DOU1" = 1, "DOU2" = 2, "DOU3" = 3,
                        "DOUE" = 4, # Edição extra
                        "DOUS" = 5,  NA) # Suplemento e caso padrão
-  cat('mudou!')
+  
   structure(
     lista_atos,
     class = 'norma',
