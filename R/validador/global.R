@@ -3,7 +3,7 @@ rm(list=ls())
 cat('\014')
 
 # Define funções
-incluir_dado <- function(valores, id_norma) {
+registrar_log <- function(valores, id_norma) {
   if (missing(id_norma)) {
     id_norma <-  normas$ID_LEGISLACAO[valores$num]
   }
@@ -17,11 +17,13 @@ incluir_dado <- function(valores, id_norma) {
   df
 }
 
-incluir_registro <- function() {
-  df <- data.frame(ID_LEGISLACAO = max(base_final$ID_LEGISLACAO) + 1, DS_RESUMO = input$resumo,
+novo_registro <- function(nova = FALSE) {
+  id <-  ifelse(nova, valores$nova, normas$ID_LEGISLACAO[valores$num])
+  
+  df <- data.frame(ID_LEGISLACAO = id, DS_RESUMO = NA, # input$resumo
                    DT_PUBLICACAO = input$data_dou, NU_LEGISLACAO = input$num_norma,
                    DS_CONTEUDO = valores$html, DT_LEI = input$data_norma, NU_PAGINA = input$num_pag,
-                   DS_INDEXACAO = NA, ID_TIPO_LEGISLACAO = input$tipo, ID_TIPO_SITUACAO = 0,
+                   DS_INDEXACAO = NA, ID_TIPO_LEGISLACAO = NA, ID_TIPO_SITUACAO = 0, # input$tipo
                    CD_TIPO_LIBERACAO = 0, ID_MODO_PUBLICACAO = 0, ID_USUARIO_CADASTRO = 0,
                    ID_USUARIO_LIBERACAO = 0, ID_TIPO_SECAO = input$num_secao, DT_CADASTRO = Sys.Date(),
                    NU_PUBLICACAO = 0, NU_VOLUME = 0, stringsAsFactors = FALSE)
@@ -58,7 +60,7 @@ if (file.exists('log.RDS')) {
   df_inicial <- data.frame(id = "", #texto = "",
                            validacao = "", maquina = "",
                            usuario = "", data = "", stringsAsFactors = FALSE)
-  saveRDS(df_inicial[FALSE,], 'log.RDS')
+  saveRDS(df_inicial[FALSE, ], 'log.RDS')
 }
 
 if (file.exists('base_final.RDS')) {
@@ -70,5 +72,6 @@ if (file.exists('base_final.RDS')) {
                            ID_TIPO_SITUACAO = 0, CD_TIPO_LIBERACAO = 0, ID_MODO_PUBLICACAO = 0,
                            ID_USUARIO_CADASTRO = 0, ID_USUARIO_LIBERACAO = 0, ID_TIPO_SECAO = 0,
                            DT_CADASTRO = Sys.Date(), NU_PUBLICACAO = 0, NU_VOLUME = 0,
-                           stringsAsFactors = FALSE)[FALSE, ]
+                           stringsAsFactors = FALSE)
+  saveRDS(base_final[FALSE, ], 'base_final.RDS')
 }

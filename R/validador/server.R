@@ -4,8 +4,8 @@ function(input, output, session) {
   valores$usuario <- c(Sys.info()[["nodename"]], Sys.info()[["effective_user"]])
   valores$aval <- ''
   valores$html <- ''
-  valores$aprovados <- readRDS('log.RDS')
-  valores$nova <- 40000
+  valores$aprovados <- readRDS('base_final.RDS')
+  valores$nova <- 88000
   
   # reactive({
   #   valores$nova <- if(max(valores$aprovados$id, na.rm = TRUE) < '40000')
@@ -30,8 +30,8 @@ function(input, output, session) {
   observeEvent(input$entradaPrincipal, {
     if (input$entradaPrincipal != '') {
       valores$html <- gsub(pattern = '&.+{1,5};', replacement = '', input$entradaPrincipal)
-      valores$aprovados <- rbind(valores$aprovados, incluir_dado(valores))
-      saveRDS(object = valores$aprovados, 'log.RDS')
+      valores$aprovados <- rbind(valores$aprovados, novo_registro() )
+      saveRDS(object = valores$aprovados, 'base_final.RDS')
       valores$num <- valores$num + 1
     }
   })
@@ -131,11 +131,11 @@ function(input, output, session) {
   })
   
   observeEvent(input$entradaNova, {
-    shinyjs::alert('Norma incluída')
+    shinyjs::alert('Norma incluída!')
     if (input$entradaNova != '' &  valores$aval == 'Aceito') {
       valores$html <- input$entradaNova
-      valores$aprovados <- rbind(valores$aprovados, incluir_dado(valores, valores$nova))
-      saveRDS(object = valores$aprovados, 'log.RDS')
+      valores$aprovados <- rbind(valores$aprovados, incluir_dado(nova = TRUE))
+      saveRDS(object = valores$aprovados, 'novo_registro')
     }
     valores$nova <- valores$nova + 1
     removeModal(session = session)
