@@ -6,7 +6,7 @@
 #' @examples
 #' #Sem exemplo
 
-pega_tipo <- function(vetor) {
+pega_tipo <- function(vetor, retorno = 'txt') {
   # Lei
   # Decreto
   # PORTARIAS DE XX
@@ -23,9 +23,33 @@ pega_tipo <- function(vetor) {
 
   for (i in atos_possiveis) {
     if (stringr::str_detect(stringr::str_to_title(vetor[1], "pt"), i)) {
-      return(i)
+      res <- i
     }
   }
+  
+  if (!exists(res)) {
+    res <- "Sem tipo"
+  }
+  
+  retorno <- match.arg(retorno, c('txt', 'cod'))
 
-  "Sem tipo"
+  if (retorno == 'txt') {
+    # não muda data
+  } else {
+    res <- switch (res,
+                   "Lei" = 1,
+                   "Portaria" = 2,
+                   "Despacho" = 3,
+                   "Lei" = 4,
+                   "Retificação" = 5,
+                   "Retificações" = 6,
+                   "Decreto" = 7,
+                   "Ato" = 8, "Ata" = 9,
+                   "Instruçao Normativa" = 10,
+                   "Resolução" = 11,
+                   "Resoluções" = 12
+    )
+  }
+  
+  res
 }

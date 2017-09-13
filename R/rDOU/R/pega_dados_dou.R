@@ -154,6 +154,7 @@ pega_dados_dou <- function(arquivos, debug = FALSE) {
   resumo <- sapply(lista_atos, pega_resumo)
 
   n_pag <- sapply(lista_atos, function (ato) {
+    # procura igualdade exata
     for (arq in arquivos) {
       arq2 <- readLines(arq) %>% # repete limpeza feita no ato
         stringr::str_replace_all("No-", "Nº") %>%
@@ -172,7 +173,8 @@ pega_dados_dou <- function(arquivos, debug = FALSE) {
                  sub(pattern = "pg", replacement = "") %>% as.numeric())
       }
     }
-
+    
+    # Ou se contenta com igualdade parcial
     cont <- 1
     paginas <- integer(length(arquivos))
 

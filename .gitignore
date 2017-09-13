@@ -9,6 +9,7 @@ documentação/icones
 documentação/SEI
 R/exploratorios
 python/pylog
+R/validador/log.RDS
 
 .Rproj.user
 *.zip
