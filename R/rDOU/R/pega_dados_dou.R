@@ -15,7 +15,7 @@ pega_dados_dou <- function(arquivos, debug = FALSE) {
   # lista_arquivos <- split(arquivos, stringr::str_extract(arquivos, "[0-9]{4}_[0-9]{2}_[0-9]{2}") %>% as.factor())
   # arquivos <- lista_arquivos[[58]] ; rm(lista_arquivos)
   if (grepl('win', Sys.info()["sysname"], ignore.case = TRUE) ) {
-    encodificacao <- 'UTF-8'
+    encodificacao <- 'latin1'
   } else {
     encodificacao <- 'latin1'
   }
