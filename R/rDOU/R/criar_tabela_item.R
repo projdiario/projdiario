@@ -10,10 +10,9 @@ criar_tabela_item <- function(lista_de_atos) {
   
   tibble::tibble(
     NUM_ATO = sapply(lista_de_atos, pega_numero),
-    SEQ_ATO = NA_integer_, # na maior parte dos casos é um numero
-    # possui muitas ocorencias de 0 a 80. Tem casos com letras ('0GQ')
+    SEQ_ATO = NA_character_, # fazer
     SGL_TIPO = sapply(lista_de_atos, pega_tipo), # precisa melhorar
-    VLR_ANO = lubridate::year(data_ato),
+    VLR_ANO = lubridate::year(data_ato) %>% as.character(),
     SGL_ORGAO = attr(lista_de_atos, 'orgao'),
     COD_TIPO = sapply(lista_de_atos, pega_tipo, 'cod'), # precisa melhorar,
     # DES_ITEM - Nem ideia do que seja este campo.
