@@ -11,7 +11,7 @@ pega_normas_dou <- function(arquivos, debug = FALSE) {
   if (debug) cat(unique(stringr::str_extract(arquivos, "[0-9]{4}_[0-9]{2}_[0-9]{2}")),'\n')
   
   if (grepl('win', Sys.info()["sysname"], ignore.case = TRUE) ) {
-    encodificacao <- 'UTF-8'
+    encodificacao <- 'latin1'
   } else {
     encodificacao <- 'latin1'
   }
