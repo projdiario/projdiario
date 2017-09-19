@@ -146,6 +146,7 @@ pega_normas_dou <- function(arquivos, debug = FALSE) {
     lista_atos,
     class = 'norma',
     orgao = conteudo_limpo[atos[-length(atos)] %em% limites_orgaos],
+    arquivos = arquivos,
     data_dou = data_dou,
     secao = tipo_secao
   )
