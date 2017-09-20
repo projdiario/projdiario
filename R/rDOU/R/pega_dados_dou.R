@@ -209,7 +209,7 @@ pega_dados_dou <- function(arquivos, debug = FALSE) {
   opt_tipo <- paste("switch(stringr::str_to_title(ato),",
                     paste0('"', dic_tipos$DS_TIPO_LEGISLACAO, '"', " = ",
                     dic_tipos$ID_TIPO_LEGISLACAO, collapse = ","),
-                    ")")
+                    ", NA_real_)")
   tipo_cod <- sapply(tipo, function(ato) eval(parse(text = opt_tipo))[1])
 
   tipo_secao <- switch(meio, "DOU1" = 1, "DOU2" = 2, "DOU3" = 3,

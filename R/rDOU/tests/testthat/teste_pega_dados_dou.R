@@ -13,7 +13,7 @@ test_that("Retorna número correto de normas", {
   # caso em que o ministério não aparece
   # é gambiarra! O melhor é incluir caso na função
   # deve voltar tibble vazia e aviso
-  expect_error(resp4 <<- pega_dados_dou(arquivos[[4]]), 'must be length 1 or')
+  expect_tamanho(resp4 <<- pega_dados_dou(arquivos[[4]]), 0)
   expect_tamanho(resp5 <<- pega_dados_dou(arquivos[[5]]), 6)
   expect_tamanho(resp6 <<- pega_dados_dou(arquivos[[6]]), 12)
 })
@@ -34,7 +34,7 @@ test_that("Resposta tem nome e tipo correto das variáveis", {
                        'ID_MODO_PUBLICACAO', 'ID_USUARIO_CADASTRO' , 'ID_USUARIO_LIBERACAO',
                        'ID_TIPO_SECAO', 'DT_CADASTRO', 'NU_PUBLICACAO', 'NU_VOLUME')
   classes <- sapply(resp6, class) %>% unname()
-  classes_esperadas <- c('character', 'character', 'Date', 'numeric', 'character',
+  classes_esperadas <- c('character', 'character', 'Date', 'character', 'character',
                          'Date', 'numeric', 'character', 'numeric', 'numeric',
                          'numeric' , 'numeric', 'numeric' , 'numeric', 'numeric',
                          'Date', 'numeric', 'numeric')

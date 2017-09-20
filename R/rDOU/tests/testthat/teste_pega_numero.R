@@ -4,6 +4,6 @@ ato1 <- c("PORTARIA Nº 16, DE 21 DE FEVEREIRO DE 2017", "       O Superintenden
 ato2 <- c("DESPACHO DO SECRETÁRIO EXECUTIVO", "Em 22 de fevereiro de 2017", "       O SECRETÁRIO EXECUTIVO DO MINISTÉRIO DA AGRICULTURA, PECUÁRIA E ABASTECIMENTO, no uso da atribuição que lhe foi delegada pela Portaria MAPA nº 717, de 16 de agosto de 2013, e no âmbito do Decreto n° 1.387/1995:")
 
 test_that("pega_numero() funciona como esperado", {
-  expect_equal(pega_numero(ato1), 16)
-  expect_equal(pega_numero(ato2), NA_real_)
+  expect_equal(pega_numero(ato1), '00000016')
+  expect_equal(pega_numero(ato2), '      NA')
 })
