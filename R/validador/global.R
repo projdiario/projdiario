@@ -2,8 +2,8 @@ rm(list=ls())
 # shell('start firefox http://127.0.0.1:6312/')
 cat('\014')
 
-# Criar driver de conexão
-driver <- JDBC("oracle.jdbc.OracleDriver", "www/ojdbc6.jar")
+# Criar driver de conexão e pegar siglas possíveis
+driver <- RJDBC::JDBC("oracle.jdbc.OracleDriver", "www/ojdbc6.jar")
 configs <<- readLines('www/config_oracle')
 conexao <- RJDBC::dbConnect(driver, configs[1], configs[2], configs[3])
 siglas_possiveis <- RJDBC::dbGetQuery(conexao, 'SELECT DISTINCT SGL_ORGAO FROM ADMLEGIS.ITEM_ATO')[[1]]
@@ -21,19 +21,6 @@ RJDBC::dbDisconnect(conexao)
 #     maquina = valores$usuario[1], usuario = valores$usuario[2],
 #     data = format(Sys.time(), format = "%d/%m/%Y %H:%M:%S"),
 #     stringsAsFactors = FALSE)
-#   df
-# }
-
-# novo_registro <- function(nova = FALSE) {
-#   id <-  ifelse(nova, valores$nova, normas$ID_LEGISLACAO[valores$num])
-#   
-#   df <- data.frame(ID_LEGISLACAO = id, DS_RESUMO = NA, # input$resumo
-#                    DT_PUBLICACAO = input$data_dou, NU_LEGISLACAO = input$num_norma,
-#                    DS_CONTEUDO = valores$html, DT_LEI = input$data_norma, NU_PAGINA = input$num_pag,
-#                    DS_INDEXACAO = NA, ID_TIPO_LEGISLACAO = NA, ID_TIPO_SITUACAO = 0, # input$tipo
-#                    CD_TIPO_LIBERACAO = 0, ID_MODO_PUBLICACAO = 0, ID_USUARIO_CADASTRO = 0,
-#                    ID_USUARIO_LIBERACAO = 0, ID_TIPO_SECAO = input$num_secao, DT_CADASTRO = Sys.Date(),
-#                    NU_PUBLICACAO = 0, NU_VOLUME = 0, stringsAsFactors = FALSE)
 #   df
 # }
 
@@ -119,16 +106,3 @@ escrever_na_base <- function(input, driver, configs) {
   RJDBC::dbCommit(conexao)
   RJDBC::dbDisconnect(conexao)
 }
-
-# if (file.exists('base_final.RDS')) {
-#   # base_final <- readRDS('base_final.RDS')
-# } else {
-#   base_final <- data.frame(ID_LEGISLACAO = '', DS_RESUMO = '', DT_PUBLICACAO = Sys.Date(),
-#                            NU_LEGISLACAO = 0, DS_CONTEUDO = '', DT_LEI = Sys.Date(),
-#                            NU_PAGINA = 0, DS_INDEXACAO = NA, ID_TIPO_LEGISLACAO = 0,
-#                            ID_TIPO_SITUACAO = 0, CD_TIPO_LIBERACAO = 0, ID_MODO_PUBLICACAO = 0,
-#                            ID_USUARIO_CADASTRO = 0, ID_USUARIO_LIBERACAO = 0, ID_TIPO_SECAO = 0,
-#                            DT_CADASTRO = Sys.Date(), NU_PUBLICACAO = 0, NU_VOLUME = 0,
-#                            stringsAsFactors = FALSE)
-#   saveRDS(base_final[FALSE, ], 'base_final.RDS')
-# }
