@@ -4,8 +4,10 @@ cat('\014')
 
 # Criar driver de conexão
 driver <- JDBC("oracle.jdbc.OracleDriver", "www/ojdbc6.jar")
-
+configs <<- readLines('www/config_oracle')
+conexao <- RJDBC::dbConnect(driver, configs[1], configs[2], configs[3])
 siglas_possiveis <- RJDBC::dbGetQuery(conexao, 'SELECT DISTINCT SGL_ORGAO FROM ADMLEGIS.ITEM_ATO')[[1]]
+RJDBC::dbDisconnect(conexao)
 
 # Define funções
 # registrar_log <- function(valores, id_norma) {
@@ -68,7 +70,8 @@ if (file.exists('log.RDS')) {
   saveRDS(df_inicial[FALSE, ], 'log.RDS')
 }
 
-escrever_na_base <- function(input) {
+escrever_na_base <- function(input, driver, configs) {
+  conexao <- RJDBC::dbConnect(driver, configs[1], configs[2], configs[3])
   NUM_ATO <- formatC(input$num_norma, width = 8, flag = '0')
   SGL_TIPO <- input$sgl_tipo
   VLR_ANO <- as.character(lubridate::year(input$data_dou))

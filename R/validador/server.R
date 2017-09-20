@@ -29,7 +29,7 @@ function(input, output, session) {
       valores$html <- gsub(pattern = '&.+{1,5};', replacement = '', input$entradaPrincipal)
       # valores$aprovados <- rbind(valores$aprovados, novo_registro() )
       # saveRDS(object = valores$aprovados, 'base_final.RDS')
-      escrever_na_base(input)
+      escrever_na_base(input, driver, configs)
       valores$num <- valores$num + 1
     }
   })
