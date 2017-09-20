@@ -2,33 +2,32 @@ function(input, output, session) {
   valores <- reactiveValues()
   valores$num <- 1
   valores$usuario <- c(Sys.info()[["nodename"]], Sys.info()[["effective_user"]])
-  valores$aval <- ''
+  valores$validacao <- ''
   valores$html <- ''
   # valores$aprovados <- data.frame() # readRDS('base_final.RDS')
   valores$nova <- 88000
   
   observeEvent(input$aceita, {
-    valores$aval <- "Aceito"
+    valores$validacao <- "Aceito"
+    registrar_log(valores, normas$ID[valores$num])
     js$pegaTexto()
   })
   
   observeEvent(input$pula, {
-    valores$aval <- "Indefinido"
-    # js$pegaTexto()
+    valores$validacao <- "Indefinido"
+    registrar_log(valores, normas$ID[valores$num])
     valores$num <- valores$num + 1
   })
   
   observeEvent(input$recusa, {
-    valores$aval <- "Recusado"
-    # js$pegaTexto()
+    valores$validacao <- "Recusado"
+    registrar_log(valores, normas$ID[valores$num])
     valores$num <- valores$num + 1
   })
   
   observeEvent(input$entradaPrincipal, {
     if (input$entradaPrincipal != '') {
       valores$html <- gsub(pattern = '&.+{1,5};', replacement = '', input$entradaPrincipal)
-      # valores$aprovados <- rbind(valores$aprovados, novo_registro() )
-      # saveRDS(object = valores$aprovados, 'base_final.RDS')
       escrever_na_base(input, driver, configs)
       valores$num <- valores$num + 1
     }
