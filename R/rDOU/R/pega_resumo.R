@@ -21,5 +21,6 @@ pega_resumo <- function (vetor) {
     sub(pattern = "^I -", replacement = "") %>%
     sub(pattern = "[rR][ ,]", replacement = " ") %>%
     gsub(pattern = "\\s\\s", replacement = " ") %>%
-    stringr::str_trim()
+    stringr::str_trim() %>% 
+    paste('<p>', ., '</p>')
 }

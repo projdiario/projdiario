@@ -22,10 +22,11 @@ let win, url_pdf, extensao;
 
 app.on('ready', () => {
     win = new BrowserWindow({
-        frame: false,
+        //frame: false,
         height: 850,
-        //resizable: false,
-        width: 1420
+        resizable: false,
+        width: 1420,
+        icon: 'www/logo.jpg'
     })
-    win.loadURL(`file://${__dirname}/index.html`)
+    win.loadURL(`file://${__dirname}/www/index.html`)
 })

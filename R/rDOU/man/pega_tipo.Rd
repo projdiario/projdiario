@@ -4,7 +4,7 @@
 \alias{pega_tipo}
 \title{Pega tipo dos ato}
 \usage{
-pega_tipo(vetor)
+pega_tipo(vetor, retorno = "txt")
 }
 \arguments{
 \item{vetor}{um vetor com o conteudo de um ato}

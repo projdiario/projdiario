@@ -12,5 +12,6 @@ pega_numero <- function(vetor) {
   #   res <- "Sem número"
   # }
   res %>% gsub(pattern = "\\.", replacement = "") %>%
-    stringr::str_extract("[0-9]+") %>% as.numeric()
+    stringr::str_extract("[0-9]+") %>%
+    as.numeric() %>% formatC(width = 8, flag = 0)
 }

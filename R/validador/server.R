@@ -4,13 +4,8 @@ function(input, output, session) {
   valores$usuario <- c(Sys.info()[["nodename"]], Sys.info()[["effective_user"]])
   valores$aval <- ''
   valores$html <- ''
-  valores$aprovados <- readRDS('log.RDS')
-  valores$nova <- 40000
-  
-  # reactive({
-  #   valores$nova <- if(max(valores$aprovados$id, na.rm = TRUE) < '40000')
-  #     '40000' else max(valores$aprovados$id, na.rm = TRUE) + 1
-  # })
+  # valores$aprovados <- data.frame() # readRDS('base_final.RDS')
+  valores$nova <- 88000
   
   observeEvent(input$aceita, {
     valores$aval <- "Aceito"
@@ -19,28 +14,31 @@ function(input, output, session) {
   
   observeEvent(input$pula, {
     valores$aval <- "Indefinido"
-    js$pegaTexto()
+    # js$pegaTexto()
+    valores$num <- valores$num + 1
   })
   
   observeEvent(input$recusa, {
     valores$aval <- "Recusado"
-    js$pegaTexto()
+    # js$pegaTexto()
+    valores$num <- valores$num + 1
   })
   
   observeEvent(input$entradaPrincipal, {
     if (input$entradaPrincipal != '') {
       valores$html <- gsub(pattern = '&.+{1,5};', replacement = '', input$entradaPrincipal)
-      valores$aprovados <- rbind(valores$aprovados, inclui_dado(valores))
-      saveRDS(object = valores$aprovados, 'log.RDS')
+      # valores$aprovados <- rbind(valores$aprovados, novo_registro() )
+      # saveRDS(object = valores$aprovados, 'base_final.RDS')
+      escrever_na_base(input, driver, configs)
       valores$num <- valores$num + 1
     }
   })
   
   observeEvent(valores$num, {
-    if (is.na(normas$NU_PAGINA[valores$num])) {
+    if (is.na(normas$NUM_PAGINA[valores$num])) {
       updateNumericInput(session, 'pag_pdf', value = 1)
     } else {
-      updateNumericInput(session, 'pag_pdf', value = normas$NU_PAGINA[valores$num])
+      updateNumericInput(session, 'pag_pdf', value = normas$NUM_PAGINA[valores$num])
     }
   })
   
@@ -57,13 +55,13 @@ function(input, output, session) {
     base_url <- 'http://pesquisa.in.gov.br/imprensa/servlet/INPDFViewer?'
     jornal <- paste0('jornal=', observacao$ID_TIPO_SECAO)
     pagina <- paste0('&pagina=', input$pag_pdf)
-    data_url <- paste0('&data=', format(observacao$DT_PUBLICACAO, format = '%d/%m/%Y') )
+    data_url <- paste0('&data=', format(observacao$DTA_PROMULGACAO, format = '%d/%m/%Y') )
     fim <- '&captchafield=firistAccess'
     url <- paste0(base_url, jornal, pagina, data_url, fim)
     destino <- './www/pdfjs/web/pagina.pdf'
     httr::RETRY(verb = "GET", url = url, httr::write_disk(destino, overwrite = TRUE))    
+    HTML('<iframe style="height:600px; width:100%" src="./pdfjs/web/viewer.html#zoom=125"></iframe>')
 
-    HTML(paste0('<iframe style="height:600px; width:100%" src="./pdfjs/web/viewer.html#zoom=125"></iframe>'))
   })
   
   output$editor <- renderUI({
@@ -78,7 +76,8 @@ function(input, output, session) {
       div(
         HTML('<form id="formulario" method="post">',
              '<textarea id="textoPrincipal" style = "resize:vertical;">',
-             texto_em_html(normas$DS_CONTEUDO[valores$num]),
+             gsub('<p>SECRETARIA</p>', paste0('<p>', normas$SGL_ORGAO[valores$num], '</p>'),
+                  normas$TXT_TEXTO[valores$num]),
              '</textarea>',
              '</form>')
       )
@@ -89,16 +88,21 @@ function(input, output, session) {
     observacao <- normas[valores$num, ]
     fluidRow(id = "norm-form",
       fluidRow(
-        column(4, numericInput('num_norma', 'Número: ', observacao$NU_LEGISLACAO, 1)),
-        column(4, numericInput('num_pag', 'Página: ', observacao$NU_PAGINA, 1)),
-        column(4, numericInput('num_secao', 'SEÇÃO: ', observacao$ID_TIPO_SECAO, 1, 3))
+        column(4, numericInput('num_norma', 'Número: ', as.numeric(observacao$NUM_ATO), 1)),
+        column(4, dateInput('data_dou', 'Data de publicação: ', observacao$DTA_PROMULGACAO,
+                            format = 'dd/mm/yyyy')),
+        column(4, selectInput('sgl_tipo', 'Tipo: ', width = '100%',
+                              choices =  unique(normas$SGL_TIPO), selected = observacao$SGL_TIPO))
         ),
       fluidRow(
-        column(6, dateInput('data_dou', 'Data de publicação: ', observacao$DT_PUBLICACAO,
-                  format = 'dd/mm/yyyy')),
-        column(6, dateInput('data_norma', 'Data da norma: ', observacao$DT_LEI,
-        format = 'dd/mm/yyyy'))
-        )
+        column(6, selectInput('sgl_orgao', 'Sigla do órgão: ',
+                              siglas_possiveis, observacao$SGL_ORGAO)),
+        column(6, textAreaInput('des_titulo', 'Título da norma: ', observacao$DES_TITULO))
+      ),
+      fluidRow(
+        column(12, textAreaInput('txt_ementa', 'Ementa: ', gsub(" ?</?p> ?", "",observacao$TXT_EMENTA),
+                                 cols = 200, rows = 2))
+      )
     )
   })
   
@@ -131,11 +135,11 @@ function(input, output, session) {
   })
   
   observeEvent(input$entradaNova, {
-    shinyjs::alert('Norma incluída')
+    shinyjs::alert('Norma incluída!')
     if (input$entradaNova != '' &  valores$aval == 'Aceito') {
       valores$html <- input$entradaNova
-      valores$aprovados <- rbind(valores$aprovados, inclui_dado(valores, valores$nova))
-      saveRDS(object = valores$aprovados, 'log.RDS')
+      # valores$aprovados <- rbind(valores$aprovados, incluir_dado(nova = TRUE))
+      # saveRDS(object = valores$aprovados, 'base_final.RDS')
     }
     valores$nova <- valores$nova + 1
     removeModal(session = session)
