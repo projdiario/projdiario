@@ -11,6 +11,8 @@ R/exploratorios
 python/pylog
 R/validador/log.RDS
 pagina.pdf
+config_oracle
+aplicacao.RDS
 
 .Rproj.user
 *.zip
