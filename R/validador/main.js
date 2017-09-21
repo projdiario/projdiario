@@ -4,7 +4,7 @@ const BrowserWindow = electron.BrowserWindow
 
 // rodar shiny
 var spawn = require('child_process').spawn,
-ls    = spawn('cmd.exe', ['/c', 'app.bat']);
+ls = spawn('cmd.exe', ['/c', 'set PATH=%PATH%;C:\Users\%username%\Documents\R\R-3.4.1\bin\i386 & Rscript app.R']);
 
 ls.stdout.on('data', function (data) {
 console.log('stdout: ' + data);
@@ -18,15 +18,15 @@ ls.on('exit', function (code) {
 console.log('child process exited with code ' + code);
 });
 
-let win, url_pdf, extensao;
+let win;
 
 app.on('ready', () => {
     win = new BrowserWindow({
         //frame: false,
         height: 850,
-        resizable: false,
+        //resizable: false,
         width: 1420,
-        icon: 'www/logo.jpg'
+        icon: 'www/icone.ico'
     })
     win.loadURL(`file://${__dirname}/www/index.html`)
 })
