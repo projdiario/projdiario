@@ -17,13 +17,13 @@ html2 <- c('<html lang = "pt-br">',
 
 
 test_that("Funciona em texto numa única string", {
-  expect_equal(remove_tags(html_unico), "títulosub-títuloparágrafotexto em destaque")
+  expect_equal(remover_tags(html_unico), "títulosub-títuloparágrafotexto em destaque")
 })
 
 test_that("Funciona em texto como vetor", {
-  expect_equal(remove_tags(html), " Título ")
+  expect_equal(remover_tags(html), " Título ")
 })
 
 test_that("Funciona em texto como vetor com quebra de tag entre as linhas", {
-  expect_equal(remove_tags(html2), " Título ")
+  expect_equal(remover_tags(html2), " Título ")
 })

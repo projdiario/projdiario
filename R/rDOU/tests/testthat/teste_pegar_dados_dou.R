@@ -9,13 +9,13 @@ test_that("Retorna número correto de normas", {
     eval(bquote(expect_equal(nrow(objeto), tamanho) ) )
   }
 
-  expect_tamanho(resp3 <<- pega_dados_dou(arquivos[[3]]), 12)
+  expect_tamanho(resp3 <<- pegar_dados_dou(arquivos[[3]]), 12)
   # caso em que o ministério não aparece
   # é gambiarra! O melhor é incluir caso na função
   # deve voltar tibble vazia e aviso
-  expect_tamanho(resp4 <<- pega_dados_dou(arquivos[[4]]), 0)
-  expect_tamanho(resp5 <<- pega_dados_dou(arquivos[[5]]), 6)
-  expect_tamanho(resp6 <<- pega_dados_dou(arquivos[[6]]), 12)
+  expect_tamanho(resp4 <<- pegar_dados_dou(arquivos[[4]]), 0)
+  expect_tamanho(resp5 <<- pegar_dados_dou(arquivos[[5]]), 6)
+  expect_tamanho(resp6 <<- pegar_dados_dou(arquivos[[6]]), 12)
 })
 
 test_that("Resposta é tibble com 18 variáveis", {

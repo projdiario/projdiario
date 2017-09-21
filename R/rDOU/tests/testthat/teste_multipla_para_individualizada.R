@@ -16,9 +16,9 @@ esperado <- c( "PORTARIA Nº 1 DE 25 DE FEVEREIRO DE 2017\nO FULANO resolve:\n B
 arquivos <- lapply(list(1:4, 5:10, 11:18, 19:20, 21:23, 24:28),
                    function(indice) dir('exemplos', full.names = TRUE)[indice])
 
-decisoes <- pega_dados_dou(arquivos[[3]])$DS_CONTEUDO[8] %>%
+decisoes <- pegar_dados_dou(arquivos[[3]])$DS_CONTEUDO[8] %>%
   stringr::str_split("\n") %>% .[[1]]
-portarias <- pega_dados_dou(arquivos[[5]])$DS_CONTEUDO[5] %>%
+portarias <- pegar_dados_dou(arquivos[[5]])$DS_CONTEUDO[5] %>%
   stringr::str_split("\n") %>% .[[1]]
 
 espera_multipla <- function(objeto, expectativa, FUN = NULL) {

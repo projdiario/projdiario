@@ -11,7 +11,7 @@ html <- c("<html>",
 
 
 test_that("Remove apenas o estilo" , {
-  expect_equal(tira_estilo(html), c("<html>", "",
+  expect_equal(tirar_estilo(html), c("<html>", "",
                                     "<h1>Título</h1>", "",
                                     "", "",
                                     "<p>Texto</p>",

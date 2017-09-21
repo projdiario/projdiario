@@ -91,21 +91,21 @@ pegar_data <- function(ato) {
 #   # ATO
 #   # ATA
 #
-#   decisao <- procura_inicio(conteudo_limpo, "DECISÃO")
+#   decisao <- procurar_inicio(conteudo_limpo, "DECISÃO")
 #
-#   portarias <- procura_inicio(conteudo_limpo, "PORTARIA")
+#   portarias <- procurar_inicio(conteudo_limpo, "PORTARIA")
 #
-#   despachos <- procura_inicio(conteudo_limpo, "DESPACHO")
+#   despachos <- procurar_inicio(conteudo_limpo, "DESPACHO")
 #
-#   retificacao <- procura_inicio(conteudo_limpo, "RETIFICAÇ")
+#   retificacao <- procurar_inicio(conteudo_limpo, "RETIFICAÇ")
 #
-#   instrucao <- procura_inicio(conteudo_limpo, "INSTRUÇ")
+#   instrucao <- procurar_inicio(conteudo_limpo, "INSTRUÇ")
 #
-#   resolucao <- procura_inicio(conteudo_limpo, "RESOLUÇ")
+#   resolucao <- procurar_inicio(conteudo_limpo, "RESOLUÇ")
 #
-#   ato <- procura_inicio(conteudo_limpo, "ATO ")
+#   ato <- procurar_inicio(conteudo_limpo, "ATO ")
 #
-#   ata <- procura_inicio(conteudo_limpo, "ATA ")
+#   ata <- procurar_inicio(conteudo_limpo, "ATA ")
 #
 #   atos <- c(decisao, portarias, despachos, retificacao,
 #             resolucao, ato, ata, length(conteudo_limpo)) %>% sort()
@@ -132,9 +132,9 @@ pegar_data <- function(ato) {
 #   }
 #
 #   # 5 - Retirar os 10 tipos de dados listados
-#   numero <- sapply(lista_atos, pega_numero)
-#   tipo <- sapply(lista_atos, pega_tipo)
-#   data_ato <- as.Date(sapply(lista_atos, pega_data), origin = "1970-01-01")
+#   numero <- sapply(lista_atos, pegar_numero)
+#   tipo <- sapply(lista_atos, pegar_tipo)
+#   data_ato <- as.Date(sapply(lista_atos, pegar_data), origin = "1970-01-01")
 #   data_dou <- stringr::str_extract(arquivo, "[0-9]{4}_[0-9]{2}_[0-9]{2}") %>%
 #     as.Date(format = "%Y_%m_%d")
 #   meio <- stringr::str_extract(arquivo, "BP_[0-9]?") %>% unique() # resolver caso do boletim de pessoal
@@ -142,7 +142,7 @@ pegar_data <- function(ato) {
 #   cargo <- sapply(lista_atos, pega_cargo)
 #   texto_ato <- sapply(lista_atos, paste, collapse = "\n")
 #   id <- paste0(data_dou, "-", formatC(seq_along(lista_atos), width = 2, flag = 0))
-#   resumo <- sapply(lista_atos, pega_resumo)
+#   resumo <- sapply(lista_atos, pegar_resumo)
 #
 #   n_pag <- sapply(lista_atos, function (ato) {
 #     for (i in seq_along(conteudo)) {
@@ -233,7 +233,7 @@ pegar_dados_dou <- function(arquivos, debug = FALSE) {
       gsub(pattern = "</?tr>", replacement = "") %>%
       gsub(pattern = "</?td>", replacement = "")
     if (any(grepl(padrao, orgaos))) {
-      alvo <- procura_inicio(conteudo_orig, padrao) %>%
+      alvo <- procurar_inicio(conteudo_orig, padrao) %>%
         extract(which(!grepl(pattern = "[0-9]+", conteudo[. + 1])))
       if (length(alvo) > 1) {
         alvo <- alvo[alvo > 30][1]
@@ -242,13 +242,13 @@ pegar_dados_dou <- function(arquivos, debug = FALSE) {
         stringr::str_extract("Ministério [[:alpha:]]+ [[:alpha:]]+")
       
       suppressWarnings({
-        prox_alvo <- procura_inicio(conteudo_orig, nome_prox_alvo) %>%
+        prox_alvo <- procurar_inicio(conteudo_orig, nome_prox_alvo) %>%
           extract(. > alvo) %>% min()
       })
       
       if (is.infinite(prox_alvo)) {
         suppressWarnings({
-          prox_alvo <- procura_inicio(conteudo_orig, paste0("\t", nome_prox_alvo)) %>%
+          prox_alvo <- procurar_inicio(conteudo_orig, paste0("\t", nome_prox_alvo)) %>%
             extract(. > alvo) %>% min()
         })
         
@@ -287,25 +287,25 @@ pegar_dados_dou <- function(arquivos, debug = FALSE) {
   # ATO
   # ATA
   
-  leis <- procura_inicio(conteudo_limpo, "LEI")
+  leis <- procurar_inicio(conteudo_limpo, "LEI")
   
-  decretos <- procura_inicio(conteudo_limpo, "DECRETO")
+  decretos <- procurar_inicio(conteudo_limpo, "DECRETO")
   
-  decisao <- procura_inicio(conteudo_limpo, "DECIS")
+  decisao <- procurar_inicio(conteudo_limpo, "DECIS")
   
-  portarias <- procura_inicio(conteudo_limpo, "PORTARIA")
+  portarias <- procurar_inicio(conteudo_limpo, "PORTARIA")
   
-  despachos <- procura_inicio(conteudo_limpo, "DESPACHO")
+  despachos <- procurar_inicio(conteudo_limpo, "DESPACHO")
   
-  retificacao <- procura_inicio(conteudo_limpo, "RETIFICAÇ")
+  retificacao <- procurar_inicio(conteudo_limpo, "RETIFICAÇ")
   
-  instrucao <- procura_inicio(conteudo_limpo, "INSTRUÇ")
+  instrucao <- procurar_inicio(conteudo_limpo, "INSTRUÇ")
   
-  resolucao <- procura_inicio(conteudo_limpo, "RESOLUÇ")
+  resolucao <- procurar_inicio(conteudo_limpo, "RESOLUÇ")
   
-  ato <- procura_inicio(conteudo_limpo, "ATO ")
+  ato <- procurar_inicio(conteudo_limpo, "ATO ")
   
-  ata <- procura_inicio(conteudo_limpo, "ATA ")
+  ata <- procurar_inicio(conteudo_limpo, "ATA ")
   
   atos <- c(leis, decretos, decisao, portarias, despachos, retificacao,
             instrucao, resolucao, ato, ata, length(conteudo_limpo)) %>% sort()
@@ -316,7 +316,7 @@ pegar_dados_dou <- function(arquivos, debug = FALSE) {
     indices[[i]] <- atos[i]:(atos[i+1] - 1)
   }
   
-  limites_orgaos <- pega_limites_orgaos(conteudo_limpo)
+  limites_orgaos <- pegar_limites_orgaos(conteudo_limpo)
   
   indices_limpos <- lapply(indices, function(x) x[!(x %in% limites_orgaos)])
   
@@ -334,9 +334,9 @@ pegar_dados_dou <- function(arquivos, debug = FALSE) {
   }
   
   # 5 - Retirar os 10 tipos de dados listados
-  numero <- sapply(lista_atos, pega_numero)
-  tipo <- sapply(lista_atos, pega_tipo)
-  data_ato <- sapply(lista_atos, pega_data)
+  numero <- sapply(lista_atos, pegar_numero)
+  tipo <- sapply(lista_atos, pegar_tipo)
+  data_ato <- sapply(lista_atos, pegar_data)
   if (is.numeric(data_ato)) {
     data_ato <- as.Date(data_ato, '1970-01-01')
   }
@@ -347,7 +347,7 @@ pegar_dados_dou <- function(arquivos, debug = FALSE) {
   # cargo <- sapply(lista_atos, pega_cargo)
   texto_ato <- sapply(lista_atos, paste, collapse = "\n")
   id <- paste0(data_dou, meio,"-", formatC(seq_along(lista_atos), width = 2, flag = 0))
-  resumo <- sapply(lista_atos, pega_resumo)
+  resumo <- sapply(lista_atos, pegar_resumo)
   
   n_pag <- sapply(lista_atos, function (ato) {
     # procura igualdade exata
@@ -437,10 +437,10 @@ pegar_dados_dou <- function(arquivos, debug = FALSE) {
 
 pegar_limites_orgaos <- function(pagina) {
   # Procurar termos na página:
-  gab <- procura_inicio(pagina, "GABINETE") # GABINETE
-  sec <- procura_inicio(pagina, "SECRETARIA") # SECRETARIA
-  inst <- procura_inicio(pagina, "INSTITUTO") # INSTITUTO
-  sfa <- procura_inicio(pagina, "SUPERINTENDÊNCIA") # SUPERINTENDÊNCIA
+  gab <- procurar_inicio(pagina, "GABINETE") # GABINETE
+  sec <- procurar_inicio(pagina, "SECRETARIA") # SECRETARIA
+  inst <- procurar_inicio(pagina, "INSTITUTO") # INSTITUTO
+  sfa <- procurar_inicio(pagina, "SUPERINTENDÊNCIA") # SUPERINTENDÊNCIA
   
   res <- c(gab, sec, inst, sfa)
   names(res) <- pagina[res]
@@ -486,7 +486,7 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
       gsub(pattern = "</?tr>", replacement = "") %>%
       gsub(pattern = "</?td>", replacement = "")
     if (any(grepl(padrao, orgaos))) {
-      alvo <- procura_inicio(conteudo_orig, padrao) %>%
+      alvo <- procurar_inicio(conteudo_orig, padrao) %>%
         extract(which(!grepl(pattern = "[0-9]+", conteudo[. + 1])))
       if (length(alvo) > 1) {
         alvo <- alvo[alvo > 30][1]
@@ -495,13 +495,13 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
         stringr::str_extract("Ministério [[:alpha:]]+ [[:alpha:]]+")
       
       suppressWarnings({
-        prox_alvo <- procura_inicio(conteudo_orig, nome_prox_alvo) %>%
+        prox_alvo <- procurar_inicio(conteudo_orig, nome_prox_alvo) %>%
           extract(. > alvo) %>% min()
       })
       
       if (is.infinite(prox_alvo)) {
         suppressWarnings({
-          prox_alvo <- procura_inicio(conteudo_orig, paste0("\t", nome_prox_alvo)) %>%
+          prox_alvo <- procurar_inicio(conteudo_orig, paste0("\t", nome_prox_alvo)) %>%
             extract(. > alvo) %>% min()
         })
         
@@ -540,25 +540,25 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
   # ATO
   # ATA
   
-  leis <- procura_inicio(conteudo_limpo, "LEI")
+  leis <- procurar_inicio(conteudo_limpo, "LEI")
   
-  decretos <- procura_inicio(conteudo_limpo, "DECRETO")
+  decretos <- procurar_inicio(conteudo_limpo, "DECRETO")
   
-  decisao <- procura_inicio(conteudo_limpo, "DECIS")
+  decisao <- procurar_inicio(conteudo_limpo, "DECIS")
   
-  portarias <- procura_inicio(conteudo_limpo, "PORTARIA")
+  portarias <- procurar_inicio(conteudo_limpo, "PORTARIA")
   
-  despachos <- procura_inicio(conteudo_limpo, "DESPACHO")
+  despachos <- procurar_inicio(conteudo_limpo, "DESPACHO")
   
-  retificacao <- procura_inicio(conteudo_limpo, "RETIFICAÇ")
+  retificacao <- procurar_inicio(conteudo_limpo, "RETIFICAÇ")
   
-  instrucao <- procura_inicio(conteudo_limpo, "INSTRUÇ")
+  instrucao <- procurar_inicio(conteudo_limpo, "INSTRUÇ")
   
-  resolucao <- procura_inicio(conteudo_limpo, "RESOLUÇ")
+  resolucao <- procurar_inicio(conteudo_limpo, "RESOLUÇ")
   
-  ato <- procura_inicio(conteudo_limpo, "ATO ")
+  ato <- procurar_inicio(conteudo_limpo, "ATO ")
   
-  ata <- procura_inicio(conteudo_limpo, "ATA ")
+  ata <- procurar_inicio(conteudo_limpo, "ATA ")
   
   atos <- c(leis, decretos, decisao, portarias, despachos, retificacao,
             instrucao, resolucao, ato, ata, length(conteudo_limpo)) %>% sort()
@@ -569,7 +569,7 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
     indices[[i]] <- atos[i]:(atos[i+1] - 1)
   }
   
-  limites_orgaos <- pega_limites_orgaos(conteudo_limpo)
+  limites_orgaos <- pegar_limites_orgaos(conteudo_limpo)
   
   indices_limpos <- lapply(indices, function(x) x[!(x %in% limites_orgaos)])
   
@@ -634,7 +634,7 @@ pegar_numero <- function(ato) {
 
 pegar_resumo <- function (ato) {
   padrao <- "Art\\. ?[I1]º? ?-?"
-  art1 <- procura_inicio(ato, padrao)[1]
+  art1 <- procurar_inicio(ato, padrao)[1]
   if (!is.na(art1)) {
     texto <- ato[art1]
   } else {
