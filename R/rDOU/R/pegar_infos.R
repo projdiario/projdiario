@@ -2,7 +2,7 @@
 #'
 #' @export
 #' @param ato um vetor com o conteudo de um ato
-#' @return O cargo da autoridade que assintou um \code{ato}.
+#' @return O cargo da autoridade que assintou o \code{ato}.
 #' @examples
 #' #Sem exemplo
 
@@ -12,7 +12,8 @@ pegar_cargo <- function(ato) {
   
   virgulas <- stringr::str_locate_all(ato, ",")[[1]][, 2]
   
-  agri <- stringr::str_locate(toupper(ato), "AGRICULTURA,")[, 2] # há uma virgula que não é a que buscamos
+  # há uma virgula que não é a que buscamos
+  agri <- stringr::str_locate(toupper(ato), "AGRICULTURA,")[, 2]
   
   fim <- virgulas[!(virgulas %in% agri)]
   
@@ -24,22 +25,22 @@ pegar_cargo <- function(ato) {
 #' Pega data do nome de um ato
 #'
 #' @export
-#' @param vetor um vetor com o nome de um ato
-#' @return A data de \code{vetor} no formato dia DE MES_POR_EXTENSO DE ANO
+#' @param ato um vetor com o conteudo de um ato
+#' @return A data do \code{ato}
 #' @examples
 #' #Sem exemplo
 
 
-pegar_data <- function(vetor) {
+pegar_data <- function(ato) {
   if (grepl('win', Sys.info()["sysname"], ignore.case = TRUE) ) {
-    res <- stringr::str_extract(stringr::str_to_lower(vetor)[1],
+    res <- stringr::str_extract(stringr::str_to_lower(ato)[1],
                                 "[0-9]{1,2} de [a-z]+ de [0-9]{4}") %>%
       as.Date('%d de %B de %Y')
     
   } else {
     original <- Sys.getlocale("LC_TIME")
     invisible(Sys.setlocale("LC_TIME", "pt_BR.UTF-8"))
-    res <- stringr::str_extract(stringr::str_to_lower(vetor)[1],
+    res <- stringr::str_extract(stringr::str_to_lower(ato)[1],
                                 "[0-9]{1,2} de [a-z]+ de [0-9]{4}") %>%
       as.Date('%d de %B de %Y')
     
@@ -190,14 +191,17 @@ pegar_data <- function(vetor) {
 #                  NU_PUBLICACAO = 0, NU_VOLUME = 0)
 # }
 
+
 #' Pega todos os dados de todos os atos de um dia do DOU (txt)
 #'
 #' @export
+#'
+#' @param debug A função está sendo debugada?
 #' @param arquivos um vetor com os caminhos dos arquivos (.txt) de um dia do DOU
+#'
 #' @return Uma tabela com todos os dados extraidos do DOU.
 #' @examples
 #' #Sem exemplo
-
 
 pegar_dados_dou <- function(arquivos, debug = FALSE) {
   if (debug) cat(unique(stringr::str_extract(arquivos, "[0-9]{4}_[0-9]{2}_[0-9]{2}")),'\n')
@@ -424,11 +428,12 @@ pegar_dados_dou <- function(arquivos, debug = FALSE) {
 #' Pega o limite dos orgaos de um ministerio
 #'
 #' @export
+#'
 #' @param pagina um vetor com todo o conteudo de um dia do DOU
+#'
 #' @return Em qual linha (elemento) de \code{pagina} estao os orgaos de um ministerio
 #' @examples
 #' #Sem exemplo
-
 
 pegar_limites_orgaos <- function(pagina) {
   # Procurar termos na página:
@@ -447,11 +452,13 @@ pegar_limites_orgaos <- function(pagina) {
 #' Pega todos os dados de todos os atos de um dia do DOU (txt)
 #'
 #' @export
+#'
+#' @param debug A função está sendo debugada?
 #' @param arquivos um vetor com os caminhos dos arquivos (.txt) de um dia do DOU
-#' @return Uma lista com todas as normas extraidas do DOU.
+#'
+#' @return Uma lista com todas as normas extraidas do DOU e algumas mata-informações
 #' @examples
 #' #Sem exemplo
-
 
 pegar_normas_dou <- function(arquivos, debug = FALSE) {
   if (debug) cat(unique(stringr::str_extract(arquivos, "[0-9]{4}_[0-9]{2}_[0-9]{2}")),'\n')
@@ -601,38 +608,38 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
 
 #' Pega numero dos atos
 #'
+#' @param ato um vetor com o conteudo de um ato
+#'
 #' @export
-#' @param vetor um vetor com o nome de um ato
+#'
 #' @return A data de \code{vetor} no formato dia DE MES_POR_EXTENSO DE ANO
 #' @examples
 #' #Sem exemplo
 
-pegar_numero <- function(vetor) {
-  res <- stringr::str_extract(vetor[1], "(N|n).{2,3}[0-9]+\\.?[0-9]*")
-  # if (is.na(res)) {
-  #   res <- "Sem número"
-  # }
-  res %>% gsub(pattern = "\\.", replacement = "") %>%
+pegar_numero <- function(ato) {
+  stringr::str_extract(ato[1], "(N|n).{2,3}[0-9]+\\.?[0-9]*") %>%
+    gsub(pattern = "\\.", replacement = "") %>%
     stringr::str_extract("[0-9]+") %>%
     as.numeric() %>% formatC(width = 8, flag = 0)
 }
 
 #' Pega numero dos vetors
 #'
+#' @param ato um vetor com o conteudo de um ato
+#'
 #' @export
-#' @param vetor um vetor com o nome de um vetor
 #' @return A data de \code{vetor} no formvetor dia DE MES_POR_EXTENSO DE ANO
 #' @examples
 #' #Sem exemplo
 
-pegar_resumo <- function (vetor) {
+pegar_resumo <- function (ato) {
   padrao <- "Art\\. ?[I1]º? ?-?"
-  art1 <- procura_inicio(vetor, padrao)[1]
+  art1 <- procura_inicio(ato, padrao)[1]
   if (!is.na(art1)) {
-    texto <- vetor[art1]
+    texto <- ato[art1]
   } else {
-    dois_pontos <- grep(pattern = ":", vetor)[1]
-    texto <- vetor[dois_pontos + 1]
+    dois_pontos <- grep(pattern = ":", ato)[1]
+    texto <- ato[dois_pontos + 1]
   }
   texto %>%
     sub(pattern = padrao, replacement = "") %>%
@@ -646,13 +653,15 @@ pegar_resumo <- function (vetor) {
 
 #' Pega tipo dos ato
 #'
+#' @param ato um vetor com o conteudo de um ato
+#' @param retorno Deve retornar 'txt' ou 'cod'?
+#'
 #' @export
-#' @param vetor um vetor com o conteudo de um ato
 #' @return O tipo do ato de \code{vetor}.
 #' @examples
 #' #Sem exemplo
 
-pegar_tipo <- function(vetor, retorno = 'txt') {
+pegar_tipo <- function(ato, retorno = 'txt') {
   # Lei
   # Decreto
   # PORTARIAS DE XX
@@ -668,7 +677,7 @@ pegar_tipo <- function(vetor, retorno = 'txt') {
                       "INSTRUÇÃO NORMATIVA", "RESOLU")
   
   for (i in atos_possiveis) {
-    if (stringr::str_detect(stringr::str_to_upper(vetor[1], "pt"), i)) {
+    if (stringr::str_detect(stringr::str_to_upper(ato[1], "pt"), i)) {
       res <- i
     }
   }
@@ -724,8 +733,8 @@ pegar_titulo <- function(ato) {
 
 #' Número da Página do ato
 #'
-#' @param ato 
-#' @param arquivos 
+#' @param ato um vetor com o conteudo de um ato
+#' @param arquivos vetor com caminho dos arquivos em que o ato pode estar
 #'
 #' @return Página de cada ato
 #' @export

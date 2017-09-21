@@ -39,7 +39,8 @@
 #'
 #' @export
 #' @param html um vetor com html
-#' @return O mesmo \code{html} sem as tags de estilo
+#' @return O mesmo \code{html} sem as tags de estilo \code{<style>}, 
+#'         da Office \code{<o:*>} ou \code{<v:*>}
 #' @examples
 #' #Sem exemplo
 
@@ -72,9 +73,9 @@ remover_tags <- function(html) {
 #' Procura um termo no inicio de uma string
 #'
 #' @export
-#' @param vetor um vetor de um dia do DOU
+#' @param vetor um vetor de texto
 #' @param termo termo a ser buscado
-#' @return O indice do \code{vetor} em que o termo se encontra no inicio da string
+#' @return O índice do \code{vetor} em que o \code{termo} se encontra no inicio da string
 #' @examples
 #' #Sem exemplo
 
@@ -90,12 +91,13 @@ procurar_inicio <- function(vetor, termo) {
   indice
 }
 
-#' Qual faixa de b contem a?
+#' Qual faixa de b (limite) contem a (conteudo)?
+#'
+#' @param conteudo 
+#' @param limite 
 #'
 #' @export
-#' @param a um vetor
-#' @param b um vetor
-#' @return Em qual \code{b} encontra-se cada elemento de \code{a}.
+#' @return Em qual intervalo de \code{limite} encontra-se cada elemento de \code{conteudo}.
 #' @examples
 #' #Sem exemplo
 
@@ -114,7 +116,8 @@ procurar_inicio <- function(vetor, termo) {
 
 #' Adiciona IDs ao data.frame
 #'
-#' @param lista_de_atos 
+#' @param df Um data.frame
+#' @param anterior Caminho do RDS com a tabela anterior de cujos ID devem se seguir
 #'
 #' @return O mesmo df precedido por novos IDs
 #' @export
@@ -137,9 +140,10 @@ gerar_id <- function(df, anterior) {
 
 #' Transformar Texto em Parágrafos de HTML
 #'
-#' @param texto 
+#' @param texto Um vetor com texto
 #'
-#' @return
+#' @return O mesmo texto com as quebras de linha substituídas por tags de parágrafos \code{<p>}.
+#'         Adiciona um cabeçalho.
 #' @export
 #'
 #' @examples
@@ -149,8 +153,8 @@ texto_para_html <- function(texto) {
     gsub("\\n" , "</p><p>\n", .) %>% # Aqui estou incluindo um '\n',
     # não sei bem porque fiz isso. Vou deixar até testar
     gsub("\\r" , "", .) %>% 
-    paste("<p>", "<p>MINISTÉRIO DA AGRICULTURA, PECUÁRIA E ABASTECIMENTO</p>",
-          "<p>SECRETARIA</p>", ., "</p>")
+    paste("<p>MINISTÉRIO DA AGRICULTURA, PECUÁRIA E ABASTECIMENTO</p>",
+          "<p>SECRETARIA</p>", .)
 }
 
 #' Faz download de todas as páginas do DOU da seção e dia escolhidos
@@ -244,6 +248,7 @@ texto_para_html <- function(texto) {
 #                 recursive = TRUE, full.names = TRUE)
 #
 # baixados <- stringr::str_extract(a#' Limpa atributos de um html
+
 #'
 #' @export
 #' @param html um vetor com html
@@ -306,18 +311,4 @@ limpar_atributos <- function(html) {
   
   strsplit(texto, "\\\\n")[[1]]
 }
-rquivos, "[0-9]{4}_[0-9]{2}_[0-9]{2}") %>%
-#   unique() %>% as.Date(format = "%Y_%m_%d")
-#
-# sum(!dias %in% baixados)
-# sum(!(dias - length(dias)) %in% baixados)
-# sum(!(dias - (2*length(dias))) %in% baixados)
-
-# inteiro <- integer(1)
-#
-# while (inteiro != 200) {
-#   inteiro <- GET('http://download.in.gov.br/do/secao2/2017/2017_03_15/DO2_2017_03_15.pdf?arg1=xYjI5pRykOmAHonYGB_S1w&arg2=1489636728',
-#                  write_disk('teste.pdf', overwrite = TRUE))
-#   inteiro <- status_code(inteiro)
-# }
 
