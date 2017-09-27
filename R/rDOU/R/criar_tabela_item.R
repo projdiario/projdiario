@@ -3,9 +3,11 @@
 #' @param lista_de_atos 
 #'
 #' @return Uma tabela com os mesmos campos da tabela Item no Banco de Dados
-#' @export
-#'
 #' @examples
+#' # Sem exemplo
+#' 
+#' @export
+
 criar_tabela_item <- function(lista_de_atos) {
   
   tibble::tibble(

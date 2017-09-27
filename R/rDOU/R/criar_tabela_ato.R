@@ -4,9 +4,11 @@
 #' @param lista_de_atos Lista de atos retirados de um dia do DOU com a função `pega_normas_dou()`
 #'
 #' @return Uma tibble com os fa tabela Ato no banco de dados
-#' @export
-#'
 #' @examples
+#' # Sem exemplo
+#' 
+#' @export
+
 criar_tabela_ato <- function(lista_de_atos) {
   # lista_de_atos = lista
   

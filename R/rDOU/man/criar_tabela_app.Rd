@@ -15,3 +15,6 @@ tabela com informações que precisam ser validadas na aplicação
 \description{
 Tabela para Validação na Aplicação
 }
+\examples{
+# Sem exemplos
+}

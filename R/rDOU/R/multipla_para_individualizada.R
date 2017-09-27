@@ -9,7 +9,7 @@
 multipla_para_individualizada <- function(portaria) {
   # portaria <- normas$DS_CONTEUDO[remover[8]] %>% stringr::str_split("\n") %>% .[[1]]
 
-  if (length(procura_inicio(portaria[length(portaria)], "<table><tr><td>")) == 1) {
+  if (length(procurar_inicio(portaria[length(portaria)], "<table><tr><td>")) == 1) {
     portaria <- portaria[-length(portaria)]
   }
 
