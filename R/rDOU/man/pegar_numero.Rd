@@ -16,5 +16,5 @@ A data de \code{vetor} no formato dia DE MES_POR_EXTENSO DE ANO
 Pega numero dos atos
 }
 \examples{
-#Sem exemplo
+# Sem exemplo
 }

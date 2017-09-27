@@ -16,5 +16,6 @@ O cargo da autoridade que assintou o \code{ato}.
 Pega cargo da autoridade que assintou o ato
 }
 \examples{
-#Sem exemplo
+# Sem exemplo
+
 }

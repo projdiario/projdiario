@@ -16,5 +16,6 @@ A data de \code{vetor} no formvetor dia DE MES_POR_EXTENSO DE ANO
 Pega numero dos vetors
 }
 \examples{
-#Sem exemplo
+# Sem exemplo
+
 }

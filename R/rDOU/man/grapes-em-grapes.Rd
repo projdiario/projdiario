@@ -18,5 +18,6 @@ Em qual intervalo de \code{limite} encontra-se cada elemento de \code{conteudo}.
 Qual faixa de b (limite) contem a (conteudo)?
 }
 \examples{
-#Sem exemplo
+# Sem exemplo
+
 }

@@ -18,5 +18,6 @@ Uma lista com todas as normas extraidas do DOU e algumas mata-informações
 Pega todos os dados de todos os atos de um dia do DOU (txt)
 }
 \examples{
-#Sem exemplo
+# Sem exemplo
+
 }

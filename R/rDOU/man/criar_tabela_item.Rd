@@ -15,3 +15,7 @@ Uma tabela com os mesmos campos da tabela Item no Banco de Dados
 \description{
 Tabela Item
 }
+\examples{
+# Sem exemplo
+
+}

@@ -2,32 +2,20 @@
 % Please edit documentation in R/auxiliares.R
 \name{tirar_estilo}
 \alias{tirar_estilo}
-\title{Sugere atos que merecem atenção}
+\title{Elimina as tags de estilo um documento html}
 \usage{
 tirar_estilo(html)
 }
 \arguments{
 \item{html}{um vetor com html}
-
-\item{conferir}{um vetor com o texto a ser conferido}
-
-\item{nomes}{o vetor com os nomes ou ids dos textos a serem conferidos}
-
-\item{gabarito}{vetor com o qual as respostas devem ser próximas}
 }
 \value{
-Um data.frame com um vetor dizendo se a observação merece atenção
-        e outro vetor com o nome da observação sugerida
-
 O mesmo \code{html} sem as tags de estilo \code{<style>}, 
         da Office \code{<o:*>} ou \code{<v:*>}
 }
 \description{
-Sugere atos que merecem atenção
+Elimina as tags de estilo um documento html
 }
 \examples{
-#Sem exemplo
-Elimina as tags de estilo um documento html
-
 #Sem exemplo
 }

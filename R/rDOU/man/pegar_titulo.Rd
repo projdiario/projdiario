@@ -15,3 +15,7 @@ Título de um ato de seu corpo de texto
 \description{
 Título do Ato
 }
+\examples{
+# Sem exemplo
+
+}

@@ -8,7 +8,7 @@
 #' @examples
 #' #Sem exemplo
 
-# atencao <- function(conferir, nomes, gabarito) {
+atencao <- function(conferir, nomes, gabarito) {
 #   requireNamespace('quanteda', quietly = TRUE)
 #   names(conferir) <- nomes
 #
@@ -33,7 +33,7 @@
 #   data.frame(atencao = nomes != resp,
 #              sugerido = indice,
 #              stringsAsFactors = FALSE)
-# }
+}
 
 #' Elimina as tags de estilo um documento html
 #'
@@ -96,10 +96,11 @@ procurar_inicio <- function(vetor, termo) {
 #' @param conteudo 
 #' @param limite 
 #'
-#' @export
 #' @return Em qual intervalo de \code{limite} encontra-se cada elemento de \code{conteudo}.
 #' @examples
-#' #Sem exemplo
+#' # Sem exemplo
+#' 
+#' @export
 
 `%em%` <- function(conteudo, limite) {
   resposta <- numeric(length(conteudo))
@@ -120,9 +121,12 @@ procurar_inicio <- function(vetor, termo) {
 #' @param anterior Caminho do RDS com a tabela anterior de cujos ID devem se seguir
 #'
 #' @return O mesmo df precedido por novos IDs
-#' @export
 #'
 #' @examples
+#' # Sem exemplo
+#' 
+#' @export
+
 gerar_id <- function(df, anterior) {
   # le atos já gravados
   if (missing(anterior)) {
@@ -144,9 +148,12 @@ gerar_id <- function(df, anterior) {
 #'
 #' @return O mesmo texto com as quebras de linha substituídas por tags de parágrafos \code{<p>}.
 #'         Adiciona um cabeçalho.
-#' @export
 #'
 #' @examples
+#' # Sem exemplo
+#' 
+#' @export
+
 texto_para_html <- function(texto) {
   gsub("\\n<" , "\r<", texto) %>% 
     gsub("\\n\\s" , "\n", .) %>% 
@@ -158,12 +165,12 @@ texto_para_html <- function(texto) {
 }
 
 #' Faz download de todas as páginas do DOU da seção e dia escolhidos
-#'
+#' 
 #' @param data Data do diário que será baixada. Deve ser fornecida no formato "%d/%m/%Y"
 #' @param diario Número da seção do diário (1, 2 ou 3)
 #' @return nada. Seu objetivo são efeitos colaterais (donwload)
 #' @examples
-#' #Sem exemplo
+#' # Sem exemplo
 
 # library(rDOU)
 # download_DOU <- function(data, diario) {
@@ -232,29 +239,14 @@ texto_para_html <- function(texto) {
 #   }
 # }
 
-# dias <- seq.Date(from = as.Date('2017-07-20'),
-#                         to = as.Date('2017-05-01'), by = -1)
-#
-# dias_semana <- format(dias, format = '%A')
-# dias <- dias[dias_semana != 'sábado' & dias_semana != 'domingo']
-#
-# sucesso1 <- lapply(format(dias, format = "%d/%m/%Y"), download_DOU, diario = 1)
-# Sys.sleep(120)
-# sucesso2 <- lapply(format(dias, format = "%d/%m/%Y"), download_DOU, diario = 2)
-# Sys.sleep(120)
-# sucesso3 <- lapply(format(dias, format = "%d/%m/%Y"), download_DOU, diario = 3)
-#
-# arquivos <- dir(path = "dados/pdf", pattern = paste0("DOU", 1, ".+pdf$"),
-#                 recursive = TRUE, full.names = TRUE)
-#
-# baixados <- stringr::str_extract(a#' Limpa atributos de um html
 
-#'
-#' @export
+#' Limpar atributos de texto HTML
 #' @param html um vetor com html
 #' @return O mesmo \code{html} sem os atributos em todas as tags
 #' @examples
-#' #Sem exemplo
+#' # Sem exemplo
+#' 
+#' @export
 
 limpar_atributos <- function(html) {
   texto <- paste0(html, collapse = "\\n")

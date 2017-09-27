@@ -2,7 +2,7 @@
 % Please edit documentation in R/pegar_infos.R
 \name{pegar_dados_dou}
 \alias{pegar_dados_dou}
-\title{Pega todos os dados de todos os atos de uma edicao do Boletim de Pessoal (pdf)}
+\title{Pega todos os dados de todos os atos de um dia do DOU (txt)}
 \usage{
 pegar_dados_dou(arquivos, debug = FALSE)
 }
@@ -10,20 +10,14 @@ pegar_dados_dou(arquivos, debug = FALSE)
 \item{arquivos}{um vetor com os caminhos dos arquivos (.txt) de um dia do DOU}
 
 \item{debug}{A função está sendo debugada?}
-
-\item{arquivo}{O caminho do arquivo (.pdf) de uma edicao do Boletim de Pessoal}
 }
 \value{
 Uma tabela com todos os dados extraidos do DOU.
-
-Uma tabela com todos os dados extraidos do DOU.
 }
 \description{
-Pega todos os dados de todos os atos de uma edicao do Boletim de Pessoal (pdf)
+Pega todos os dados de todos os atos de um dia do DOU (txt)
 }
 \examples{
-#Sem exemplo
-Pega todos os dados de todos os atos de um dia do DOU (txt)
+# Sem exemplo
 
-#Sem exemplo
 }

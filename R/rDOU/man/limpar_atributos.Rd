@@ -22,7 +22,8 @@ O mesmo \code{html} sem os atributos em todas as tags
 Faz download de todas as páginas do DOU da seção e dia escolhidos
 }
 \examples{
-#Sem exemplo
+# Sem exemplo
+Limpar atributos de texto HTML
+# Sem exemplo
 
-#Sem exemplo
 }

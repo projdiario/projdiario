@@ -1,10 +1,11 @@
 #' Pega cargo da autoridade que assintou o ato
 #'
-#' @export
 #' @param ato um vetor com o conteudo de um ato
 #' @return O cargo da autoridade que assintou o \code{ato}.
 #' @examples
-#' #Sem exemplo
+#' # Sem exemplo
+#' 
+#' @export
 
 pegar_cargo <- function(ato) {
   ato <- ato[-1] %>% # remove linha em que nome do ato "Portaria XXX de ...."
@@ -24,12 +25,12 @@ pegar_cargo <- function(ato) {
 
 #' Pega data do nome de um ato
 #'
-#' @export
 #' @param ato um vetor com o conteudo de um ato
 #' @return A data do \code{ato}
 #' @examples
-#' #Sem exemplo
-
+#' # Sem exemplo
+#' 
+#' @export
 
 pegar_data <- function(ato) {
   if (grepl('win', Sys.info()["sysname"], ignore.case = TRUE) ) {
@@ -54,9 +55,11 @@ pegar_data <- function(ato) {
 #' @param arquivo O caminho do arquivo (.pdf) de uma edicao do Boletim de Pessoal
 #' @return Uma tabela com todos os dados extraidos do DOU.
 #' @examples
-#' #Sem exemplo
+#' # Sem exemplo
+#' 
+#' 
 
-# pega_dados_BP <- function(arquivo, debug = FALSE) {
+pega_dados_BP <- function(arquivo, debug = FALSE) {
 #   if (debug) cat(unique(stringr::str_extract(arquivos, "[0-9]{4}_[0-9]{2}_[0-9]{2}")),'\n')
 #
 #   # arquivos de teste
@@ -189,19 +192,19 @@ pegar_data <- function(ato) {
 #                  ID_USUARIO_CADASTRO = 0, ID_USUARIO_LIBERACAO = 0,
 #                  ID_TIPO_SECAO = tipo_secao, DT_CADASTRO = Sys.Date(),
 #                  NU_PUBLICACAO = 0, NU_VOLUME = 0)
-# }
+}
 
 
 #' Pega todos os dados de todos os atos de um dia do DOU (txt)
-#'
-#' @export
 #'
 #' @param debug A função está sendo debugada?
 #' @param arquivos um vetor com os caminhos dos arquivos (.txt) de um dia do DOU
 #'
 #' @return Uma tabela com todos os dados extraidos do DOU.
 #' @examples
-#' #Sem exemplo
+#' # Sem exemplo
+#' 
+#' @export
 
 pegar_dados_dou <- function(arquivos, debug = FALSE) {
   if (debug) cat(unique(stringr::str_extract(arquivos, "[0-9]{4}_[0-9]{2}_[0-9]{2}")),'\n')
@@ -427,13 +430,13 @@ pegar_dados_dou <- function(arquivos, debug = FALSE) {
 
 #' Pega o limite dos orgaos de um ministerio
 #'
-#' @export
-#'
 #' @param pagina um vetor com todo o conteudo de um dia do DOU
 #'
 #' @return Em qual linha (elemento) de \code{pagina} estao os orgaos de um ministerio
 #' @examples
-#' #Sem exemplo
+#' # Sem exemplo
+#' 
+#' @export
 
 pegar_limites_orgaos <- function(pagina) {
   # Procurar termos na página:
@@ -451,14 +454,14 @@ pegar_limites_orgaos <- function(pagina) {
 
 #' Pega todos os dados de todos os atos de um dia do DOU (txt)
 #'
-#' @export
-#'
 #' @param debug A função está sendo debugada?
 #' @param arquivos um vetor com os caminhos dos arquivos (.txt) de um dia do DOU
 #'
 #' @return Uma lista com todas as normas extraidas do DOU e algumas mata-informações
 #' @examples
-#' #Sem exemplo
+#' # Sem exemplo
+#' 
+#' @export
 
 pegar_normas_dou <- function(arquivos, debug = FALSE) {
   if (debug) cat(unique(stringr::str_extract(arquivos, "[0-9]{4}_[0-9]{2}_[0-9]{2}")),'\n')
@@ -610,11 +613,10 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
 #'
 #' @param ato um vetor com o conteudo de um ato
 #'
-#' @export
-#'
 #' @return A data de \code{vetor} no formato dia DE MES_POR_EXTENSO DE ANO
 #' @examples
-#' #Sem exemplo
+#' # Sem exemplo
+#' @export
 
 pegar_numero <- function(ato) {
   stringr::str_extract(ato[1], "(N|n).{2,3}[0-9]+\\.?[0-9]*") %>%
@@ -627,10 +629,11 @@ pegar_numero <- function(ato) {
 #'
 #' @param ato um vetor com o conteudo de um ato
 #'
-#' @export
 #' @return A data de \code{vetor} no formvetor dia DE MES_POR_EXTENSO DE ANO
 #' @examples
-#' #Sem exemplo
+#' # Sem exemplo
+#' 
+#' @export
 
 pegar_resumo <- function (ato) {
   padrao <- "Art\\. ?[I1]º? ?-?"
@@ -656,10 +659,11 @@ pegar_resumo <- function (ato) {
 #' @param ato um vetor com o conteudo de um ato
 #' @param retorno Deve retornar 'txt' ou 'cod'?
 #'
-#' @export
 #' @return O tipo do ato de \code{vetor}.
 #' @examples
-#' #Sem exemplo
+#' # Sem exemplo
+#' 
+#' @export
 
 pegar_tipo <- function(ato, retorno = 'txt') {
   # Lei
@@ -723,9 +727,12 @@ pegar_tipo <- function(ato, retorno = 'txt') {
 #' @param ato 
 #'
 #' @return Título de um ato de seu corpo de texto
-#' @export
 #'
 #' @examples
+#' # Sem exemplo
+#' 
+#' @export
+
 pegar_titulo <- function(ato) {
   # primeira linha de todo ato é seu título
   stringr::str_split(ato, '\n')[[1]][1]
@@ -737,9 +744,12 @@ pegar_titulo <- function(ato) {
 #' @param arquivos vetor com caminho dos arquivos em que o ato pode estar
 #'
 #' @return Página de cada ato
-#' @export
 #'
 #' @examples
+#' # Sem exemplo
+#' 
+#' @export
+
 pegar_pagina <- function(ato, arquivos) {
   for (arq in arquivos) {
     arq2 <- readLines(arq) %>% stringr::str_replace_all("No-", 

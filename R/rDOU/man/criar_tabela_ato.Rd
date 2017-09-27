@@ -15,3 +15,7 @@ Uma tibble com os fa tabela Ato no banco de dados
 \description{
 Tabela Ato
 }
+\examples{
+# Sem exemplo
+
+}
