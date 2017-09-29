@@ -8,9 +8,13 @@ function(input, output, session) {
   valores$nova <- 88000
   
   observeEvent(input$aceita, {
-    valores$validacao <- "Aceito"
-    registrar_log(valores, normas$ID[valores$num])
-    js$pegaTexto()
+    if (is.na(input$num_norma) | !is.numeric(input$num_norma)) {
+      shinyjs::alert("Por favor inclua um número para a norma.\nSiga as regras do sistema")
+      
+    } else {
+      valores$validacao <- "Aceito"
+      js$pegaTexto()
+    }
   })
   
   observeEvent(input$pula, {
@@ -29,6 +33,7 @@ function(input, output, session) {
     if (input$entradaPrincipal != '') {
       valores$html <- gsub(pattern = '&.+{1,5};', replacement = '', input$entradaPrincipal)
       escrever_na_base(input, driver, configs)
+      registrar_log(valores, normas$ID[valores$num])
       valores$num <- valores$num + 1
     }
   })
