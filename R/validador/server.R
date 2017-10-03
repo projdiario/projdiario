@@ -4,13 +4,11 @@ function(input, output, session) {
   valores$usuario <- c(Sys.info()[["nodename"]], Sys.info()[["effective_user"]])
   valores$validacao <- ''
   valores$html <- ''
-  # valores$aprovados <- data.frame() # readRDS('base_final.RDS')
-  valores$nova <- 88000
+  valores$nova <- max(as.numeric(lidas)) + 1
   
   observeEvent(input$aceita, {
     if (is.na(input$num_norma) | !is.numeric(input$num_norma)) {
       shinyjs::alert("Por favor inclua um número para a norma.\nSiga as regras do sistema")
-      
     } else {
       valores$validacao <- "Aceito"
       js$pegaTexto()
@@ -31,7 +29,7 @@ function(input, output, session) {
   
   observeEvent(input$entradaPrincipal, {
     if (input$entradaPrincipal != '') {
-      valores$html <- gsub(pattern = '&.+{1,5};', replacement = '', input$entradaPrincipal)
+      # valores$html <- gsub(pattern = '&.+{1,5};', replacement = '', input$entradaPrincipal)
       escrever_na_base(input, driver, configs)
       registrar_log(valores, normas$ID[valores$num])
       valores$num <- valores$num + 1
@@ -122,6 +120,21 @@ function(input, output, session) {
     valores$nova
     div(
       div(
+        fluidRow(
+          column(4, numericInput('num_norma_nova', 'Número: ', 1, min =  1)),
+          column(4, dateInput('data_dou_nova', 'Data de publicação: ', Sys.Date(), format = 'dd/mm/yyyy')),
+          column(4, selectInput('sgl_tipo_nova', 'Tipo: ', width = '100%',
+                                choices =  unique(normas$SGL_TIPO)))
+        ),
+        fluidRow(
+          column(6, selectInput('sgl_orgao_nova', 'Sigla do órgão: ', siglas_possiveis)),
+          column(6, textAreaInput('des_titulo_nova', 'Título da norma: '))
+        ),
+        fluidRow(
+          column(12, textAreaInput('txt_ementa_nova', 'Ementa: ', cols = 200, rows = 2))
+        )
+      ),
+      div(
         tags$script(src = "./js/editor.js"),
         tags$script('editor("#textoModal")'),
         HTML('<form id="formularioModal" method="post">',
@@ -134,19 +147,29 @@ function(input, output, session) {
   })
   
   observeEvent(input$btn_nova, {
-    valores$aval <- 'Aceito'
+    valores$validacao <- 'Aceito'
     js$novaNorma()
   })
   
   observeEvent(input$entradaNova, {
-    shinyjs::alert('Norma incluída!')
-    if (input$entradaNova != '' &  valores$aval == 'Aceito') {
+    if (input$entradaNova != '' &  valores$validacao == 'Aceito') {
       valores$html <- input$entradaNova
-      # valores$aprovados <- rbind(valores$aprovados, incluir_dado(nova = TRUE))
-      # saveRDS(object = valores$aprovados, 'base_final.RDS')
+      lista <- list(
+        num_norma  = input$num_norma_nova,
+        sgl_tipo = input$sgl_tipo_nova,
+        data_dou = input$data_dou_nova,
+        sgl_orgao = input$sgl_orgao_nova,
+        entradaPrincipal = input$entradaNova,
+        txt_ementa = input$txt_ementa_nova,
+        des_titulo = input$des_titulo_nova
+      )
+      escrever_na_base(lista, driver, configs)
+      registrar_log(valores, valores$nova)
+      valores$nova <- valores$nova + 1
+      removeModal(session)
+      shinyjs::alert('Norma incluída!')
     }
-    valores$nova <- valores$nova + 1
-    removeModal(session = session)
+    
   })
   
   session$onSessionEnded(function() {
