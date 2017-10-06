@@ -1,22 +1,28 @@
 rm(list=ls())
-# shell('start firefox http://127.0.0.1:6312/')
 cat('\014')
+options(scipen = 999)
 
 # Criar driver de conexão e pegar siglas possíveis
 driver <- RJDBC::JDBC("oracle.jdbc.OracleDriver", "www/ojdbc6.jar")
 configs <<- readLines('www/config_oracle')
 conexao <- RJDBC::dbConnect(driver, configs[1], configs[2], configs[3])
 siglas_possiveis <- RJDBC::dbGetQuery(conexao, 'SELECT DISTINCT SGL_ORGAO FROM ADMLEGIS.ATO_AGRICULTURA')[[1]]
-lidas <- RJDBC::dbGetQuery(conexao, "SELECT ID FROM VALID_LOG WHERE VALIDACAO <> 'Indefinido' ")[[1]]
+lidas <<- RJDBC::dbGetQuery(conexao, "SELECT ID FROM VALID_LOG WHERE VALIDACAO <> 'Indefinido' ")[[1]]
 RJDBC::dbDisconnect(conexao)
 
 # Define funções
+meu_formato <- function(numero, tamanho) {
+  res <- format(numero, width = tamanho)
+  gsub(' ', '0', res)
+}
+
 registrar_log <- function(valores, id_norma) {
   
   conexao <- RJDBC::dbConnect(driver, configs[1], configs[2], configs[3])
   
   RJDBC::dbSendUpdate(conexao, 'INSERT INTO VALID_LOG VALUES (:1, :2, :3, :4, :5)',
-                      id_norma, valores$validacao, valores$usuario[1], valores$usuario[2],
+                      meu_formato(id_norma, 10), valores$validacao,
+                      valores$usuario[1], valores$usuario[2],
                       format(Sys.time(), format = "%d/%m/%Y %H:%M:%S"))
   
   RJDBC::dbCommit(conexao)
