@@ -29,7 +29,6 @@ function(input, output, session) {
   
   observeEvent(input$entradaPrincipal, {
     if (input$entradaPrincipal != '') {
-      # valores$html <- gsub(pattern = '&.+{1,5};', replacement = '', input$entradaPrincipal)
       escrever_na_base(input, driver, configs)
       registrar_log(valores, normas$ID[valores$num])
       valores$num <- valores$num + 1
@@ -99,11 +98,12 @@ function(input, output, session) {
       fluidRow(
         column(6, selectInput('sgl_orgao', 'Sigla do órgão: ',
                               siglas_possiveis, observacao$SGL_ORGAO)),
-        column(6, textAreaInput('des_titulo', 'Título da norma: ', observacao$DES_TITULO))
+        column(6, textAreaInput('des_titulo', 'Título da norma: ', observacao$DES_TITULO,
+                                resize = 'vertical'))
       ),
       fluidRow(
         column(12, textAreaInput('txt_ementa', 'Ementa: ', gsub(" ?</?p> ?", "",observacao$TXT_EMENTA),
-                                 cols = 200, rows = 2))
+                                 resize = 'vertical'))
       )
     )
   })
@@ -128,10 +128,10 @@ function(input, output, session) {
         ),
         fluidRow(
           column(6, selectInput('sgl_orgao_nova', 'Sigla do órgão: ', siglas_possiveis)),
-          column(6, textAreaInput('des_titulo_nova', 'Título da norma: '))
+          column(6, textAreaInput('des_titulo_nova', 'Título da norma: ', resize = 'vertical'))
         ),
         fluidRow(
-          column(12, textAreaInput('txt_ementa_nova', 'Ementa: ', cols = 200, rows = 2))
+          column(12, textAreaInput('txt_ementa_nova', 'Ementa: ', resize = 'vertical'))
         )
       ),
       div(
@@ -196,8 +196,8 @@ function(input, output, session) {
       ),
       shinyjs::hidden(
         fluidRow(id = 'linha_titulo',
-                 selectInput('seq_ato_alteracao', 'Sigla do órgão: ', unique(valores$ato_agricultura$SGL_ORGAO), ''),
-                 actionButton('btn_textos_alteracao', 'Selectionar esta norma')
+                 column(8, selectInput('seq_ato_alteracao', 'Sigla do órgão: ', unique(valores$ato_agricultura$SGL_ORGAO), '')),
+                 column(4, actionButton('btn_textos_alteracao', 'Selectionar esta norma'))
         )
       ),
       shinyjs::hidden(
@@ -232,6 +232,8 @@ function(input, output, session) {
     # }
   })
   
+  observeEvent(input$btn_textos_alteracao, shinyjs::show('textos_ato'))
+  
   output$textos_alteracao <- renderUI({
     conexao <- RJDBC::dbConnect(driver, configs[1], configs[2], configs[3])
     query <- "SELECT  TXT_TEXTO FROM ADMLEGIS.ITEM_ATO
@@ -241,14 +243,15 @@ function(input, output, session) {
                                       input$data_dou_alteracao, input$sgl_orgao_alteracao,
                                       input$sgl_tipo_alteracao, input$seq_ato_alteracao)
     RJDBC::dbDisconnect(conexao)
+    indice <- which(valores$ato$SEQ_ATO == input$seq_ato_alteracao)[[1]]
     div(
       tags$script(src = "./js/editor.js"),
       tags$script('editor("#textoAlteracao")'),
       fluidRow(
-        column(12, textAreaInput('txt_ementa_alteracao', 'Ementa: ',
-                                 valores$ato$TXT_EMENTA[[valores$ato$SEQ_ATO == input$seq_ato_alteracao]])),
-        column(12, textAreaInput('des_titulo_alteracao', 'Título do órgão: ',
-                                 valores$ato$DES_TITULO[[valores$ato$SEQ_ATO == input$seq_ato_alteracao]]))
+        column(6, textAreaInput('txt_ementa_alteracao', 'Ementa: ', resize = 'vertical',
+                                 enc2native(valores$ato$TXT_EMENTA[[indice]]))),
+        column(6, textInput('des_titulo_alteracao', 'Título do órgão: ',
+                                enc2native(valores$ato$DES_TITULO[[indice]])))
       ),
       HTML('<form id="formularioAlteracao" method="post">',
            '<textarea id="textoAlteracao" style = "resize:vertical;">',
@@ -256,11 +259,43 @@ function(input, output, session) {
            '</textarea>',
            '</form>'
       ),
-      actionButton('btn_alteracao', 'Alterar')
+      actionButton('btn_alteracao', 'Enviar alterações')
     )
   })
   
-  observeEvent(input$btn_textos_alteracao, shinyjs::show('textos_ato'))
+  observeEvent(input$btn_alteracao, {
+    valores$validacao <- 'Aceito'
+    js$alteraNorma()
+  })
+  
+  observeEvent(input$entradaAlteracao, {
+    if (input$entradaAlteracao != '' &  valores$validacao == 'Aceito') {
+      conexao <- RJDBC::dbConnect(driver, configs[1], configs[2], configs[3])
+      RJDBC::dbSendUpdate(conexao, 'UPDATE ADMLEGIS.ITEM_ATO SET TXT_TEXTO = :1
+                                        WHERE NUM_ATO = :2 AND VLR_ANO = :3 AND SGL_ORGAO = :4 AND
+                                            SGL_TIPO = :5 AND SEQ_ATO = :6',
+                          input$entradaAlteracao, meu_formato(input$num_norma_alteracao, 8),
+                          input$data_dou_alteracao, input$sgl_orgao_alteracao,
+                          input$sgl_tipo_alteracao, input$seq_ato_alteracao)
+      
+      RJDBC::dbSendUpdate(conexao, 'UPDATE ADMLEGIS.ATO
+                                        SET TXT_EMENTA = :1,  DES_TITULO = :2
+                                        WHERE NUM_ATO = :3 AND VLR_ANO = :4 AND SGL_ORGAO = :5 AND
+                                            SGL_TIPO = :6 AND SEQ_ATO = :7',
+                          input$txt_ementa_alteracao, input$des_titulo_alteracao,
+                          meu_formato(input$num_norma_alteracao, 8),
+                          input$data_dou_alteracao, input$sgl_orgao_alteracao,
+                          input$sgl_tipo_alteracao, input$seq_ato_alteracao)
+      RJDBC::dbCommit(conexao)
+      RJDBC::dbDisconnect(conexao)
+      
+      registrar_log(valores, valores$nova)
+      valores$nova <- valores$nova + 1
+      removeModal(session)
+      shinyjs::alert('Norma alterada!')
+    }
+    
+  })
   
   session$onSessionEnded(function() {
     stopApp()

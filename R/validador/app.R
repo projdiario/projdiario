@@ -37,7 +37,10 @@ Shiny.onInputChange('entradaPrincipal', elem.innerHTML);
 shinyjs.novaNorma = function() {
 elem = document.getElementById('textoModal_ifr').contentDocument.getElementById('tinymce');
 Shiny.onInputChange('entradaNova', elem.innerHTML);
-
+};
+shinyjs.alteraNorma = function() {
+elem = document.getElementById('textoAlteracao_ifr').contentDocument.getElementById('tinymce');
+Shiny.onInputChange('entradaAlteracao', elem.innerHTML);
 };"
 
 # Começa a brincadeira
@@ -77,13 +80,13 @@ escrever_na_base <- function(input, driver, configs) {
   }
   
   query1 <- "INSERT INTO ADMLEGIS.ITEM_ATO (NUM_ATO, SEQ_ATO, SGL_TIPO, VLR_ANO, SGL_ORGAO, COD_TIPO, DES_ITEM, NUM_LINHA, TXT_TEXTO)
-               VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9)"
+  VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9)"
   query2 <- "UPDATE ADMLEGIS.ATO SET 
-               DTA_PROMULGACAO = TO_DATE(:1, 'yyyy-mm-dd'),
-               TXT_EMENTA = :2, COD_LOCAL = :3, DES_TITULO = :4
-                 WHERE NUM_ATO = :5 AND SEQ_ATO = :6 AND SGL_TIPO = :7 AND VLR_ANO = :8 AND SGL_ORGAO = :9"
+  DTA_PROMULGACAO = TO_DATE(:1, 'yyyy-mm-dd'),
+  TXT_EMENTA = :2, COD_LOCAL = :3, DES_TITULO = :4
+  WHERE NUM_ATO = :5 AND SEQ_ATO = :6 AND SGL_TIPO = :7 AND VLR_ANO = :8 AND SGL_ORGAO = :9"
   query3 <- "INSERT INTO ADMLEGIS.ATO_AGRICULTURA (NUM_ATO, SEQ_ATO, SGL_TIPO, VLR_ANO, SGL_ORGAO)
-               VALUES (:1, :2, :3, :4, :5)"
+  VALUES (:1, :2, :3, :4, :5)"
   
   RJDBC::dbSendUpdate(conexao, query1, NUM_ATO, SEQ_ATO, SGL_TIPO, VLR_ANO, SGL_ORGAO,
                       COD_TIPO, DES_ITEM, NUM_LINHA, TXT_TEXTO)
