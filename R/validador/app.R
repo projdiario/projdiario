@@ -1,17 +1,37 @@
-rm(list=ls())
-cat('\014')
+sapply(c('shiny', 'shinyjs', 'httr', 'rJava', 'RJDBC', 'lubridate'), function(pacote) {
+  if (!require(pacote, character.only = TRUE, quietly = TRUE)) {
+    install.packages(pacote, dependencies = TRUE, verbose = FALSE,
+                     repos = 'http://cran.fiocruz.br', quiet = TRUE)
+    require(pacote, character.only = TRUE, quietly = TRUE)
+  }
+})
+
 options(scipen = 999)
 
 # Criar driver de conexão e pegar siglas possíveis
-driver <- RJDBC::JDBC("oracle.jdbc.OracleDriver", "www/ojdbc6.jar")
+driver <<- RJDBC::JDBC("oracle.jdbc.OracleDriver", "www/ojdbc6.jar")
 configs <<- readLines('www/config_oracle')
 conexao <- RJDBC::dbConnect(driver, configs[1], configs[2], configs[3])
-siglas_possiveis <- RJDBC::dbGetQuery(conexao, 'SELECT DISTINCT SGL_ORGAO FROM ADMLEGIS.ATO_AGRICULTURA')[[1]]
-lidas <<- RJDBC::dbGetQuery(conexao, "SELECT ID FROM VALID_LOG WHERE VALIDACAO <> 'Indefinido' ")[[1]]
-normas <- RJDBC::dbGetQuery(conexao, 'SELECT * FROM ATO_PARSE')
-# normas <- readRDS('www/aplicacao.RDS')
+siglas_possiveis <<- RJDBC::dbGetQuery(conexao, 'SELECT DISTINCT SGL_ORGAO FROM ADMLEGIS.ATO_AGRICULTURA')[[1]]
+
+usuarios_cadastrados <- RJDBC::dbGetQuery(conexao, 'SELECT USUARIO FROM FAZENDO')[[1]]
+usuario <- Sys.info()[['effective_user']]
+if (usuario %in% usuarios_cadastrados) {
+  RJDBC::dbSendUpdate(conexao, "UPDATE FAZENDO SET ID = '0000000000' WHERE USUARIO = :1",
+                      usuario)
+} else {
+  RJDBC::dbSendUpdate(conexao, "INSERT INTO FAZENDO VALUES (:1, '0000000000')", usuario)
+}
+
+lidas <<- c(RJDBC::dbGetQuery(conexao,
+              "SELECT ID FROM VALID_LOG WHERE VALIDACAO <> 'Indefinido'")[[1]],
+            RJDBC::dbGetQuery(conexao, 'SELECT ID FROM FAZENDO')[[1]])
+normas <- RJDBC::dbGetQuery(conexao, "SELECT * FROM ATO_PARSE")
 normas$DTA_PROMULGACAO <- as.Date(substr(normas$DTA_PROMULGACAO, 1, 10), format = "%Y-%m-%d")
-normas <- normas[! normas$ID %in% lidas, ]
+normas <<- normas[! normas$ID %in% lidas, ]
+
+RJDBC::dbSendUpdate(conexao, "UPDATE FAZENDO SET ID = :1 WHERE USUARIO = :2",
+                    normas$ID[[1]], usuario)
 
 RJDBC::dbDisconnect(conexao)
 
@@ -21,18 +41,13 @@ meu_formato <- function(numero, tamanho) {
   gsub(' ', '0', res)
 }
 
-registrar_log <- function(valores, id_norma) {
-  
-  conexao <- RJDBC::dbConnect(driver, configs[1], configs[2], configs[3])
-  
+registrar_log <- function(valores, id_norma, conexao) {
   RJDBC::dbSendUpdate(conexao, 'INSERT INTO VALID_LOG VALUES (:1, :2, :3, :4, :5)',
                       meu_formato(id_norma, 10), valores$validacao,
                       valores$usuario[1], valores$usuario[2],
                       format(Sys.time(), format = "%d/%m/%Y %H:%M:%S"))
   
   RJDBC::dbCommit(conexao)
-  
-  RJDBC::dbDisconnect(conexao)
 }
 
 jsCode <<- "shinyjs.pegaTexto = function() {
@@ -48,9 +63,7 @@ elem = document.getElementById('textoAlteracao_ifr').contentDocument.getElementB
 Shiny.onInputChange('entradaAlteracao', elem.innerHTML);
 };"
 
-escrever_na_base <- function(input, driver, configs) {
-  conexao <- RJDBC::dbConnect(driver, configs[1], configs[2], configs[3])
-  
+escrever_na_base <- function(input, conexao) {
   NUM_ATO <- formatC(input$num_norma, width = 8, flag = '0')
   SGL_TIPO <- input$sgl_tipo
   VLR_ANO <- as.character(lubridate::year(input$data_dou))
@@ -96,15 +109,23 @@ escrever_na_base <- function(input, driver, configs) {
   RJDBC::dbSendUpdate(conexao, query3, NUM_ATO, SEQ_ATO, SGL_TIPO, VLR_ANO, SGL_ORGAO)
   
   RJDBC::dbCommit(conexao)
-  
-  RJDBC::dbDisconnect(conexao)
 }
 
-sapply(c('shiny', 'shinyjs', 'httr', 'rJava', 'RJDBC', 'lubridate'), function(pacote) {
-  if (!require(pacote, character.only = TRUE)) {
-    install.packages(pacote, dependencies = TRUE, verbose = FALSE,
-                     repos = 'http://cran.fiocruz.br', quiet = TRUE)
-    invisible(require(pacote, character.only = TRUE))
+prox_num <- function(num, conexao, usuario) {
+  trabalhando <- RJDBC::dbGetQuery(conexao, "SELECT ID FROM FAZENDO")[[1]]
+  # RETORNA UM NUM CUJO ID NENHUM USUÁRIO ESTEJA TRABALHANDO
+  if (normas$ID[[num + 1]] %in% trabalhando) {
+    cat("Este estava sendo trabalhado. Vou buscar o próximo")
+    prox_num(num + 1, conexao, usuario)
+  } else {
+    RJDBC::dbSendUpdate(conexao, paste0("UPDATE FAZENDO SET ID = '", normas$ID[[num + 1]],
+                                        "' WHERE USUARIO = '", usuario, "'"))
+    cat(paste0("UPDATE FAZENDO SET ID = '", normas$ID[[num + 1]],
+               "' WHERE USUARIO = '", usuario,"'\n"))
+    RJDBC::dbCommit(conexao)
+    cat('valor alterado para ', normas$ID[[num + 1]])
+    num + 1
   }
-})
+}
+
 runApp('.', launch.browser = FALSE, port = 6312)
