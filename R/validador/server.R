@@ -16,22 +16,28 @@ function(input, output, session) {
   })
   
   observeEvent(input$pula, {
+    conexao <- RJDBC::dbConnect(driver, configs[1], configs[2], configs[3])
     valores$validacao <- "Indefinido"
-    registrar_log(valores, normas$ID[valores$num])
-    valores$num <- valores$num + 1
+    registrar_log(valores, normas$ID[valores$num], conexao)
+    valores$num <- prox_num(valores$num, conexao, valores$usuario[[2]])
+    RJDBC::dbDisconnect(conexao)
   })
   
   observeEvent(input$recusa, {
+    conexao <- RJDBC::dbConnect(driver, configs[1], configs[2], configs[3])
     valores$validacao <- "Recusado"
-    registrar_log(valores, normas$ID[valores$num])
-    valores$num <- valores$num + 1
+    registrar_log(valores, normas$ID[valores$num], conexao)
+    valores$num <- prox_num(valores$num, conexao, valores$usuario[[2]])
+    RJDBC::dbDisconnect(conexao)
   })
   
   observeEvent(input$entradaPrincipal, {
     if (input$entradaPrincipal != '') {
-      escrever_na_base(input, driver, configs)
-      registrar_log(valores, normas$ID[valores$num])
-      valores$num <- valores$num + 1
+      conexao <- RJDBC::dbConnect(driver, configs[1], configs[2], configs[3])
+      escrever_na_base(input, conexao)
+      registrar_log(valores, normas$ID[valores$num], conexao)
+      valores$num <- prox_num(valores$num, conexao, valores$usuario[[2]])
+      RJDBC::dbDisconnect(conexao)
     }
   })
   
@@ -163,8 +169,10 @@ function(input, output, session) {
         txt_ementa = input$txt_ementa_nova,
         des_titulo = input$des_titulo_nova
       )
-      escrever_na_base(lista, driver, configs)
-      registrar_log(valores, valores$nova)
+      conexao <- RJDBC::dbConnect(driver, configs[1], configs[2], configs[3])
+      escrever_na_base(lista, conexao)
+      registrar_log(valores, valores$nova, conexao)
+      RJDBC::dbDisconnect(conexao)
       valores$nova <- valores$nova + 1
       removeModal(session)
       shinyjs::alert('Norma incluída!')
