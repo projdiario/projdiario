@@ -593,7 +593,12 @@ pegar_tipo <- function(ato, retorno = 'txt') {
 
 pegar_titulo <- function(ato) {
   # primeira linha de todo ato é seu título
-  stringr::str_split(ato, '\n')[[1]][1]
+  titulo <- stringr::str_split(ato, '\n')[[1]][1]
+  if (stringr::str_length(titulo) > 400) {
+    stringr::str_sub(titulo, 1, 400)
+  } else {
+    titulo
+  }
 }
 
 #' Número da Página do ato

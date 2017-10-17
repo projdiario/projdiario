@@ -8,6 +8,11 @@ configs <<- readLines('www/config_oracle')
 conexao <- RJDBC::dbConnect(driver, configs[1], configs[2], configs[3])
 siglas_possiveis <- RJDBC::dbGetQuery(conexao, 'SELECT DISTINCT SGL_ORGAO FROM ADMLEGIS.ATO_AGRICULTURA')[[1]]
 lidas <<- RJDBC::dbGetQuery(conexao, "SELECT ID FROM VALID_LOG WHERE VALIDACAO <> 'Indefinido' ")[[1]]
+normas <- RJDBC::dbGetQuery(conexao, 'SELECT * FROM ATO_PARSE')
+# normas <- readRDS('www/aplicacao.RDS')
+normas$DTA_PROMULGACAO <- as.Date(substr(normas$DTA_PROMULGACAO, 1, 10), format = "%Y-%m-%d")
+normas <- normas[! normas$ID %in% lidas, ]
+
 RJDBC::dbDisconnect(conexao)
 
 # Define funções
@@ -43,12 +48,6 @@ elem = document.getElementById('textoAlteracao_ifr').contentDocument.getElementB
 Shiny.onInputChange('entradaAlteracao', elem.innerHTML);
 };"
 
-# Começa a brincadeira
-normas <- readRDS('www/aplicacao.RDS')
-normas <- normas[! normas$ID %in% lidas, ]
-
-
-
 escrever_na_base <- function(input, driver, configs) {
   conexao <- RJDBC::dbConnect(driver, configs[1], configs[2], configs[3])
   
@@ -71,7 +70,7 @@ escrever_na_base <- function(input, driver, configs) {
   
   registros_seq <- RJDBC::dbGetQuery(conexao, query_seq)
   
-  SEQ_ATO <- max(as.numeric(registros_seq$SEQ_ATO))
+  SEQ_ATO <- suppressWarnings(max(as.numeric(registros_seq$SEQ_ATO)))
   
   if (is.infinite(SEQ_ATO) | is.na(SEQ_ATO)) {
     SEQ_ATO <- '000'

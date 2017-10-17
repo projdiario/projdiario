@@ -26,20 +26,30 @@ if (!RJDBC::dbExistsTable(conexao, 'ATO_PARSE')) {
   # nada
 }
 
-lidos <- RJDBC::dbGetQuery(conexao, 'SELECT ID, DTA_PROMULGACAO, ID_TIPO_SECAO FROM ATO_PARSE')
-datas <- lidos$DTA_PROMULGACAO %>% substr(1, 10) %>%
-  as.Date(format = '%Y-%m-%d') %>% 
-  format(format = "%Y/%B/%d") %>% paste0(lidos$ID_TIPO_SECAO, '/',.) %>%
-  unique()
-
 pastas <- list.dirs('\\\\hp64957/Base SISLEGIS/SISLEGIS/dados/txt') %>% 
   grep(pattern = '/[0-9]{2}$', value = TRUE)
-pastas_lidas <- purrr::map(datas, grep, pastas) %>% Reduce(f = c)
-lista_arquivos <- lapply(pastas[-pastas_lidas], function(x) dir(x, full.names = T))
 
-exemplo <- purrr::map(lista_arquivos, pegar_normas_dou, TRUE)
+parseadas <- RJDBC::dbGetQuery(conexao, 'SELECT ID, DTA_PROMULGACAO, ID_TIPO_SECAO FROM ATO_PARSE')
+if (nrow(parseadas) > 0) {
+  maior_id <- max(as.numeric(parseadas$ID))
+  
+  datas <- parseadas$DTA_PROMULGACAO %>% substr(1, 10) %>%
+    as.Date(format = '%Y-%m-%d') %>% format(format = "%Y/%B/%d") %>%
+    paste0('DOU', parseadas$ID_TIPO_SECAO, '/',.) %>%
+    unique()
+  
+  pastas_lidas <- purrr::map(datas, grep, pastas) %>% Reduce(f = c)
+  pastas_ler <- pastas[-pastas_lidas]
+} else {
+  maior_id <- 0
+  pastas_ler <- pastas
+}
 
-exemplo_df <- purrr::map_df(exemplo, criar_tabela_app) %>% gerar_id()
+lista_arquivos <- lapply(pastas_ler, function(x) dir(x, full.names = T))
+
+exemplo <- purrr::map(lista_arquivos[1:10], pegar_normas_dou, debug = TRUE)
+
+exemplo_df <- purrr::map_df(exemplo, criar_tabela_app) %>% gerar_id(anterior = maior_id)
 
 for (linha in seq_len(nrow(exemplo_df))) {
   linha_atual <- exemplo_df[linha, ]
@@ -54,7 +64,6 @@ for (linha in seq_len(nrow(exemplo_df))) {
 }
 
 # teste
-str(RJDBC::dbGetQuery(conexao, 'SELECT * FROM ATO_PARSE'))
 RJDBC::dbCommit(conexao)
 RJDBC::dbDisconnect(conexao)
 
