@@ -14,7 +14,7 @@ document.getElementById("navbar").className = "nav-rel";
 fluidPage(
   useShinyjs(),
   extendShinyjs(text = jsCode),
-  # tags$link(href = 'validador.css', type = "text/css", rel = 'stylesheet', media = 'all'),
+  tags$link(href = 'validador.css', type = "text/css", rel = 'stylesheet', media = 'all'),
   tags$ul(id = "navbar", class = "nav-rel",
           tags$div(id = "nav-left",
                    tags$li(id = "webname",
