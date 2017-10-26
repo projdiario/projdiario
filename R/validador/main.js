@@ -1,26 +1,28 @@
 const electron = require('electron')
 const app = electron.app
 const BrowserWindow = electron.BrowserWindow
+let win;
 
 // rodar shiny
-var spawn = require('child_process').spawn,
-ls = spawn('cmd.exe', ['/c', 'set PATH=%PATH%;C:\Users\%username%\Documents\R\R-3.4.1\bin\i386 & Rscript app.R']);
+let spawn = require('child_process').spawn,
+ls = spawn('cmd.exe', ['/c', 'set PATH=%PATH%;C:\Users\%username%\Documents\R\R-3.4.1\bin\i386 & Rscript app.R'])
 
 ls.stdout.on('data', function (data) {
-console.log('stdout: ' + data);
+    console.log('stdout: ' + data)
 });
 
 ls.stderr.on('data', function (data) {
-console.log('stderr: ' + data);
+    console.log('stderr: ' + data)
 });
 
 ls.on('exit', function (code) {
-console.log('child process exited with code ' + code);
+    console.log('child process exited with code ' + code)
 });
 
-let win;
-
-app.on('ready', () => {
+app.on('ready', async () => {
+    console.log('Esperando rodar o Shiny')
+    await (ms => new Promise(resolve => setTimeout(resolve, ms)))(5000)
+    console.log('Abrindo janela ...')
     win = new BrowserWindow({
         //frame: false,
         height: 850,
@@ -30,3 +32,4 @@ app.on('ready', () => {
     })
     win.loadURL(`file://${__dirname}/www/index.html`)
 })
+

@@ -294,10 +294,11 @@ function(input, output, session) {
                           meu_formato(input$num_norma_alteracao, 8),
                           input$data_dou_alteracao, input$sgl_orgao_alteracao,
                           input$sgl_tipo_alteracao, input$seq_ato_alteracao)
+      registrar_log(valores, valores$nova, conexao)
+      
       RJDBC::dbCommit(conexao)
       RJDBC::dbDisconnect(conexao)
       
-      registrar_log(valores, valores$nova)
       valores$nova <- valores$nova + 1
       removeModal(session)
       shinyjs::alert('Norma alterada!')
@@ -306,7 +307,7 @@ function(input, output, session) {
   })
   
   session$onSessionEnded(function() {
+    RJDBC::dbDisconnect(conexao)
     stopApp()
   })
-  
 }
