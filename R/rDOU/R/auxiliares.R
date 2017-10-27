@@ -131,10 +131,15 @@ gerar_id <- function(df, anterior) {
   # le atos já gravados
   if (missing(anterior)) {
     base_id <- 0
-  } else {
+  } else if (is.character(anterior)) {
     base_id <- readRDS(anterior) %>% 
       `[[`('ID') %>% as.integer() %>% max()
+  } else if (is.numeric(anterior)) {
+    base_id <- anterior
+  } else {
+    stop('Argumento "anterior" foi passado com tipo inesperado.')
   }
+    
   # cria sequências de novos IDs
   ID <- seq(base_id + 1, by = 1, length.out = nrow(df)) %>% 
     formatC(width = 10, flag = '0')
