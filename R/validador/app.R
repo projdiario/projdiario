@@ -1,4 +1,5 @@
-﻿sapply(c('shiny', 'shinyjs', 'httr', 'rJava', 'RJDBC', 'lubridate'), require, character.only = TRUE, quietly = TRUE)
+
+sapply(c('shiny', 'shinyjs', 'httr', 'rJava', 'RJDBC', 'lubridate'), require, character.only = TRUE, quietly = TRUE)
 
 options(scipen = 999)
 

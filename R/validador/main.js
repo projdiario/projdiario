@@ -1,14 +1,12 @@
-console.log('Inicio do script')
 const electron = require('electron')
 const app = electron.app
 const BrowserWindow = electron.BrowserWindow
 
 // rodar shiny
 const abrirShiny = async () => {
-    console.log('Começa a rodar o shiny')
+    console.log('Comeca a rodar o shiny')
     var spawn = require('child_process').spawn
-    var ls = await spawn('cmd.exe', ['/c', 'set PATH=%PATH%;C:\Users\%username%\Documents\R\R-3.4.1\bin\i386 & Rscript app.R'])
-    console.log('ls é:' + ls)
+    var ls = await spawn('cmd.exe', ['/c', 'Rscript app.R'])
     
     ls.stdout.on('data', function (data) {
         console.log('stdout: ' + data)
@@ -25,10 +23,10 @@ const abrirShiny = async () => {
 
 abrirShiny()
 
-let win;
+let win
 
 app.on('ready', () => {
-    console.log('Abrindo app...')
+    console.log('Abrindo app ...')
     win = new BrowserWindow({
         //frame: false,
         height: 850,
@@ -37,7 +35,7 @@ app.on('ready', () => {
         icon: 'www/icone.ico'
     })
 
-    console.log('Carregando página')
+    console.log('Carregando pagina')
     win.loadURL(`file://${__dirname}/www/index.html`)
 })
 
