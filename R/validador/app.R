@@ -1,10 +1,4 @@
-sapply(c('shiny', 'shinyjs', 'httr', 'rJava', 'RJDBC', 'lubridate'), function(pacote) {
-  if (!require(pacote, character.only = TRUE, quietly = TRUE)) {
-    install.packages(pacote, dependencies = TRUE, verbose = FALSE,
-                     repos = 'http://cran.fiocruz.br', quiet = TRUE)
-    require(pacote, character.only = TRUE, quietly = TRUE)
-  }
-})
+﻿sapply(c('shiny', 'shinyjs', 'httr', 'rJava', 'RJDBC', 'lubridate'), require, character.only = TRUE, quietly = TRUE)
 
 options(scipen = 999)
 
