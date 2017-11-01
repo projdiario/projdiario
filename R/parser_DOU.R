@@ -1,3 +1,4 @@
+devtools::document('R/rDOU')
 devtools::install('R/rDOU')
 library(rDOU)
 library(RJDBC)
@@ -29,41 +30,10 @@ if (!RJDBC::dbExistsTable(conexao, 'ATO_PARSE')) {
 pastas <- list.dirs('\\\\hp64957/Base SISLEGIS/SISLEGIS/dados/txt') %>% 
   grep(pattern = '/[0-9]{2}$', value = TRUE)
 
-parseadas <- RJDBC::dbGetQuery(conexao, 'SELECT ID, DTA_PROMULGACAO, ID_TIPO_SECAO FROM ATO_PARSE')
-if (nrow(parseadas) > 0) {
-  maior_id <- max(as.numeric(parseadas$ID))
-  
-  datas <- parseadas$DTA_PROMULGACAO %>% substr(1, 10) %>%
-    as.Date(format = '%Y-%m-%d') %>% format(format = "%Y/%B/%d") %>%
-    paste0('DOU', parseadas$ID_TIPO_SECAO, '/',.) %>%
-    unique()
-  
-  pastas_lidas <- purrr::map(datas, grep, pastas) %>% Reduce(f = c)
-  pastas_ler <- pastas[-pastas_lidas]
-} else {
-  maior_id <- 0
-  pastas_ler <- pastas
-}
+conexao %>% parsear_e_escrever(pastas, 111:120)
 
-lista_arquivos <- lapply(pastas_ler, function(x) dir(x, full.names = T))
+tabela <- conexao %>% RJDBC::dbGetQuery('SELECT * FROM ATO_PARSE ORDER BY ID')
+tail(tabela)
 
-exemplo <- purrr::map(lista_arquivos[1:10], pegar_normas_dou, debug = TRUE)
-
-exemplo_df <- purrr::map_df(exemplo, criar_tabela_app) %>% gerar_id(anterior = maior_id)
-
-for (linha in seq_len(nrow(exemplo_df))) {
-  linha_atual <- exemplo_df[linha, ]
-  RJDBC::dbSendUpdate(conexao,
-                      "INSERT INTO ATO_PARSE
-    VALUES (:1, :2, :3, :4, :5, :6, :7, TO_DATE(:8, 'yyyy-mm-dd'), :9, :10, :11, :12)",
-                      linha_atual$ID, formatC(linha_atual$NUM_ATO, width = 8, flag = 0), linha_atual$SGL_TIPO,
-                      linha_atual$VLR_ANO, substr(linha_atual$SGL_ORGAO, 1, 30), linha_atual$COD_TIPO, 
-                      linha_atual$TXT_TEXTO, linha_atual$DTA_PROMULGACAO, linha_atual$TXT_EMENTA, 
-                      linha_atual$DES_TITULO, linha_atual$NUM_PAGINA, linha_atual$ID_TIPO_SECAO
-  )
-}
-
-# teste
-RJDBC::dbCommit(conexao)
 RJDBC::dbDisconnect(conexao)
 
