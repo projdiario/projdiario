@@ -30,7 +30,7 @@ if (!RJDBC::dbExistsTable(conexao, 'ATO_PARSE')) {
 pastas <- list.dirs('\\\\hp64957/Base SISLEGIS/SISLEGIS/dados/txt') %>% 
   grep(pattern = '/[0-9]{2}$', value = TRUE)
 
-conexao %>% parsear_e_escrever(pastas, 111:120)
+conexao %>% parsear_e_escrever(pastas[111:120])
 
 tabela <- conexao %>% RJDBC::dbGetQuery('SELECT * FROM ATO_PARSE ORDER BY ID')
 tail(tabela)

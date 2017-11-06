@@ -8,7 +8,7 @@
 #' @return
 #' @export
 #'
-parsear_e_escrever <- function(conexao, pastas, quais = seq_len(10), debug = FALSE) {
+parsear_e_escrever <- function(conexao, pastas, debug = FALSE) {
   
   parseadas <- RJDBC::dbGetQuery(conexao, 'SELECT ID, DTA_PROMULGACAO, ID_TIPO_SECAO FROM ATO_PARSE')
   
@@ -21,7 +21,16 @@ parsear_e_escrever <- function(conexao, pastas, quais = seq_len(10), debug = FAL
       unique()
     
     pastas_lidas <- purrr::map(datas, grep, pastas) %>% Reduce(f = c)
-    pastas_ler <- pastas[-pastas_lidas]
+    if (length(pastas_lidas) != 0) {
+      pastas_ler <- pastas[-pastas_lidas]
+      if (length(pastas_ler) == 0) {
+        message('Estas pastas já foram incluídas na base')
+        return(TRUE)
+        }
+    } else {
+      pastas_ler <- pastas
+    }
+    
   } else {
     maior_id <- 0
     pastas_ler <- pastas
@@ -29,7 +38,7 @@ parsear_e_escrever <- function(conexao, pastas, quais = seq_len(10), debug = FAL
   
   lista_arquivos <- lapply(pastas_ler, function(x) dir(x, full.names = T))
   
-  lista_de_normas <- purrr::map(lista_arquivos[quais], pegar_normas_dou, debug = debug)
+  lista_de_normas <- purrr::map(lista_arquivos, pegar_normas_dou, debug = debug)
   normas <- purrr::map_df(lista_de_normas, criar_tabela_app) %>% gerar_id(anterior = maior_id)
   
   for (linha in seq_len(nrow(normas))) {

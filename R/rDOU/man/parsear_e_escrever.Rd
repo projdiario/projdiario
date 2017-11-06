@@ -4,16 +4,16 @@
 \alias{parsear_e_escrever}
 \title{Parsear normas em uma sessao do DOU e escrever na base}
 \usage{
-parsear_e_escrever(conexao, pastas, quais = seq_len(10), debug = FALSE)
+parsear_e_escrever(conexao, pastas, debug = FALSE)
 }
 \arguments{
 \item{conexao}{Uma conexao}
 
 \item{pastas}{Vetor com pastas em que se encontram as paginas txt de uma unidade do DOU}
 
-\item{quais}{ID do ultimo ato escrito na base. Se nao existe ID = 0}
-
 \item{debug}{Debugando?}
+
+\item{quais}{ID do ultimo ato escrito na base. Se nao existe ID = 0}
 }
 \description{
 Parsear normas em uma sessao do DOU e escrever na base
