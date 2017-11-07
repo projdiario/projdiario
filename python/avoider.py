@@ -1,35 +1,71 @@
 """
 ----- English -----
-Script made to avoid the conversion of PDF files that are already converted.
+Script to list all pages 001 that are not converted.
 ----- Português (BR) -----
-Script para evitar a conversão de arquivos .PDF que já encontram-se convertidos.
+Script para listar as páginas 001 que ainda não encontram-se convertidas.
 """
 
 # Packages
 import os
 import paths
 
-# Detect files within directorys: PDF, TXT and HTML (WITH EXTENTIONS)
-LIST_PDF_FILES = os.listdir(paths.PDF_DIR)
-LIST_TXT_FILES = os.listdir(paths.TXT_DIR)
-# LIST_HTML_FILES = listdir(paths.HTML_DIR)
+def list_conversao_p1():
+    """ Retorna os arquivos PDF referentes às páginas 1 que necessitam
+        ser convertidas. Tipo do retorno: list """
+    # Listar todos os PDF referentes às págs. 1
+    pdf_001 = []
+    for files in os.walk(paths.PDF_DIR):
+        for files1 in files[2]:
+            if files1.startswith("DOU") and files1.endswith("pg001.pdf"):
+                pdf_001.append(files1)
 
-# Clean files ~
-CLEAN_LIST_PDF_FILES = [x for x in LIST_PDF_FILES if not x.startswith('~')]
-CLEAN_LIST_TXT_FILES = [x for x in LIST_TXT_FILES if not x.startswith('~')]
-# CLEAN_LIST_HTML_FILES = [x for x in LIST_HTML_FILES if not x.startswith('~')]
+    # Listar todos os TXT referentes às págs. 1
+    txt_001 = []
+    for files in os.walk(paths.TXT_DIR):
+        for files1 in files[2]:
+            if files1.startswith("DOU") and files1.endswith("pg001.txt"):
+                txt_001.append(files1)
 
-# Find DOU pg001
-LIST_PDF_PG001 = [x for x in CLEAN_LIST_PDF_FILES if x.find('pg001') != -1]
+    # Listar PDFs (001) que necessitam ser convertidos em TXT
+    pdf_conversao = []
+    for files in pdf_001:
+        files1 = files.replace("pdf", "txt")
+        if files1 not in txt_001:
+            pdf_conversao.append(files)
+            print("%s.pdf: Adicionado à lista de conversão" % files)
+    return pdf_conversao
 
-# Files within directorys: PDF, TXT and HTML (WITHOUT EXTENTIONS)
-LIST_PDF_PG001_NO_EXT = [w.replace('.pdf', '') for w in LIST_PDF_PG001]
-LIST_TXT_FILES_NO_EXT = [w.replace('.txt', '') for w in CLEAN_LIST_TXT_FILES]
-# LIST_HTML_FILES_NO_EXT = [w.replace('.html', '') for w in CLEAN_LIST_HTML_FILES]
+def list_conversao_mapa():
+    """ Retorna os arquivos PDF referentes às páginas 1 que necessitam
+        ser convertidas. Tipo do retorno: list """
+    # Listar todos os PDF referentes às págs. 1
+    all_pdf = []
+    for files in os.walk(paths.PDF_DIR):
+        for files1 in files[2]:
+            if files1.startswith("DOU"):
+                all_pdf.append(files1)
 
-# Count files within directorys: PDF
-PDF_PG001_COUNT = len(LIST_PDF_PG001_NO_EXT)
+    # Listar todos os TXT referentes às págs. 1
+    all_txt = []
+    for files in os.walk(paths.TXT_DIR):
+        for files1 in files[2]:
+            if files1.startswith("DOU"):
+                all_txt.append(files1)
 
-# Checker
-PDF_CONVERSION_LIST = [LIST_PDF_PG001_NO_EXT[i] for i in range(PDF_PG001_COUNT)
-                       if LIST_PDF_PG001_NO_EXT[i] not in LIST_TXT_FILES_NO_EXT]
+        # Listar PDFs do Mapa que necessitam ser convertidos em TXT
+    # setlocale(LC_TIME, "")
+    pdf_conversao = []
+    pylog_mapa = os.path.join(paths.LOG_DIR, "pags-mapa.log")
+    with open(pylog_mapa, "r") as logf:
+        log_pags = logf.readlines()
+    for line in log_pags:
+        files, mapa_ini, mapa_fim = line.split("\t")
+        if mapa_ini != "x" and mapa_fim != "x":
+            for num_ in range(int(mapa_ini), int(mapa_fim)+1):
+                filename_conv = files[:-7] + "{:03}".format(num_)
+                if filename_conv+".txt" not in all_txt and filename_conv+".pdf" in all_pdf:
+                    pdf_conversao.append(filename_conv+".pdf")
+                    print("%s.pdf: Adicionado à lista de conversão" % filename_conv)
+        else:
+            print("%s: Mapa não encontrado" % files[:-10])
+    return pdf_conversao
