@@ -13,6 +13,29 @@ multipla_para_individualizada <- function(portaria) {
     portaria <- portaria[-length(portaria)]
   }
 
+  if (grepl('RETIFIC', portaria[1])) {
+    padrao <- 'onde se l[êe]:'
+    inicios <- c(grep(padrao, tolower(portaria)), length(portaria) + 1)
+
+    indices <- vector("list", length(inicios) - 1)
+
+    for (i in seq_along(indices)) {
+      fim <- inicios[i+1] - 1
+      indices[[i]] <- inicios[i]:fim
+      rm(fim)
+    }
+
+    lista_portarias <- vector("list", length(indices))
+
+    for (i in seq_along(lista_portarias)) {
+      lista_portarias[[i]] <- paste0("RETIFICAÇÃO", "\n",
+                                     paste0(portaria[ indices[[i]] ], collapse = "\n"))
+    }
+
+    individualizadas <- gsub(paste0(padrao, ' ?-'), "", unlist(lista_portarias))
+    return(individualizadas)
+  }
+
   if (length(grep("resolve:", portaria)) == 0) {
     # 'proteção:'
     padrao <- 'Nº ?[0-9]+\\.?[0-9]*'

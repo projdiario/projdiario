@@ -9,22 +9,28 @@ utilizados no projeto.
 # Packages
 import os
 
+def checkdir(dir_path):
+    """ Verifica a existência da pasta,
+        caso não exista cria a pasta designada
+    """
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
+
 # Python scripts directory
 SCRIPT_DIR = os.path.dirname(__file__)
 
 # Main SISLEGAL directory
 MAIN_DIR = SCRIPT_DIR.replace('\\python', '')
+checkdir(MAIN_DIR)
 
 # PDF directory
 PDF_DIR = os.path.join(MAIN_DIR, 'dados\\pdf')
+checkdir(PDF_DIR)
 
 # TXT directory
 TXT_DIR = os.path.join(MAIN_DIR, 'dados\\txt')
-
-# HTML directory
-HTML_DIR = os.path.join(MAIN_DIR, 'dados\\html')
+checkdir(TXT_DIR)
 
 # Log directory
 LOG_DIR = os.path.join(SCRIPT_DIR, 'pylog')
-
-# os.chdir(PDF_DIR)
+checkdir(LOG_DIR)
