@@ -42,5 +42,6 @@ test_that("Quebra portarias multiplas", {
   espera_multipla(portarias, 2, length)
   expect_false(grepl(x = normas$DES_TITULO, pattern = 'DECISÕES') %>% any() )
   expect_false(grepl(x = normas$DES_TITULO, pattern = 'PORTARIAS') %>% any() )
+  expect_false(grepl(x = normas$DES_TITULO, pattern = 'RETIFICAÇÕES') %>% any() )
 
 })
