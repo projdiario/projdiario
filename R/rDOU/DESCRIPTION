@@ -15,7 +15,11 @@ Imports:
     httr,
     readxl,
     tibble,
-    xml2
+    xml2,
+    purrr,
+    lubridate,
+    dplyr,
+    RJDBC
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
