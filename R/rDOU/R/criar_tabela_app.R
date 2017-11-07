@@ -48,8 +48,8 @@ criar_tabela_app <- function(lista_de_atos) {
   tamanhos <- sapply(novas, length)
 
   repete_dado <- function(variavel) {
-    res <- mapply(rep, normas[[variavel]][remover], each = tamanhos, USE.NAMES = FALSE)
-    as.vector(res)
+    res <- purrr::map2(normas[[variavel]][remover], tamanhos, ~ rep(.x, each = .y))
+    unlist(res)
   }
 
   novas_obs <- tibble::tibble(
