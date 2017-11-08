@@ -1,31 +1,18 @@
-positionNavbar <- 'window.onscroll = function() {moveNavbar()};
-  function moveNavbar() {
-var elmnt = document.body;
-var hh = document.getElementById("navbar");
-var y = elmnt.scrollTop;
-var m = hh.scrollHeight;
-if (y > m+15) {
-document.getElementById("navbar").className = "nav-fix";
-} else {
-document.getElementById("navbar").className = "nav-rel";
-}
-};'
-
 fluidPage(
   useShinyjs(),
   extendShinyjs(text = jsCode),
   tags$link(href = 'validador.css', type = "text/css", rel = 'stylesheet', media = 'all'),
-  tags$ul(id = "navbar", class = "nav-rel",
-          tags$div(id = "nav-left",
-                   tags$li(id = "webname",
-                           tags$h3("Validador", style = "font-weight: bold; font-style: oblique;"),
-                           tags$h6("Versão 1.0.0", style = "padding: 0px;")),
-                   tags$li(actionButton("nova", "Inserir nova norma", icon = icon('file', lib = 'glyphicon')),
-                           actionButton("alteracao", "Alterar norma", icon = icon('file', lib = 'glyphicon')))),
-          tags$li(class = "right", textOutput('info'))
+  tags$nav(id = "navbar", class="navbar-fixed-top",
+          tags$div(
+                   tags$li(id = "webname", class = "navbar-brand", href = "#", "Validador"),
+                   tags$li(actionButton(class = "btn btn-default navbar-btn", "nova",
+                                        "Inserir nova norma", icon = icon('file', lib = 'glyphicon'))),
+                   tags$li(actionButton(class = "btn btn-default navbar-btn", "alteracao",
+                                        "Alterar norma", icon = icon('file', lib = 'glyphicon')))),
+          tags$li(class = "navbar-right", textOutput('info'))
   ),
   tags$div(
-    class = "main",
+    class = "main", 
     fluidRow(
       column(6,
              textOutput('pag'),
@@ -47,5 +34,12 @@ fluidPage(
     )
   ),
   fluidRow(textInput('entrada', 'Teste de texto', ''), style = 'display:none;'),
-  tags$script(HTML(positionNavbar))
+  tags$script(HTML("
+    $(window).resize(function () { 
+      $('.main').css('padding-top', parseInt($('#navbar').css('height'))+10);
+    });
+    $(window).load(function () { 
+      $('.main').css('padding-top', parseInt($('#navbar').css('height'))+10);         
+    });
+                   "))
 )
