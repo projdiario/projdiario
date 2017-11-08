@@ -16,6 +16,7 @@ fluidPage(
     fluidRow(
       column(6,
              textOutput('pag'),
+             a(id = "toggleMeta", "Mostrar/esconder meta informações", href = "#"),
              uiOutput('meta_info'),
              tags$div(id = "norm-btns",
                       actionButton("aceita", "Aceitar", class = "btn-custom1 green",

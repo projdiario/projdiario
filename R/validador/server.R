@@ -6,6 +6,9 @@ function(input, output, session) {
   valores$html <- ''
   valores$nova <- ifelse(length(lidas) == 0, 1000000, max(as.numeric(lidas)) + 1)
   
+  shinyjs::onclick("toggleMeta",
+                   shinyjs::toggle(id = "norm-form", anim = TRUE))  
+  
   observeEvent(input$aceita, {
     if (is.na(input$num_norma) | !is.numeric(input$num_norma)) {
       shinyjs::alert("Por favor inclua um número para a norma.\nSiga as regras do sistema")
@@ -63,7 +66,7 @@ function(input, output, session) {
     jornal <- paste0('jornal=', observacao$ID_TIPO_SECAO)
     pagina <- paste0('&pagina=', input$pag_pdf)
     data_url <- paste0('&data=', format(observacao$DTA_PROMULGACAO, format = '%d/%m/%Y') )
-    fim <- '&captchafield=firistAccess'
+    fim <- '&captchafield=firstAccess'
     url <- paste0(base_url, jornal, pagina, data_url, fim)
     destino <- './www/pdfjs/web/pagina.pdf'
     httr::RETRY(verb = "GET", url = url, httr::write_disk(destino, overwrite = TRUE))    
