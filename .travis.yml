@@ -3,6 +3,11 @@ cache: packages
 sudo: false
 warnings_are_errors: false
 
+notifications:
+slack:
+  rooms:
+    - min-agricultura:dff7wdgnfp9Sm2TIKiFEvQ5J#sislegis
+      
 before_install:
   - cd R/rDOU
 
