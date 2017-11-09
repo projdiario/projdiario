@@ -3,6 +3,9 @@ cache: packages
 sudo: false
 warnings_are_errors: false
 
+notifications:
+  slack: min-agricultura:dff7wdgnfp9Sm2TIKiFEvQ5J
+      
 before_install:
   - cd R/rDOU
 

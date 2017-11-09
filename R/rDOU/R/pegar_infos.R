@@ -319,7 +319,11 @@ pegar_limites_orgaos <- function(pagina) {
 #' @export
 
 pegar_normas_dou <- function(arquivos, debug = FALSE) {
-  if (debug) cat(unique(stringr::str_extract(arquivos, "[0-9]{4}_[0-9]{2}_[0-9]{2}")),'\n')
+  SECAO <- unique(stringr::str_extract(arquivos, "DOU[1-3]"))
+  DATA <- stringr::str_extract(arquivos, "[0-9]{4}_[0-9]{2}_[0-9]{2}") %>%
+    unique() %>% stringr::str_replace_all('_', '/')
+  
+  if (debug) cat(DATA,'\n')
   
   encodificacao <- 'latin1'
   
@@ -361,7 +365,8 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
       }
       # Se falhou até então erro na conversão é muito provável
       if (is.infinite(prox_alvo)) {
-        message('O início do Ministério subsequente ao Ministério alvo não foi encontrado.\n',
+        message('O início do Ministério subsequente ao Ministério alvo não foi encontrado no ',
+                SECAO, ' de ', DATA,'.\n',
                 'Verifique se todas as páginas do Ministério alvo foram convertidas para \'.txt\' corretamente')
         res <- ""
       } else {
@@ -369,7 +374,7 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
         res <- conteudo[alvo: (prox_alvo - 1)]
       }
     } else {
-      message('Padrão não está entre os órgãos identificados nesta edição do DOU')
+      message('Padrão não está entre os órgãos identificados no ', SECAO, ' de ', DATA)
       res <- ""
     }
     res

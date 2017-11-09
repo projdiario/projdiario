@@ -10,6 +10,7 @@ documentação/SEI
 R/exploratorios
 python/pylog
 R/validador/log.RDS
+R/validador/node_modules
 pagina.pdf
 config_oracle
 aplicacao.RDS
