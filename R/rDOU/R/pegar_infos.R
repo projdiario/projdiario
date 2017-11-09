@@ -1,4 +1,4 @@
-#' Pega data do nome de um ato
+#' Pegar data do nome de um ato
 #'
 #' @param ato um vetor com o conteudo de um ato
 #' @return A data do \code{ato}
@@ -22,7 +22,7 @@ pegar_data <- function(ato) {
   res
 }
 
-#' Pega o limite dos orgaos de um ministerio
+#' Pegar o limite dos orgaos de um ministerio
 #'
 #' @param pagina um vetor com todo o conteudo de um dia do DOU
 #'
@@ -41,6 +41,179 @@ pegar_limites_orgaos <- function(pagina) {
 
   # retorna um vetor numérico nomeado com o inicio dos orgaos
   res
+}
+
+#' Pegar numero dos atos
+#'
+#' @param ato um vetor com o conteudo de um ato
+#'
+#' @return A data de \code{vetor} no formato dia DE MES_POR_EXTENSO DE ANO
+#' @export
+pegar_numero <- function(ato) {
+  stringr::str_extract(ato[1], "(N|n).{2,3}[0-9]+\\.?[0-9]*") %>%
+    gsub(pattern = "\\.", replacement = "") %>%
+    stringr::str_extract("[0-9]+") %>%
+    as.numeric() %>% formatC(width = 8, flag = 0)
+}
+
+#' Pegar numero dos vetors
+#'
+#' @param ato um vetor com o conteudo de um ato
+#'
+#' @return A data de \code{vetor} no formvetor dia DE MES_POR_EXTENSO DE ANO
+#'
+#' @export
+pegar_resumo <- function (ato) {
+  padrao <- "Art\\. ?[I1]º? ?-?"
+  art1 <- procurar_inicio(ato, padrao)[1]
+  if (!is.na(art1)) {
+    texto <- ato[art1]
+  } else {
+    dois_pontos <- grep(pattern = ":", ato)[1]
+    texto <- ato[dois_pontos + 1]
+  }
+  texto %>%
+    sub(pattern = padrao, replacement = "") %>%
+    sub(pattern = "Nº ?[0-9]+\\.?[0-9]* ?-", replacement = "") %>%
+    sub(pattern = "^I -", replacement = "") %>%
+    sub(pattern = "[rR][ ,]", replacement = " ") %>%
+    gsub(pattern = "\\s\\s", replacement = " ") %>%
+    stringr::str_trim() %>%
+    paste('<p>', ., '</p>')
+}
+
+#' Pegar tipo dos ato
+#'
+#' @param ato um vetor com o conteudo de um ato
+#' @param retorno Deve retornar 'txt' ou 'cod'?
+#'
+#' @return O tipo do ato de \code{vetor}.
+#'
+#' @export
+pegar_tipo <- function(ato, retorno = 'txt') {
+  # Lei
+  # Decreto
+  # PORTARIAS DE XX
+  # PORTARIA Nº XXX
+  # DESPACHO
+  # RETIFICAÇÃO[ÕES]
+  # INSTRUÇÃO
+  # RESULUÇÃO
+  # ATO
+  # ATA
+  atos_possiveis <- c("LEI","PORTARIA", "DESPACHO", "RETIFI",
+                      "DECRETO-LEI", "DECRETO", "ATO", "ATA",
+                      "INSTRUÇÃO NORMATIVA", "RESOLU")
+
+  for (i in atos_possiveis) {
+    if (stringr::str_detect(stringr::str_to_upper(ato[1], "pt"), i)) {
+      res <- i
+    }
+  }
+
+  if (!exists('res')) {
+    res <- "Sem tipo"
+  }
+
+  retorno <- match.arg(retorno, c('txt', 'cod'))
+
+  if (retorno == 'txt') {
+    res <- switch (res,
+                   "LEI" = 'LEI',"PORTARIA" = 'POR', "DESPACHO" = 'DPS',
+                   "RETIFI" = NA_character_, "DECRETO-LEI" = 'DEL',
+                   "DECRETO" = 'DEC', "ATO" = 'ATO', "ATA" = 'ATA',
+                   "INSTRUÇÃO NORMATIVA" = 'INM', "RESOLU" = 'RES',
+                   NA_character_
+
+                   # 'ADC', 'ADE', 'AHO', 'ALV', 'ATA', 'ATO',
+                   # 'AVD', 'AVL', 'BPM', 'CIR', 'COV', 'CPB',
+                   # 'DCS', 'DEC', 'DEL', 'DEP', 'DLB', 'DLG',
+                   # 'DO1', 'DO2', 'DO3', 'DPS', 'DSN', 'EDL',
+                   # 'EIC', 'EPT', 'ETA', 'ETD', 'EXC', 'EXI',
+                   # 'EXM', 'INM', 'LEI', 'MPV', 'MSG', 'NOT',
+                   # 'OFC', 'PAR', 'PIM', 'POR', 'REN', 'RES',
+                   # 'RHO', 'SCT', 'SUP'
+    )
+  } else {
+    res <- switch (res,
+                   "LEI" = 'A',"PORTARIA" = 'A', "DESPACHO" = 'A',
+                   "RETIFI" = 'A', "DECRETO-LEI" = 'A',
+                   "DECRETO" = 'A', "ATO" = 'E', "ATA" = 'P',
+                   "INSTRUÇÃO NORMATIVA" = 'R', "RESOLU" = 'X',
+                   NA_character_
+    )
+  }
+
+  res
+}
+
+#' Título do Ato
+#'
+#' @param ato
+#'
+#' @return Título de um ato de seu corpo de texto
+#'
+#' @export
+pegar_titulo <- function(ato) {
+  # primeira linha de todo ato é seu título
+  titulo <- stringr::str_split(ato, '\n')[[1]][1]
+  if (stringr::str_length(titulo) > 400) {
+    stringr::str_sub(titulo, 1, 400)
+  } else {
+    titulo
+  }
+}
+
+#' Número da Página do ato
+#'
+#' @param ato um vetor com o conteudo de um ato
+#' @param arquivos vetor com caminho dos arquivos em que o ato pode estar
+#'
+#' @return Página de cada ato
+#'
+#' @export
+pegar_pagina <- function(ato, arquivos) {
+  for (arq in arquivos) {
+    arq2 <- readLines(arq) %>% stringr::str_replace_all("No-",
+                                                        "Nº") %>% stringr::str_trim("both") %>% extract(!stringr::str_detect(.,
+                                                                                                                             "Este documento pode ser verificado no endereço")) %>%
+      extract(. != "") %>% c("") %>% paste0(collapse = "\\n") %>%
+      gsub(pattern = "o-", replacement = "º") %>% gsub(pattern = "°-",
+                                                       replacement = "º") %>% gsub(pattern = "°", replacement = "º") %>%
+      gsub(pattern = "-\\\\n", replacement = "") %>%
+      gsub(pattern = ",\\\\n", replacement = ", ") %>%
+      strsplit("\\\\n") %>% extract2(1)
+    if (all(ato %in% arq2)) {
+      return(stringr::str_extract(arq, "pg[0-9]{3}") %>%
+               sub(pattern = "pg", replacement = "") %>% as.numeric())
+    }
+  }
+  cont <- 1
+  paginas <- integer(length(arquivos))
+  for (arq in arquivos) {
+    arq2 <- readLines(arq) %>% stringr::str_replace_all("No-",
+                                                        "Nº") %>% stringr::str_trim("both") %>% extract(!stringr::str_detect(.,
+                                                                                                                             "Este documento pode ser verificado no endereço")) %>%
+      extract(. != "") %>% c("") %>% paste0(collapse = "\\n") %>%
+      gsub(pattern = "o-", replacement = "º") %>% gsub(pattern = "°-",
+                                                       replacement = "º") %>% gsub(pattern = "°", replacement = "º") %>%
+      gsub(pattern = "-\\\\n", replacement = "") %>%
+      gsub(pattern = ",\\\\n", replacement = ", ") %>%
+      strsplit("\\\\n") %>% extract2(1)
+    paginas[cont] <- sum(ato %in% arq2)
+    cont <- cont + 1
+  }
+  resp <- stringr::str_extract(arquivos[which.max(paginas)],
+                               "pg[0-9]{3}") %>% sub(pattern = "pg", replacement = "") %>%
+    as.numeric()
+  if (!is.na(resp)) {
+    return(resp)
+  }
+  else {
+    warning("Este ato não foi encontrado em nenhuma página",
+            call. = FALSE)
+    NA
+  }
 }
 
 #' Pega todos os dados de todos os atos de um dia do DOU (txt)
@@ -194,6 +367,8 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
                        "DOUE" = 4, # Edição extra
                        "DOUS" = 5,  NA) # Suplemento e caso padrão
 
+  lista_atos <- lapply(lista_atos, eliminar_quebras)
+
   structure(
     lista_atos,
     class = 'norma',
@@ -203,179 +378,6 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
     secao = tipo_secao
   )
 
-}
-
-#' Pega numero dos atos
-#'
-#' @param ato um vetor com o conteudo de um ato
-#'
-#' @return A data de \code{vetor} no formato dia DE MES_POR_EXTENSO DE ANO
-#' @export
-pegar_numero <- function(ato) {
-  stringr::str_extract(ato[1], "(N|n).{2,3}[0-9]+\\.?[0-9]*") %>%
-    gsub(pattern = "\\.", replacement = "") %>%
-    stringr::str_extract("[0-9]+") %>%
-    as.numeric() %>% formatC(width = 8, flag = 0)
-}
-
-#' Pega numero dos vetors
-#'
-#' @param ato um vetor com o conteudo de um ato
-#'
-#' @return A data de \code{vetor} no formvetor dia DE MES_POR_EXTENSO DE ANO
-#'
-#' @export
-pegar_resumo <- function (ato) {
-  padrao <- "Art\\. ?[I1]º? ?-?"
-  art1 <- procurar_inicio(ato, padrao)[1]
-  if (!is.na(art1)) {
-    texto <- ato[art1]
-  } else {
-    dois_pontos <- grep(pattern = ":", ato)[1]
-    texto <- ato[dois_pontos + 1]
-  }
-  texto %>%
-    sub(pattern = padrao, replacement = "") %>%
-    sub(pattern = "Nº ?[0-9]+\\.?[0-9]* ?-", replacement = "") %>%
-    sub(pattern = "^I -", replacement = "") %>%
-    sub(pattern = "[rR][ ,]", replacement = " ") %>%
-    gsub(pattern = "\\s\\s", replacement = " ") %>%
-    stringr::str_trim() %>%
-    paste('<p>', ., '</p>')
-}
-
-#' Pega tipo dos ato
-#'
-#' @param ato um vetor com o conteudo de um ato
-#' @param retorno Deve retornar 'txt' ou 'cod'?
-#'
-#' @return O tipo do ato de \code{vetor}.
-#'
-#' @export
-pegar_tipo <- function(ato, retorno = 'txt') {
-  # Lei
-  # Decreto
-  # PORTARIAS DE XX
-  # PORTARIA Nº XXX
-  # DESPACHO
-  # RETIFICAÇÃO[ÕES]
-  # INSTRUÇÃO
-  # RESULUÇÃO
-  # ATO
-  # ATA
-  atos_possiveis <- c("LEI","PORTARIA", "DESPACHO", "RETIFI",
-                      "DECRETO-LEI", "DECRETO", "ATO", "ATA",
-                      "INSTRUÇÃO NORMATIVA", "RESOLU")
-
-  for (i in atos_possiveis) {
-    if (stringr::str_detect(stringr::str_to_upper(ato[1], "pt"), i)) {
-      res <- i
-    }
-  }
-
-  if (!exists('res')) {
-    res <- "Sem tipo"
-  }
-
-  retorno <- match.arg(retorno, c('txt', 'cod'))
-
-  if (retorno == 'txt') {
-    res <- switch (res,
-                   "LEI" = 'LEI',"PORTARIA" = 'POR', "DESPACHO" = 'DPS',
-                   "RETIFI" = NA_character_, "DECRETO-LEI" = 'DEL',
-                   "DECRETO" = 'DEC', "ATO" = 'ATO', "ATA" = 'ATA',
-                   "INSTRUÇÃO NORMATIVA" = 'INM', "RESOLU" = 'RES',
-                   NA_character_
-
-                   # 'ADC', 'ADE', 'AHO', 'ALV', 'ATA', 'ATO',
-                   # 'AVD', 'AVL', 'BPM', 'CIR', 'COV', 'CPB',
-                   # 'DCS', 'DEC', 'DEL', 'DEP', 'DLB', 'DLG',
-                   # 'DO1', 'DO2', 'DO3', 'DPS', 'DSN', 'EDL',
-                   # 'EIC', 'EPT', 'ETA', 'ETD', 'EXC', 'EXI',
-                   # 'EXM', 'INM', 'LEI', 'MPV', 'MSG', 'NOT',
-                   # 'OFC', 'PAR', 'PIM', 'POR', 'REN', 'RES',
-                   # 'RHO', 'SCT', 'SUP'
-    )
-  } else {
-    res <- switch (res,
-                   "LEI" = 'A',"PORTARIA" = 'A', "DESPACHO" = 'A',
-                   "RETIFI" = 'A', "DECRETO-LEI" = 'A',
-                   "DECRETO" = 'A', "ATO" = 'E', "ATA" = 'P',
-                   "INSTRUÇÃO NORMATIVA" = 'R', "RESOLU" = 'X',
-                   NA_character_
-    )
-  }
-
-  res
-}
-
-#' Título do Ato
-#'
-#' @param ato
-#'
-#' @return Título de um ato de seu corpo de texto
-#'
-#' @export
-pegar_titulo <- function(ato) {
-  # primeira linha de todo ato é seu título
-  titulo <- stringr::str_split(ato, '\n')[[1]][1]
-  if (stringr::str_length(titulo) > 400) {
-    stringr::str_sub(titulo, 1, 400)
-  } else {
-    titulo
-  }
-}
-
-#' Número da Página do ato
-#'
-#' @param ato um vetor com o conteudo de um ato
-#' @param arquivos vetor com caminho dos arquivos em que o ato pode estar
-#'
-#' @return Página de cada ato
-#'
-#' @export
-pegar_pagina <- function(ato, arquivos) {
-  for (arq in arquivos) {
-    arq2 <- readLines(arq) %>% stringr::str_replace_all("No-",
-                                                        "Nº") %>% stringr::str_trim("both") %>% extract(!stringr::str_detect(.,
-                                                                                                                             "Este documento pode ser verificado no endereço")) %>%
-      extract(. != "") %>% c("") %>% paste0(collapse = "\\n") %>%
-      gsub(pattern = "o-", replacement = "º") %>% gsub(pattern = "°-",
-                                                       replacement = "º") %>% gsub(pattern = "°", replacement = "º") %>%
-      gsub(pattern = "-\\\\n", replacement = "") %>%
-      gsub(pattern = ",\\\\n", replacement = ", ") %>%
-      strsplit("\\\\n") %>% extract2(1)
-    if (all(ato %in% arq2)) {
-      return(stringr::str_extract(arq, "pg[0-9]{3}") %>%
-               sub(pattern = "pg", replacement = "") %>% as.numeric())
-    }
-  }
-  cont <- 1
-  paginas <- integer(length(arquivos))
-  for (arq in arquivos) {
-    arq2 <- readLines(arq) %>% stringr::str_replace_all("No-",
-                                                        "Nº") %>% stringr::str_trim("both") %>% extract(!stringr::str_detect(.,
-                                                                                                                             "Este documento pode ser verificado no endereço")) %>%
-      extract(. != "") %>% c("") %>% paste0(collapse = "\\n") %>%
-      gsub(pattern = "o-", replacement = "º") %>% gsub(pattern = "°-",
-                                                       replacement = "º") %>% gsub(pattern = "°", replacement = "º") %>%
-      gsub(pattern = "-\\\\n", replacement = "") %>%
-      gsub(pattern = ",\\\\n", replacement = ", ") %>%
-      strsplit("\\\\n") %>% extract2(1)
-    paginas[cont] <- sum(ato %in% arq2)
-    cont <- cont + 1
-  }
-  resp <- stringr::str_extract(arquivos[which.max(paginas)],
-                               "pg[0-9]{3}") %>% sub(pattern = "pg", replacement = "") %>%
-    as.numeric()
-  if (!is.na(resp)) {
-    return(resp)
-  }
-  else {
-    warning("Este ato não foi encontrado em nenhuma página",
-            call. = FALSE)
-    NA
-  }
 }
 
 #' Tabela para Validação na Aplicação
