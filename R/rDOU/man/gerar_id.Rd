@@ -17,7 +17,3 @@ O mesmo df precedido por novos IDs
 \description{
 Adiciona IDs ao data.frame
 }
-\examples{
-# Sem exemplo
-
-}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/auxiliares.R
 \name{eliminar_quebras}
 \alias{eliminar_quebras}
-\title{Title}
+\title{Eliminar quebras indesejadas}
 \usage{
 eliminar_quebras(texto)
 }
@@ -14,7 +14,7 @@ erradas eliminadas}
 O mesmo texto sem as quebras indesejadas
 }
 \description{
-Title
+Eliminar quebras indesejadas
 }
 \examples{
 eliminar_quebras('Um texto com \\n2 quebras de linha\\n')

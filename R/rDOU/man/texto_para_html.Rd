@@ -16,7 +16,3 @@ O mesmo texto com as quebras de linha substituídas por tags de parágrafos \cod
 \description{
 Transformar Texto em Parágrafos de HTML
 }
-\examples{
-# Sem exemplo
-
-}

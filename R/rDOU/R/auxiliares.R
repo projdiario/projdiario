@@ -1,84 +1,9 @@
-#' Sugere atos que merecem atenção
-#'
-#' @param conferir um vetor com o texto a ser conferido
-#' @param nomes o vetor com os nomes ou ids dos textos a serem conferidos
-#' @param gabarito vetor com o qual as respostas devem ser próximas
-#' @return Um data.frame com um vetor dizendo se a observação merece atenção
-#'         e outro vetor com o nome da observação sugerida
-#' @examples
-#' #Sem exemplo
-
-atencao <- function(conferir, nomes, gabarito) {
-#   requireNamespace('quanteda', quietly = TRUE)
-#   names(conferir) <- nomes
-#
-#   resp <- logical(length(gabarito))
-#
-#   for (i in seq_along(resp)) {
-#     docs <- quanteda::dfm(c(txt = gabarito[i], conferir), stem = TRUE,
-#                 remove = stopwords("portuguese"))
-#
-#     # compute some document similarities
-#     tmp <- quanteda::similarity(docs, margin = "documents")$txt
-#     # output as a matrix
-#     resp[i] <- names(tmp)[which.max(tmp)]
-#   }
-#
-#   indice <- integer(length(resp))
-#
-#   for (j in seq_along(indice)) {
-#     indice[j] <- which(resp[j] == nomes)
-#   }
-#
-#   data.frame(atencao = nomes != resp,
-#              sugerido = indice,
-#              stringsAsFactors = FALSE)
-}
-
-#' Elimina as tags de estilo um documento html
-#'
-#' @export
-#' @param html um vetor com html
-#' @return O mesmo \code{html} sem as tags de estilo \code{<style>},
-#'         da Office \code{<o:*>} ou \code{<v:*>}
-#' @examples
-#' #Sem exemplo
-
-tirar_estilo <- function(html) {
-  colapsado <- paste(html, collapse = "\\n")
-  limpo <- gsub(pattern = "<style>.*?</style>", replacement = "",
-                x = colapsado)
-  limpo <- gsub(pattern = "</?o:.*?>", replacement = "",
-                x = limpo)
-  limpo <- gsub(pattern = "</?v:.*?>", replacement = "",
-                x = limpo)
-
-  strsplit(limpo, '\\\\n')[[1]]
-}
-
-#' Elimina as tags de um documento html
-#'
-#' @export
-#' @param html um vetor com html
-#' @return O mesmo \code{html} sem as tags
-#' @examples
-#' #Sem exemplo
-
-remover_tags <- function(html) {
-  colapsado <- paste(html, collapse = " ")
-  gsub(pattern = "<.*?>", replacement = "", x = colapsado) %>%
-    gsub(pattern = "  +", replacement = " ")
-}
-
 #' Procura um termo no inicio de uma string
 #'
-#' @export
 #' @param vetor um vetor de texto
 #' @param termo termo a ser buscado
 #' @return O índice do \code{vetor} em que o \code{termo} se encontra no inicio da string
-#' @examples
-#' #Sem exemplo
-
+#' @export
 procurar_inicio <- function(vetor, termo) {
   termo_sem_regex <- stringr::str_replace_all(termo, "\\[.+?\\]", "") %>%
     stringr::str_replace_all("\\{.+?\\}", "") %>%
@@ -99,11 +24,8 @@ procurar_inicio <- function(vetor, termo) {
 #' @param limite
 #'
 #' @return Em qual intervalo de \code{limite} encontra-se cada elemento de \code{conteudo}.
-#' @examples
-#' # Sem exemplo
 #'
 #' @export
-
 `%em%` <- function(conteudo, limite) {
   resposta <- numeric(length(conteudo))
   for (i in seq_along(conteudo)) {
@@ -123,9 +45,6 @@ procurar_inicio <- function(vetor, termo) {
 #' @param anterior Caminho do RDS com a tabela anterior de cujos ID devem se seguir
 #'
 #' @return O mesmo df precedido por novos IDs
-#'
-#' @examples
-#' # Sem exemplo
 #'
 #' @export
 
@@ -156,11 +75,7 @@ gerar_id <- function(df, anterior) {
 #' @return O mesmo texto com as quebras de linha substituídas por tags de parágrafos \code{<p>}.
 #'         Adiciona um cabeçalho.
 #'
-#' @examples
-#' # Sem exemplo
-#'
 #' @export
-
 texto_para_html <- function(texto) {
   gsub("\\n<" , "\r<", texto) %>%
     gsub("\\n\\s" , "\n", .) %>%
@@ -171,156 +86,16 @@ texto_para_html <- function(texto) {
           "<p>SECRETARIA</p>", .)
 }
 
-#' Faz download de todas as páginas do DOU da seção e dia escolhidos
-#'
-#' @param data Data do diário que será baixada. Deve ser fornecida no formato "%d/%m/%Y"
-#' @param diario Número da seção do diário (1, 2 ou 3)
-#' @return nada. Seu objetivo são efeitos colaterais (donwload)
-#' @examples
-#' # Sem exemplo
-
-# library(rDOU)
-# download_DOU <- function(data, diario) {
-#   arquivos <- dir(path = "dados/pdf", pattern = paste0("DOU", diario, ".+pdf$"),
-#                   recursive = TRUE, full.names = TRUE)
-#
-#   baixados <- stringr::str_extract(arquivos, "[0-9]{4}_[0-9]{2}_[0-9]{2}") %>%
-#     unique()
-#
-#   if (as.Date(data, format = '%d/%m/%Y') %in% as.Date(baixados, format = '%Y_%m_%d')) {
-#     return()
-#   }
-#
-#   url_busca <- paste0('pesquisa.in.gov.br/imprensa/jsp/visualiza/index.jsp?jornal=',
-#                       diario, '&pagina=1&data=', data)
-#
-#   num_pag <- try(httr::GET(url_busca) %>%
-#     httr::content() %>% rvest::html_nodes('frame') %>% rvest::html_attr('src') %>%
-#     stringr::str_extract('[0-9]+$') %>% magrittr::extract(1) %>% as.numeric())
-#
-#   if (is.na(num_pag) || 'try-error' %in% class(num_pag)) {
-#     Sys.sleep(5)
-#     return()
-#   } else {
-#     dia <- format(as.Date(data, format = "%d/%m/%Y"), format = "%Y_%m_%d")
-#     ano <- format(as.Date(data, format = "%d/%m/%Y"), format = "%Y")
-#
-#     base_url <- 'http://pesquisa.in.gov.br/imprensa/servlet/INPDFViewer?'
-#
-#     jornal <- paste0('jornal=', diario)
-#
-#     pagina <- paste0('&pagina=', seq_len(num_pag))
-#
-#     data_url <- paste0('&data=', data)
-#
-#     fim <- '&captchafield=firistAccess'
-#
-#     url <- paste0(base_url, jornal, pagina, data_url, fim)
-#
-#     destino <- paste0('dados/pdf/DOU', diario, '_', dia, '_pg',
-#                       formatC(seq_len(num_pag), width = 3, flag = 0),".pdf")
-#
-#     baixa_pdf <- function(url, destino) {
-#       httr::RETRY(verb = "GET", url = url, httr::write_disk(destino, overwrite = TRUE))
-#     }
-#
-#     resp <- vector("list", length(url))
-#
-#     for (i in seq_along(url)) {
-#       resp[[i]] <- baixa_pdf(url[i], destino[i])
-#       if (i %% 50 == 0) Sys.sleep(1)
-#     }
-#
-#     # confirma que não houve erro em nenhum downlaod
-#     erros <- which('try-error' %in% sapply(resp, class) || sapply(destino, file.size) == 0)
-#
-#     while (length(erros) > 0) {
-#       for (i in erros) {
-#         resp[[i]] <- baixa_pdf(url[i], destino[i])
-#       }
-#
-#       erros <- which('try-error' %in% sapply(resp, class) || sapply(destino, file.size) == 0)
-#     }
-#     Sys.sleep(2)
-#     invisible(c("Sucesso!!"))
-#   }
-# }
-
-
-#' Limpar atributos de texto HTML
-#' @param html um vetor com html
-#' @return O mesmo \code{html} sem os atributos em todas as tags
-#' @examples
-#' # Sem exemplo
-#'
-#' @export
-
-limpar_atributos <- function(html) {
-  texto <- paste0(html, collapse = "\\n")
-
-  texto <- gsub(pattern = "<!--\\[if.*?<!\\[endif\\]-->",
-                replacement = "",
-                x = texto)
-
-  tags_docto <- unique(stringr::str_extract_all(texto, "</.*? ?>")[[1]]) %>%
-    gsub(x = ., pattern = "(<|>|/| )", replacement = "")
-
-  for (tag in tags_docto) {
-    texto <- gsub(pattern = paste0('<', tag, " .*?>"),
-                  replacement = paste0('<', tag,">"),
-                  x = texto)
-  }
-
-  texto <- gsub(pattern = "<tr .*?>",
-                replacement = "<tr>",
-                x = texto)
-
-  texto <- gsub(pattern = "<td .*?>",
-                replacement = "<td>",
-                x = texto)
-
-  texto <- gsub(pattern = "<table .*?>",
-                replacement = "<table>",
-                x = texto)
-
-  texto <- gsub(pattern = "<br\\s.*?>",
-                replacement = "<br>",
-                x = texto)
-
-  texto <- gsub(pattern = "<link .*?>",
-                replacement = "",
-                x = texto)
-
-  texto <- gsub(pattern = "<meta .*?>",
-                replacement = "",
-                x = texto)
-
-  texto <- gsub(pattern = "<img .*?>",
-                replacement = "",
-                x = texto)
-
-  texto <- gsub(pattern = "Este documento pode ser verificado no endereço eletrônico http://www.in.gov.br/autenticidade.html,\\spelo código [0-9]+",
-                replacement = "",
-                x = texto)
-
-  texto <- gsub(pattern = "Documento assinado digitalmente conforme MP no- 2.200-2de 24/08/2001, que institui a\\sInfraestrutura de Chaves Públicas Brasileira - ICP-Brasil.",
-                replacement = "",
-                x = texto)
-
-
-  strsplit(texto, "\\\\n")[[1]]
-}
-
-#' Title
+#' Eliminar quebras indesejadas
 #'
 #' @param texto Texto que tera as quebras de linhas
 #'     erradas eliminadas
 #'
 #' @return O mesmo texto sem as quebras indesejadas
-#' @export
 #'
 #' @examples
 #' eliminar_quebras('Um texto com \n2 quebras de linha\n')
+#' @export
 eliminar_quebras <- function(texto) {
   # texto = 'Um monte de quebras Nº \n21000....'
   # texto = 'Multiplas\n quebras de linhas\n na mesma \nstring'
@@ -338,3 +113,123 @@ eliminar_quebras <- function(texto) {
 
   texto
 }
+
+#' Cria um objeto para cada portaria em objeto de portarias multiplas
+#'
+#' @param portaria um vetor o texto da portaria multipla
+#' @return um vetor com uma portaria em cada elemento
+#' @export
+
+multipla_para_individualizada <- function(portaria) {
+  # portaria <- normas$DS_CONTEUDO[remover[8]] %>% stringr::str_split("\n") %>% .[[1]]
+
+  if (length(procurar_inicio(portaria[length(portaria)], "<table><tr><td>")) == 1) {
+    portaria <- portaria[-length(portaria)]
+  }
+
+  if (grepl('RETIFIC', portaria[1])) {
+    padrao <- 'onde se l[êe]:'
+    inicios <- c(grep(padrao, tolower(portaria)), length(portaria) + 1)
+
+    indices <- vector("list", length(inicios) - 1)
+
+    for (i in seq_along(indices)) {
+      fim <- inicios[i+1] - 1
+      indices[[i]] <- inicios[i]:fim
+      rm(fim)
+    }
+
+    lista_portarias <- vector("list", length(indices))
+
+    for (i in seq_along(lista_portarias)) {
+      lista_portarias[[i]] <- paste0("RETIFICAÇÃO", "\n",
+                                     paste0(portaria[ indices[[i]] ], collapse = "\n"))
+    }
+
+    individualizadas <- gsub(paste0(padrao, ' ?-'), "", unlist(lista_portarias))
+    return(individualizadas)
+  }
+
+  if (length(grep("resolve:", portaria)) == 0) {
+    # 'proteção:'
+    padrao <- 'Nº ?[0-9]+\\.?[0-9]*'
+    inicios <- c(grep(padrao, portaria), length(portaria))
+
+    nomes <- paste("DECISÃO", stringr::str_extract(portaria, padrao) %>%
+                     extract(!is.na(.)),
+                   stringr::str_sub(portaria[1], 11))
+
+    cabeca <- paste0(portaria[2:( inicios[1]-1 )], collapse = " ")
+
+    rodape <- portaria[length(portaria)] # por def tamanho 1
+
+    indices <- vector("list", length(inicios) - 1)
+
+    for (i in seq_along(indices)) {
+      indices[[i]] <- inicios[i]:eval(inicios[i+1] - 1)
+    }
+
+    lista_portarias <- vector("list", length(indices))
+
+    for (i in seq_along(lista_portarias)) {
+      lista_portarias[[i]] <- paste0(nomes[i], "\n", cabeca, "\n",
+                                     paste0(portaria[ indices[[i]] ], collapse = "\n"),
+                                     "\n", rodape)
+    }
+
+    individualizadas <- gsub(paste0(padrao, ' ?-'), "", unlist(lista_portarias))
+  } else if (length(grep("resolve:", portaria)) != 1) {
+    novas_ind <- c(grep("resolve:", portaria), length(portaria) - 1)
+    nome <- portaria[1]
+    rodape <- portaria[length(portaria)]
+
+    lista_ind <- vector("list", length(novas_ind) - 1 )
+
+    for (i in seq_along(lista_ind)) {
+      lista_ind[[i]] <- novas_ind[i]:(novas_ind[i + 1] - 1)
+    }
+
+    novas <- vector("list", length(lista_ind))
+
+    for (i in seq_along(novas)) {
+      novas[[i]] <- c(nome, portaria[ lista_ind[[i]] ], rodape)
+    }
+
+    if (any(sapply(novas, function(x) (length(grep("resolve:", x)) != 1) ))) {
+      individualizadas <- "Erro"
+    } else {
+      individualizadas <- unlist(lapply(novas, multipla_para_individualizada))
+    }
+
+  } else {
+    padrao <- 'Nº ?[0-9]+\\.?[0-9]*'
+    inicios <- c(grep(padrao, portaria), length(portaria))
+
+    nomes <- paste("PORTARIA", stringr::str_extract(portaria, padrao) %>%
+                     extract(!is.na(.)),
+                   stringr::str_sub(portaria[1], 11))
+
+    cabeca <- paste0(portaria[2:( inicios[1]-1 )], collapse = " ")
+
+    rodape <- portaria[length(portaria)] # por def tamanho 1
+
+    indices <- vector("list", length(inicios) - 1)
+
+    for (i in seq_along(indices)) {
+      indices[[i]] <- inicios[i]:(inicios[i+1] - 1)
+    }
+
+    lista_portarias <- vector("list", length(indices))
+
+    for (i in seq_along(lista_portarias)) {
+      lista_portarias[[i]] <- paste0(nomes[i], "\n", cabeca, "\n",
+                                     paste0(portaria[ indices[[i]] ], collapse = "\n"),
+                                     "\n", rodape)
+    }
+
+    individualizadas <- gsub(paste0(padrao, ' ?-'), "", unlist(lista_portarias))
+  }
+
+  individualizadas
+}
+
