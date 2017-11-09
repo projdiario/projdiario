@@ -15,7 +15,3 @@ Em qual linha (elemento) de \code{pagina} estao os orgaos de um ministerio
 \description{
 Pega o limite dos orgaos de um ministerio
 }
-\examples{
-# Sem exemplo
-
-}

@@ -2,11 +2,8 @@
 #'
 #' @param ato um vetor com o conteudo de um ato
 #' @return A data do \code{ato}
-#' @examples
-#' # Sem exemplo
 #'
 #' @export
-
 pegar_data <- function(ato) {
   if (grepl('win', Sys.info()["sysname"], ignore.case = TRUE) ) {
     res <- stringr::str_extract(stringr::str_to_lower(ato)[1],
@@ -30,11 +27,8 @@ pegar_data <- function(ato) {
 #' @param pagina um vetor com todo o conteudo de um dia do DOU
 #'
 #' @return Em qual linha (elemento) de \code{pagina} estao os orgaos de um ministerio
-#' @examples
-#' # Sem exemplo
 #'
 #' @export
-
 pegar_limites_orgaos <- function(pagina) {
   # Procurar termos na página:
   gab <- procurar_inicio(pagina, "GABINETE") # GABINETE
@@ -55,11 +49,8 @@ pegar_limites_orgaos <- function(pagina) {
 #' @param arquivos um vetor com os caminhos dos arquivos (.txt) de um dia do DOU
 #'
 #' @return Uma lista com todas as normas extraidas do DOU e algumas mata-informações
-#' @examples
-#' # Sem exemplo
 #'
 #' @export
-
 pegar_normas_dou <- function(arquivos, debug = FALSE) {
   SECAO <- unique(stringr::str_extract(arquivos, "DOU[1-3]"))
   DATA <- stringr::str_extract(arquivos, "[0-9]{4}_[0-9]{2}_[0-9]{2}") %>%
@@ -219,10 +210,7 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
 #' @param ato um vetor com o conteudo de um ato
 #'
 #' @return A data de \code{vetor} no formato dia DE MES_POR_EXTENSO DE ANO
-#' @examples
-#' # Sem exemplo
 #' @export
-
 pegar_numero <- function(ato) {
   stringr::str_extract(ato[1], "(N|n).{2,3}[0-9]+\\.?[0-9]*") %>%
     gsub(pattern = "\\.", replacement = "") %>%
@@ -235,11 +223,8 @@ pegar_numero <- function(ato) {
 #' @param ato um vetor com o conteudo de um ato
 #'
 #' @return A data de \code{vetor} no formvetor dia DE MES_POR_EXTENSO DE ANO
-#' @examples
-#' # Sem exemplo
 #'
 #' @export
-
 pegar_resumo <- function (ato) {
   padrao <- "Art\\. ?[I1]º? ?-?"
   art1 <- procurar_inicio(ato, padrao)[1]
@@ -265,11 +250,8 @@ pegar_resumo <- function (ato) {
 #' @param retorno Deve retornar 'txt' ou 'cod'?
 #'
 #' @return O tipo do ato de \code{vetor}.
-#' @examples
-#' # Sem exemplo
 #'
 #' @export
-
 pegar_tipo <- function(ato, retorno = 'txt') {
   # Lei
   # Decreto
@@ -333,11 +315,7 @@ pegar_tipo <- function(ato, retorno = 'txt') {
 #'
 #' @return Título de um ato de seu corpo de texto
 #'
-#' @examples
-#' # Sem exemplo
-#'
 #' @export
-
 pegar_titulo <- function(ato) {
   # primeira linha de todo ato é seu título
   titulo <- stringr::str_split(ato, '\n')[[1]][1]
@@ -355,11 +333,7 @@ pegar_titulo <- function(ato) {
 #'
 #' @return Página de cada ato
 #'
-#' @examples
-#' # Sem exemplo
-#'
 #' @export
-
 pegar_pagina <- function(ato, arquivos) {
   for (arq in arquivos) {
     arq2 <- readLines(arq) %>% stringr::str_replace_all("No-",
@@ -410,9 +384,6 @@ pegar_pagina <- function(ato, arquivos) {
 #'
 #' @return tabela com informações que precisam ser validadas na aplicação
 #' @export
-#'
-#' @examples
-#' # Sem exemplos
 criar_tabela_app <- function(lista_de_atos) {
 
   normas <- tibble::tibble(
@@ -482,7 +453,6 @@ criar_tabela_app <- function(lista_de_atos) {
 #'
 #' @param conexao Uma conexao
 #' @param pastas Vetor com pastas em que se encontram as paginas txt de uma unidade do DOU
-#' @param quais ID do ultimo ato escrito na base. Se nao existe ID = 0
 #' @param debug Debugando?
 #'
 #' @return

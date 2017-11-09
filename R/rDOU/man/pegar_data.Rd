@@ -15,7 +15,3 @@ A data do \code{ato}
 \description{
 Pega data do nome de um ato
 }
-\examples{
-# Sem exemplo
-
-}

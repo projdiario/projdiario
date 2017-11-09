@@ -2,7 +2,9 @@
 #'
 #' @param vetor um vetor de texto
 #' @param termo termo a ser buscado
+#'
 #' @return O índice do \code{vetor} em que o \code{termo} se encontra no inicio da string
+#'
 #' @export
 procurar_inicio <- function(vetor, termo) {
   termo_sem_regex <- stringr::str_replace_all(termo, "\\[.+?\\]", "") %>%
@@ -47,7 +49,6 @@ procurar_inicio <- function(vetor, termo) {
 #' @return O mesmo df precedido por novos IDs
 #'
 #' @export
-
 gerar_id <- function(df, anterior) {
   # le atos já gravados
   if (missing(anterior)) {
@@ -88,13 +89,13 @@ texto_para_html <- function(texto) {
 
 #' Eliminar quebras indesejadas
 #'
-#' @param texto Texto que tera as quebras de linhas
-#'     erradas eliminadas
+#' @param texto Texto que tera as quebras de linhas erradas eliminadas
 #'
 #' @return O mesmo texto sem as quebras indesejadas
 #'
 #' @examples
 #' eliminar_quebras('Um texto com \n2 quebras de linha\n')
+#'
 #' @export
 eliminar_quebras <- function(texto) {
   # texto = 'Um monte de quebras Nº \n21000....'
@@ -117,9 +118,10 @@ eliminar_quebras <- function(texto) {
 #' Cria um objeto para cada portaria em objeto de portarias multiplas
 #'
 #' @param portaria um vetor o texto da portaria multipla
+#'
 #' @return um vetor com uma portaria em cada elemento
+#'
 #' @export
-
 multipla_para_individualizada <- function(portaria) {
   # portaria <- normas$DS_CONTEUDO[remover[8]] %>% stringr::str_split("\n") %>% .[[1]]
 

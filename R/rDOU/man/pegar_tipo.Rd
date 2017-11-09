@@ -17,7 +17,3 @@ O tipo do ato de \code{vetor}.
 \description{
 Pega tipo dos ato
 }
-\examples{
-# Sem exemplo
-
-}
