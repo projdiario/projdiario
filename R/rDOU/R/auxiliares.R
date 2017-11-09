@@ -39,7 +39,7 @@ atencao <- function(conferir, nomes, gabarito) {
 #'
 #' @export
 #' @param html um vetor com html
-#' @return O mesmo \code{html} sem as tags de estilo \code{<style>}, 
+#' @return O mesmo \code{html} sem as tags de estilo \code{<style>},
 #'         da Office \code{<o:*>} ou \code{<v:*>}
 #' @examples
 #' #Sem exemplo
@@ -52,7 +52,7 @@ tirar_estilo <- function(html) {
                 x = limpo)
   limpo <- gsub(pattern = "</?v:.*?>", replacement = "",
                 x = limpo)
-  
+
   strsplit(limpo, '\\\\n')[[1]]
 }
 
@@ -86,20 +86,20 @@ procurar_inicio <- function(vetor, termo) {
   indice <- stringr::str_which(stringr::str_sub(vetor, 1,
                                                 stringr::str_length(termo_sem_regex)),
                                termo)
-  
+
   # retorna ínidice em que letras iniciais batem com o termo
   indice
 }
 
 #' Qual faixa de b (limite) contem a (conteudo)?
 #'
-#' @param conteudo 
-#' @param limite 
+#' @param conteudo
+#' @param limite
 #'
 #' @return Em qual intervalo de \code{limite} encontra-se cada elemento de \code{conteudo}.
 #' @examples
 #' # Sem exemplo
-#' 
+#'
 #' @export
 
 `%em%` <- function(conteudo, limite) {
@@ -124,7 +124,7 @@ procurar_inicio <- function(vetor, termo) {
 #'
 #' @examples
 #' # Sem exemplo
-#' 
+#'
 #' @export
 
 gerar_id <- function(df, anterior) {
@@ -132,18 +132,18 @@ gerar_id <- function(df, anterior) {
   if (missing(anterior)) {
     base_id <- 0
   } else if (is.character(anterior)) {
-    base_id <- readRDS(anterior) %>% 
+    base_id <- readRDS(anterior) %>%
       `[[`('ID') %>% as.integer() %>% max()
   } else if (is.numeric(anterior)) {
     base_id <- anterior
   } else {
     stop('Argumento "anterior" foi passado com tipo inesperado.')
   }
-    
+
   # cria sequências de novos IDs
-  ID <- seq(base_id + 1, by = 1, length.out = nrow(df)) %>% 
+  ID <- seq(base_id + 1, by = 1, length.out = nrow(df)) %>%
     formatC(width = 10, flag = '0')
-  
+
   tibble::add_column(df, ID, .before = TRUE)
 }
 
@@ -156,21 +156,21 @@ gerar_id <- function(df, anterior) {
 #'
 #' @examples
 #' # Sem exemplo
-#' 
+#'
 #' @export
 
 texto_para_html <- function(texto) {
-  gsub("\\n<" , "\r<", texto) %>% 
-    gsub("\\n\\s" , "\n", .) %>% 
+  gsub("\\n<" , "\r<", texto) %>%
+    gsub("\\n\\s" , "\n", .) %>%
     gsub("\\n" , "</p><p>\n", .) %>% # Aqui estou incluindo um '\n',
     # não sei bem porque fiz isso. Vou deixar até testar
-    gsub("\\r" , "", .) %>% 
+    gsub("\\r" , "", .) %>%
     paste("<p>MINISTÉRIO DA AGRICULTURA, PECUÁRIA E ABASTECIMENTO</p>",
           "<p>SECRETARIA</p>", .)
 }
 
 #' Faz download de todas as páginas do DOU da seção e dia escolhidos
-#' 
+#'
 #' @param data Data do diário que será baixada. Deve ser fornecida no formato "%d/%m/%Y"
 #' @param diario Número da seção do diário (1, 2 ou 3)
 #' @return nada. Seu objetivo são efeitos colaterais (donwload)
@@ -250,62 +250,90 @@ texto_para_html <- function(texto) {
 #' @return O mesmo \code{html} sem os atributos em todas as tags
 #' @examples
 #' # Sem exemplo
-#' 
+#'
 #' @export
 
 limpar_atributos <- function(html) {
   texto <- paste0(html, collapse = "\\n")
-  
+
   texto <- gsub(pattern = "<!--\\[if.*?<!\\[endif\\]-->",
                 replacement = "",
                 x = texto)
-  
+
   tags_docto <- unique(stringr::str_extract_all(texto, "</.*? ?>")[[1]]) %>%
     gsub(x = ., pattern = "(<|>|/| )", replacement = "")
-  
+
   for (tag in tags_docto) {
     texto <- gsub(pattern = paste0('<', tag, " .*?>"),
                   replacement = paste0('<', tag,">"),
                   x = texto)
   }
-  
+
   texto <- gsub(pattern = "<tr .*?>",
                 replacement = "<tr>",
                 x = texto)
-  
+
   texto <- gsub(pattern = "<td .*?>",
                 replacement = "<td>",
                 x = texto)
-  
+
   texto <- gsub(pattern = "<table .*?>",
                 replacement = "<table>",
                 x = texto)
-  
+
   texto <- gsub(pattern = "<br\\s.*?>",
                 replacement = "<br>",
                 x = texto)
-  
+
   texto <- gsub(pattern = "<link .*?>",
                 replacement = "",
                 x = texto)
-  
+
   texto <- gsub(pattern = "<meta .*?>",
                 replacement = "",
                 x = texto)
-  
+
   texto <- gsub(pattern = "<img .*?>",
                 replacement = "",
                 x = texto)
-  
+
   texto <- gsub(pattern = "Este documento pode ser verificado no endereço eletrônico http://www.in.gov.br/autenticidade.html,\\spelo código [0-9]+",
                 replacement = "",
                 x = texto)
-  
-  texto <- gsub(pattern = "Documento assinado digitalmente conforme MP no- 2.200-2 de 24/08/2001, que institui a\\sInfraestrutura de Chaves Públicas Brasileira - ICP-Brasil.",
+
+  texto <- gsub(pattern = "Documento assinado digitalmente conforme MP no- 2.200-2de 24/08/2001, que institui a\\sInfraestrutura de Chaves Públicas Brasileira - ICP-Brasil.",
                 replacement = "",
                 x = texto)
-  
-  
+
+
   strsplit(texto, "\\\\n")[[1]]
 }
 
+#' Title
+#'
+#' @param texto Texto que tera as quebras de linhas
+#'     erradas eliminadas
+#'
+#' @return O mesmo texto sem as quebras indesejadas
+#' @export
+#'
+#' @examples
+#' eliminar_quebras('Um texto com \n2 quebras de linha\n')
+eliminar_quebras <- function(texto) {
+  # texto = 'Um monte de quebras Nº \n21000....'
+  # texto = 'Multiplas\n quebras de linhas\n na mesma \nstring'
+  quebras <- stringr::str_locate_all(texto, '\n ?[[:alnum:]]')[[1]]
+  while (length(quebras) > 0) {
+    encontrado <- stringr::str_sub(texto, quebras)
+    if (stringr::str_detect(encontrado[1], ' ')) {
+      trecho <- quebras[1, ] - c(0, 2)
+    } else {
+      trecho <- quebras[1, ] - c(0, 1)
+    }
+    stringr::str_sub(texto, trecho[1], trecho[2]) <- ''
+    quebras <- stringr::str_locate_all(texto, '\n ?[[:alnum:]]')[[1]]
+  }
+
+
+  texto
+}

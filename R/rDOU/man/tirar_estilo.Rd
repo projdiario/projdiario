@@ -10,7 +10,7 @@ tirar_estilo(html)
 \item{html}{um vetor com html}
 }
 \value{
-O mesmo \code{html} sem as tags de estilo \code{<style>}, 
+O mesmo \code{html} sem as tags de estilo \code{<style>},
         da Office \code{<o:*>} ou \code{<v:*>}
 }
 \description{

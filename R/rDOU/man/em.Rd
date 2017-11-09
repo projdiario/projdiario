@@ -7,8 +7,6 @@
 conteudo \%em\% limite
 }
 \arguments{
-\item{conteudo}{}
-
 \item{limite}{}
 }
 \value{
