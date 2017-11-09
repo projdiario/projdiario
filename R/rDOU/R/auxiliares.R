@@ -93,6 +93,8 @@ procurar_inicio <- function(vetor, termo) {
 
 #' Qual faixa de b (limite) contem a (conteudo)?
 #'
+#' @rdname em
+#'
 #' @param conteudo
 #' @param limite
 #'
@@ -333,7 +335,6 @@ eliminar_quebras <- function(texto) {
     stringr::str_sub(texto, trecho[1], trecho[2]) <- ''
     quebras <- stringr::str_locate_all(texto, '\n ?[[:alnum:]]')[[1]]
   }
-
 
   texto
 }
