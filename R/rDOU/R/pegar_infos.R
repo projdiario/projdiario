@@ -91,49 +91,17 @@ pegar_resumo <- function (ato) {
 #'
 #' @export
 pegar_tipo <- function(ato, retorno = 'txt') {
-  # Lei
-  # Decreto
-  # PORTARIAS DE XX
-  # PORTARIA Nº XXX
-  # DESPACHO
-  # RETIFICAÇÃO[ÕES]
-  # INSTRUÇÃO
-  # RESULUÇÃO
-  # ATO
-  # ATA
-  atos_possiveis <- c("LEI","PORTARIA", "DESPACHO", "RETIFI",
-                      "DECRETO-LEI", "DECRETO", "ATO", "ATA",
-                      "INSTRUÇÃO NORMATIVA", "RESOLU")
-
-  for (i in atos_possiveis) {
-    if (stringr::str_detect(stringr::str_to_upper(ato[1], "pt"), i)) {
-      res <- i
-    }
-  }
-
-  if (!exists('res')) {
-    res <- "Sem tipo"
-  }
+  
+  para_buscar <- stringr::str_to_upper(ato[[1]]) %>% stringr::str_extract('[A-Z]+ ?[A-Z]* ?[A-Z]*')
+  
+  distancia <- RecordLinkage::levenshteinSim(para_buscar, dic_tipos$DES_TIPO)
+  
+  res <- dic_tipos$DES_TIPO[distancia == max(distancia)]
 
   retorno <- match.arg(retorno, c('txt', 'cod'))
 
   if (retorno == 'txt') {
-    res <- switch (res,
-                   "LEI" = 'LEI',"PORTARIA" = 'POR', "DESPACHO" = 'DPS',
-                   "RETIFI" = NA_character_, "DECRETO-LEI" = 'DEL',
-                   "DECRETO" = 'DEC', "ATO" = 'ATO', "ATA" = 'ATA',
-                   "INSTRUÇÃO NORMATIVA" = 'INM', "RESOLU" = 'RES',
-                   NA_character_
-
-                   # 'ADC', 'ADE', 'AHO', 'ALV', 'ATA', 'ATO',
-                   # 'AVD', 'AVL', 'BPM', 'CIR', 'COV', 'CPB',
-                   # 'DCS', 'DEC', 'DEL', 'DEP', 'DLB', 'DLG',
-                   # 'DO1', 'DO2', 'DO3', 'DPS', 'DSN', 'EDL',
-                   # 'EIC', 'EPT', 'ETA', 'ETD', 'EXC', 'EXI',
-                   # 'EXM', 'INM', 'LEI', 'MPV', 'MSG', 'NOT',
-                   # 'OFC', 'PAR', 'PIM', 'POR', 'REN', 'RES',
-                   # 'RHO', 'SCT', 'SUP'
-    )
+    res <- dic_tipos$SGL_TIPO[dic_tipos$DES_TIPO == res]
   } else {
     res <- switch (res,
                    "LEI" = 'A',"PORTARIA" = 'A', "DESPACHO" = 'A',

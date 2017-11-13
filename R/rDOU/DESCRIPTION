@@ -19,7 +19,8 @@ Imports:
     purrr,
     lubridate,
     dplyr,
-    RJDBC
+    RJDBC,
+    RecordLinkage
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
