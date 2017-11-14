@@ -17,6 +17,3 @@ O índice do \code{vetor} em que o \code{termo} se encontra no inicio da string
 \description{
 Procura um termo no inicio de uma string
 }
-\examples{
-#Sem exemplo
-}

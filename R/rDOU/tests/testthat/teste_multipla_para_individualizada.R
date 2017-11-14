@@ -16,11 +16,6 @@ esperado <- c( "PORTARIA Nº 1 DE 25 DE FEVEREIRO DE 2017\nO FULANO resolve:\n B
 arquivos <- lapply(list(1:4, 5:10, 11:18, 19:20, 21:23, 24:28),
                    function(indice) dir('exemplos', full.names = TRUE)[indice])
 
-decisoes <- pegar_dados_dou(arquivos[[3]])$DS_CONTEUDO[8] %>%
-  stringr::str_split("\n") %>% .[[1]]
-portarias <- pegar_dados_dou(arquivos[[5]])$DS_CONTEUDO[5] %>%
-  stringr::str_split("\n") %>% .[[1]]
-
 tmp1 <- pegar_normas_dou(arquivos[[3]]) %>% criar_tabela_app()
 tmp2 <- pegar_normas_dou(arquivos[[5]]) %>% criar_tabela_app()
 normas <- rbind(tmp1, tmp2)
@@ -38,8 +33,8 @@ espera_multipla <- function(objeto, expectativa, FUN = NULL) {
 
 test_that("Quebra portarias multiplas", {
   espera_multipla(entrada, esperado)
-  espera_multipla(decisoes, 2, length)
-  espera_multipla(portarias, 2, length)
+  # espera_multipla(decisoes, 2, length)
+  # espera_multipla(portarias, 2, length)
   expect_false(grepl(x = normas$DES_TITULO, pattern = 'DECISÕES') %>% any() )
   expect_false(grepl(x = normas$DES_TITULO, pattern = 'PORTARIAS') %>% any() )
   expect_false(grepl(x = normas$DES_TITULO, pattern = 'RETIFICAÇÕES') %>% any() )

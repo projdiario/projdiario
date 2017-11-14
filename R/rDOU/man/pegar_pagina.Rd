@@ -17,7 +17,3 @@ Página de cada ato
 \description{
 Número da Página do ato
 }
-\examples{
-# Sem exemplo
-
-}

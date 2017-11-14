@@ -1,11 +1,11 @@
 Package: rDOU
 Type: Package
-Title: Retira Informa??es do Di?rio Oficial da Uni?o
-Version: 0.2.0
-Author: Tom?s Barcellos
-Maintainer: Tom?s Barcellos <tomas.barcellos@agricultura.gov.br>
-Description: Agrupa uma s?rie de fun??o utilizadas para retirar informa??es
-    sobre atos do DOU
+Title: Retira Informacoes do Diario Oficial da Uniao
+Version: 0.9.0
+Author: Tomas Barcellos
+Maintainer: Tomas Barcellos <tomas.barcellos@agricultura.gov.br>
+Description: Agrupa uma serie de funcoes utilizadas para retirar informacoes
+    sobre normas do DOU
 Depends:
     R (>= 3.3.0),
     magrittr
@@ -19,7 +19,8 @@ Imports:
     purrr,
     lubridate,
     dplyr,
-    RJDBC
+    RJDBC,
+    RecordLinkage
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
