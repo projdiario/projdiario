@@ -2,7 +2,7 @@
 % Please edit documentation in R/pegar_infos.R
 \name{pegar_numero}
 \alias{pegar_numero}
-\title{Pega numero dos atos}
+\title{Pegar numero dos atos}
 \usage{
 pegar_numero(ato)
 }
@@ -13,5 +13,5 @@ pegar_numero(ato)
 A data de \code{vetor} no formato dia DE MES_POR_EXTENSO DE ANO
 }
 \description{
-Pega numero dos atos
+Pegar numero dos atos
 }

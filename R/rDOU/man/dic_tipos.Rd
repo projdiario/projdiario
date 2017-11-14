@@ -6,8 +6,8 @@
 \title{Dicionário dos tipos de normas}
 \format{Um data frame com 2 campos e 30 observações:
 \describe{
-  \item{ID_TIPO_LEGISLACAO}{Código do tipo}
-  \item{DS_TIPO_LEGISLACAO}{Descrição do tipo}
+  \item{SGL_TIPO}{Sigla do tipo}
+  \item{DES_TIPO}{Descrição do tipo}
 }}
 \source{
 interno
