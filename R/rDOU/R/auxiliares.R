@@ -100,6 +100,15 @@ texto_para_html <- function(texto) {
 eliminar_quebras <- function(texto) {
   # texto = 'Um monte de quebras Nº \n21000....'
   # texto = 'Multiplas\n quebras de linhas\n na mesma \nstring'
+  # texto = string7
+  regex_boas <- '\\n[a-zA-Z]{1,3} ?[\\)\\.-]|\\n[IVXCDLivxcld]+ ?[\\)\\.-]|\\n[A-Z]|\\n[0-9]{1,2} ?[\\)\\.-]'
+  quebras_boas <- stringr::str_locate_all(texto, regex_boas)[[1]]
+  
+  for (i in sort(seq_len(nrow(quebras_boas)), TRUE)) {
+    stringr::str_sub(texto, quebras_boas[i, , drop = FALSE]) <- stringr::str_sub(texto, quebras_boas[i, , drop = FALSE]) %>%
+      stringr::str_replace_all('\\n', '{quebra}')
+  } # texto
+  
   quebras <- stringr::str_locate_all(texto, '\n ?[[:alnum:]]')[[1]]
   while (length(quebras) > 0) {
     encontrado <- stringr::str_sub(texto, quebras)
@@ -112,7 +121,7 @@ eliminar_quebras <- function(texto) {
     quebras <- stringr::str_locate_all(texto, '\n ?[[:alnum:]]')[[1]]
   }
 
-  texto
+  texto %>% stringr::str_replace_all('\\{quebra\\}', '\n')
 }
 
 #' Cria um objeto para cada portaria em objeto de portarias multiplas
