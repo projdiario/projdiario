@@ -2,7 +2,7 @@
 % Please edit documentation in R/pegar_infos.R
 \name{pegar_limites_orgaos}
 \alias{pegar_limites_orgaos}
-\title{Pega o limite dos orgaos de um ministerio}
+\title{Pegar o limite dos orgaos de um ministerio}
 \usage{
 pegar_limites_orgaos(pagina)
 }
@@ -13,5 +13,5 @@ pegar_limites_orgaos(pagina)
 Em qual linha (elemento) de \code{pagina} estao os orgaos de um ministerio
 }
 \description{
-Pega o limite dos orgaos de um ministerio
+Pegar o limite dos orgaos de um ministerio
 }

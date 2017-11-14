@@ -7,8 +7,7 @@
 eliminar_quebras(texto)
 }
 \arguments{
-\item{texto}{Texto que tera as quebras de linhas
-erradas eliminadas}
+\item{texto}{Texto que tera as quebras de linhas erradas eliminadas}
 }
 \value{
 O mesmo texto sem as quebras indesejadas
@@ -18,4 +17,5 @@ Eliminar quebras indesejadas
 }
 \examples{
 eliminar_quebras('Um texto com \\n2 quebras de linha\\n')
+
 }
