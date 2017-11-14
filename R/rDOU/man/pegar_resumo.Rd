@@ -2,7 +2,7 @@
 % Please edit documentation in R/pegar_infos.R
 \name{pegar_resumo}
 \alias{pegar_resumo}
-\title{Pega numero dos vetors}
+\title{Pegar numero dos vetors}
 \usage{
 pegar_resumo(ato)
 }
@@ -13,9 +13,5 @@ pegar_resumo(ato)
 A data de \code{vetor} no formvetor dia DE MES_POR_EXTENSO DE ANO
 }
 \description{
-Pega numero dos vetors
-}
-\examples{
-# Sem exemplo
-
+Pegar numero dos vetors
 }

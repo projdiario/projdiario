@@ -20,8 +20,8 @@ for (i in seq_along(hoje)) {
 
 
 # Criar driver de conexão e abrir conexão
-driver <- RJDBC::JDBC("oracle.jdbc.OracleDriver", "R/validador/www/ojdbc6.jar")
-configs <- readLines('R/validador/www/config_oracle')
+driver <- RJDBC::JDBC("oracle.jdbc.OracleDriver", "../valiDOU/www/ojdbc6.jar")
+configs <- readLines('../valiDOU/www/config_oracle')
 conexao <- RJDBC::dbConnect(driver, configs[1], configs[2], configs[3])
 
 normas <- lapply(pastas, purrr::safely(parsear_e_escrever), conexao = conexao)

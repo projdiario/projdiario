@@ -2,7 +2,7 @@
 % Please edit documentation in R/pegar_infos.R
 \name{pegar_data}
 \alias{pegar_data}
-\title{Pega data do nome de um ato}
+\title{Pegar data do nome de um ato}
 \usage{
 pegar_data(ato)
 }
@@ -13,9 +13,5 @@ pegar_data(ato)
 A data do \code{ato}
 }
 \description{
-Pega data do nome de um ato
-}
-\examples{
-# Sem exemplo
-
+Pegar data do nome de um ato
 }

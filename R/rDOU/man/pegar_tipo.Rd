@@ -2,7 +2,7 @@
 % Please edit documentation in R/pegar_infos.R
 \name{pegar_tipo}
 \alias{pegar_tipo}
-\title{Pega tipo dos ato}
+\title{Pegar tipo dos ato}
 \usage{
 pegar_tipo(ato, retorno = "txt")
 }
@@ -15,9 +15,5 @@ pegar_tipo(ato, retorno = "txt")
 O tipo do ato de \code{vetor}.
 }
 \description{
-Pega tipo dos ato
-}
-\examples{
-# Sem exemplo
-
+Pegar tipo dos ato
 }
