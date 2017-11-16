@@ -415,7 +415,8 @@ criar_tabela_app <- function(lista_de_atos) {
     res <- normas
   }
 
-  res$TXT_TEXTO <- res$TXT_TEXTO %>% sapply(texto_para_html)
+  res$TXT_TEXTO <- res$TXT_TEXTO %>% purrr::map2_chr(res$SGL_ORGAO, texto_para_html)
+  res$SGL_ORGAO <- pegar_sigla_orgao(res$SGL_ORGAO)
   res
 }
 
@@ -474,5 +475,10 @@ parsear_e_escrever <- function(conexao, pastas, debug = FALSE) {
   }
   cat(nrow(normas), 'normas foram inseridas na base.\n')
   RJDBC::dbCommit(conexao)
+}
+
+pegar_sigla_orgao <- function(nome_orgao) {
+  distancia <- RecordLinkage::levenshteinSim(nome_orgao, dic_orgaos$DES_ORGAO)
+  dic_orgaos$SGL_ORGAO[distancia == max(distancia)][[1]]
 }
 
