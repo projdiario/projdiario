@@ -77,14 +77,14 @@ gerar_id <- function(df, anterior) {
 #'         Adiciona um cabeçalho.
 #'
 #' @export
-texto_para_html <- function(texto) {
+texto_para_html <- function(texto, orgao) {
   gsub("\\n<" , "\r<", texto) %>%
     gsub("\\n\\s" , "\n", .) %>%
     gsub("\\n" , "</p><p>\n", .) %>% # Aqui estou incluindo um '\n',
     # não sei bem porque fiz isso. Vou deixar até testar
     gsub("\\r" , "", .) %>%
-    paste("<p>MINISTÉRIO DA AGRICULTURA, PECUÁRIA E ABASTECIMENTO</p>",
-          "<p>SECRETARIA</p>", .)
+    paste0("<p>MINISTÉRIO DA AGRICULTURA, PECUÁRIA E ABASTECIMENTO</p>",
+          "<p>", orgao,"</p>", .)
 }
 
 #' Eliminar quebras indesejadas
