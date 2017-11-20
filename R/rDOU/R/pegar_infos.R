@@ -91,11 +91,11 @@ pegar_resumo <- function (ato) {
 #'
 #' @export
 pegar_tipo <- function(ato, retorno = 'txt') {
-  
+
   para_buscar <- stringr::str_to_upper(ato[[1]]) %>% stringr::str_extract('[A-Z]+ ?[A-Z]* ?[A-Z]*')
-  
+
   distancia <- RecordLinkage::levenshteinSim(para_buscar, dic_tipos$DES_TIPO)
-  
+
   res <- dic_tipos$DES_TIPO[distancia == max(distancia)]
 
   retorno <- match.arg(retorno, c('txt', 'cod'))
@@ -404,7 +404,8 @@ criar_tabela_app <- function(lista_de_atos) {
       COD_TIPO = sapply(novas_vetor, pegar_tipo, 'cod', USE.NAMES = FALSE),
       TXT_TEXTO = novas_vetor,
       DTA_PROMULGACAO = as.Date(repete_dado("DTA_PROMULGACAO"), origin = "1970-01-01"),
-      TXT_EMENTA = sapply(novas_vetor, pegar_resumo, USE.NAMES = FALSE),
+      TXT_EMENTA = lapply(novas_vetor, function(x) strsplit(x, '\n')[[1]]) %>%
+        sapply(pegar_resumo, USE.NAMES = FALSE),
       DES_TITULO = sapply(novas_vetor, pegar_titulo, USE.NAMES = FALSE),
       NUM_PAGINA = repete_dado("NUM_PAGINA"),
       ID_TIPO_SECAO = repete_dado("ID_TIPO_SECAO")
