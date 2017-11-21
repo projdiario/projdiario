@@ -67,11 +67,9 @@ NM_MES = HOJE.strftime("%B")
 NUM_MES = HOJE.strftime("%m")
 NUM_DIA = HOJE.strftime("%d")
 DT_FILE = HOJE.strftime("%Y_%m_%d")
-JORNAIS = 3
 
-# Verificação se é dia da semana
+# Lista de dias da semana
 WEEKDAYS = list(day_abbr)[:-2]
-WEEKEND_DAYS = list(day_abbr)[-2:]
 
 # URLs - Constantes
 MAINDOWN_URL = "http://pesquisa.in.gov.br/imprensa/servlet/INPDFViewer?"
@@ -79,13 +77,18 @@ MAINVISU_URL = "http://pesquisa.in.gov.br/imprensa/jsp/visualiza/index.jsp?"
 DAY_URL = "data=" + DT_HOJE
 END_URL = "captchafield=firstAccess"
 
-if HOJE.strftime("%a") in WEEKDAYS:
-    for i in range(1, JORNAIS+1):
+# Números dos diários 1, 2 e 3 na URL da Imprensa Nacional
+JORNAIS = [515, 529, 530]
 
-        print("Download DOU%s iniciado..." % str(i), end='\r')
+if HOJE.strftime("%a") in WEEKDAYS:
+    JORNAL_CONT = 0
+    for i in JORNAIS:
+
+        JORNAL_CONT += 1
+        print("Download DOU%s iniciado..." % str(JORNAL_CONT), end='\r')
 
         # Verificação/Montagem dos paths de download (DOU, ANO, MÊS, DIA)
-        dou_dir = os.path.join(paths.PDF_DIR, "DOU"+str(i))
+        dou_dir = os.path.join(paths.PDF_DIR, "DOU"+str(JORNAL_CONT))
 
         # URL - Número do Jornal
         jornal_url = "jornal=" + str(i)
@@ -117,12 +120,13 @@ if HOJE.strftime("%a") in WEEKDAYS:
             # Montagem do nome do arquivo
             num_pag = "00" + str(j)
             num_pag = num_pag[-3:]
-            pdfname = "DOU" + str(i) + "_" + DT_FILE + "_pg" + num_pag + ".pdf"
+            pdfname = "DOU" + str(JORNAL_CONT) + "_" + DT_FILE + "_pg" + num_pag + ".pdf"
 
             if pdfname in files_lst:
                 # Download ignorado
+                print(" " * 79, end='\r')
                 print("Progresso: DOU%s -- %s de %s | Download ignorado (duplicidade)"
-                      %(str(i), str(j), str(pag_max)), end="\r")
+                      %(str(JORNAL_CONT), str(j), str(pag_max)), end="\r")
             else:
                 download_status = False
                 while download_status is False:
@@ -131,17 +135,21 @@ if HOJE.strftime("%a") in WEEKDAYS:
                         pdf_path = dou_dir + "\\" + pdfname
                         with open(pdf_path, "wb") as pdf_file:
                             pdf_file.write(urlopen(down_url).read())
-                        print("Progresso: DOU%s -- %s de %s | Download feito                    "
-                              %(str(i), str(j), str(pag_max)), end="\r")
+                        print(" " * 79, end='\r')
+                        print("Progresso: DOU%s -- %s de %s | Download feito"
+                              %(str(JORNAL_CONT), str(j), str(pag_max)), end="\r")
                         download_status = True
                         sleep(round(random()*3, 2))
                     except:
+                        print(" " * 79, end='\r')
                         print("Progresso: DOU%s -- %s de %s | Erro download: Tentando novamente..."
-                              %(str(i), str(j), str(pag_max)), end="\r")
+                              %(str(JORNAL_CONT), str(j), str(pag_max)), end="\r")
                         sleep(round(random()*5, 2))
 
-        print("Download DOU%s completo! \n" % str(i), end='\n')
+        print(" " * 79, end='\r')
+        print("Download DOU%s completo!" % str(JORNAL_CONT), end='\n')
 else:
+    print(" " * 79, end='\r')
     print("Não há diários no dia de hoje \n")
 
 # Verificação/Download de diário extra no dia anterior.
@@ -156,7 +164,7 @@ NUM_DIA = ONTEM.strftime("%d")
 DT_FILE = ONTEM.strftime("%Y_%m_%d")
 JORNAIS = [1000, 2000, 3000]
 
-print("Verificando a existência de Edição Extra no dia %s..." % DT_ONTEM)
+print("\n Verificando a existência de Edição Extra no dia %s..." % DT_ONTEM)
 
 for i in JORNAIS:
 
@@ -212,7 +220,7 @@ for i in JORNAIS:
                         pdf_path = dou_dir + "\\" + pdfname
                         with open(pdf_path, "wb") as pdf_file:
                             pdf_file.write(urlopen(down_url).read())
-                        print("Progresso: DOU%s -- %s de %s | Download feito                      "
+                        print("Progresso: DOU%s -- %s de %s | Download feito"
                               %(str(i), str(j), str(pag_max)), end="\r")
                         download_status = True
                         sleep(round(random()*3, 2))

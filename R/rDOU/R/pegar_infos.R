@@ -70,7 +70,12 @@ pegar_resumo <- function (ato) {
     texto <- ato[art1]
   } else {
     dois_pontos <- grep(pattern = ":", ato)[1]
-    texto <- ato[dois_pontos + 1]
+    muitos <- stringr::str_locate_all(ato[dois_pontos[1]], ':')[[1]]
+    if (length(dois_pontos) > 1 | nrow(muitos) > 1) {
+      texto <- ato[dois_pontos[1] ]
+    } else {
+      texto <- ato[dois_pontos + 1]
+    }
   }
   texto %>%
     sub(pattern = padrao, replacement = "") %>%
@@ -79,7 +84,7 @@ pegar_resumo <- function (ato) {
     sub(pattern = "[rR][ ,]", replacement = " ") %>%
     gsub(pattern = "\\s\\s", replacement = " ") %>%
     stringr::str_trim() %>%
-    paste('<p>', ., '</p>')
+    paste0('<p>', ., '</p>')
 }
 
 #' Pegar tipo dos ato
@@ -91,11 +96,11 @@ pegar_resumo <- function (ato) {
 #'
 #' @export
 pegar_tipo <- function(ato, retorno = 'txt') {
-  
+
   para_buscar <- stringr::str_to_upper(ato[[1]]) %>% stringr::str_extract('[A-Z]+ ?[A-Z]* ?[A-Z]*')
-  
+
   distancia <- RecordLinkage::levenshteinSim(para_buscar, dic_tipos$DES_TIPO)
-  
+
   res <- dic_tipos$DES_TIPO[distancia == max(distancia)]
 
   retorno <- match.arg(retorno, c('txt', 'cod'))
@@ -404,7 +409,8 @@ criar_tabela_app <- function(lista_de_atos) {
       COD_TIPO = sapply(novas_vetor, pegar_tipo, 'cod', USE.NAMES = FALSE),
       TXT_TEXTO = novas_vetor,
       DTA_PROMULGACAO = as.Date(repete_dado("DTA_PROMULGACAO"), origin = "1970-01-01"),
-      TXT_EMENTA = sapply(novas_vetor, pegar_resumo, USE.NAMES = FALSE),
+      TXT_EMENTA = lapply(novas_vetor, function(x) strsplit(x, '\n')[[1]]) %>%
+        sapply(pegar_resumo, USE.NAMES = FALSE),
       DES_TITULO = sapply(novas_vetor, pegar_titulo, USE.NAMES = FALSE),
       NUM_PAGINA = repete_dado("NUM_PAGINA"),
       ID_TIPO_SECAO = repete_dado("ID_TIPO_SECAO")
@@ -415,7 +421,8 @@ criar_tabela_app <- function(lista_de_atos) {
     res <- normas
   }
 
-  res$TXT_TEXTO <- res$TXT_TEXTO %>% sapply(texto_para_html)
+  res$TXT_TEXTO <- res$TXT_TEXTO %>% purrr::map2_chr(res$SGL_ORGAO, texto_para_html)
+  res$SGL_ORGAO <- pegar_sigla_orgao(res$SGL_ORGAO)
   res
 }
 
@@ -474,5 +481,10 @@ parsear_e_escrever <- function(conexao, pastas, debug = FALSE) {
   }
   cat(nrow(normas), 'normas foram inseridas na base.\n')
   RJDBC::dbCommit(conexao)
+}
+
+pegar_sigla_orgao <- function(nome_orgao) {
+  distancia <- RecordLinkage::levenshteinSim(nome_orgao, dic_orgaos$DES_ORGAO)
+  dic_orgaos$SGL_ORGAO[distancia == max(distancia)][[1]]
 }
 
