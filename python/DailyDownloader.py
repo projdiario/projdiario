@@ -68,9 +68,8 @@ NUM_MES = HOJE.strftime("%m")
 NUM_DIA = HOJE.strftime("%d")
 DT_FILE = HOJE.strftime("%Y_%m_%d")
 
-# Verificação se é dia da semana
+# Lista de dias da semana
 WEEKDAYS = list(day_abbr)[:-2]
-WEEKEND_DAYS = list(day_abbr)[-2:]
 
 # URLs - Constantes
 MAINDOWN_URL = "http://pesquisa.in.gov.br/imprensa/servlet/INPDFViewer?"
