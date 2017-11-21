@@ -70,7 +70,12 @@ pegar_resumo <- function (ato) {
     texto <- ato[art1]
   } else {
     dois_pontos <- grep(pattern = ":", ato)[1]
-    texto <- ato[dois_pontos + 1]
+    muitos <- stringr::str_locate_all(ato[dois_pontos[1]], ':')[[1]]
+    if (length(dois_pontos) > 1 | nrow(muitos) > 1) {
+      texto <- ato[dois_pontos[1] ]
+    } else {
+      texto <- ato[dois_pontos + 1]
+    }
   }
   texto %>%
     sub(pattern = padrao, replacement = "") %>%
@@ -79,7 +84,7 @@ pegar_resumo <- function (ato) {
     sub(pattern = "[rR][ ,]", replacement = " ") %>%
     gsub(pattern = "\\s\\s", replacement = " ") %>%
     stringr::str_trim() %>%
-    paste('<p>', ., '</p>')
+    paste0('<p>', ., '</p>')
 }
 
 #' Pegar tipo dos ato
