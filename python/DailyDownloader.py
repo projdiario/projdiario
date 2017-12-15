@@ -60,7 +60,7 @@ setlocale(LC_TIME, "")
 
 # Constantes gerais
 HOJE = date.today()
-# HOJE = date(2017, 9, 7)
+# HOJE = date(2017, 12, 5)
 DT_HOJE = HOJE.strftime("%d/%m/%Y")
 NUM_ANO = HOJE.strftime("%Y")
 NM_MES = HOJE.strftime("%B")
@@ -68,9 +68,8 @@ NUM_MES = HOJE.strftime("%m")
 NUM_DIA = HOJE.strftime("%d")
 DT_FILE = HOJE.strftime("%Y_%m_%d")
 
-# Verificação se é dia da semana
+# Lista de dias da semana
 WEEKDAYS = list(day_abbr)[:-2]
-WEEKEND_DAYS = list(day_abbr)[-2:]
 
 # URLs - Constantes
 MAINDOWN_URL = "http://pesquisa.in.gov.br/imprensa/servlet/INPDFViewer?"
@@ -102,6 +101,10 @@ if HOJE.strftime("%a") in WEEKDAYS:
         url = urlopen(pag_url)
         soup = BeautifulSoup(url, "html5lib")
         soup = soup.find("frame", {"name":"controlador"})
+
+        if soup == None:
+            print('Houve algum erro ao abrir o Diário de código: ', i)
+            continue
 
         pag_max = str(soup).split(";")[-1]
         pag_max = refindall(r"\d+", pag_max)
