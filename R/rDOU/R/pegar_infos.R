@@ -483,8 +483,30 @@ parsear_e_escrever <- function(conexao, pastas, debug = FALSE) {
   RJDBC::dbCommit(conexao)
 }
 
+#' Aplicacao de algoritmo de levenshtein entre vetor e valor escalar
+#'
+#' @param str1 primeira string
+#' @param str2 segunda string
+#'
+#' @return vetor de distancias
+#'
+# Esta funcao foi tirada deste link
+# https://stackoverflow.com/questions/11535625/similarity-scores-based-on-string-comparison-in-r-edit-distance#11535768
+levsim <- function (str1, str2) {
+  indice <- RecordLinkage::levenshteinDist(str1, str2)
+  tamanho_maior <- max(nchar(str1), nchar(str2))
+  return(1 - (indice / tamanho_maior))
+}
+
+#' Pegar Sigla do Orgao
+#'
+#' @param nome_orgao
+#'
+#' @return A sigla do orgao passado como argumento
+#'
+#' @examples
 pegar_sigla_orgao <- function(nome_orgao) {
-  distancia <- RecordLinkage::levenshteinSim(nome_orgao, dic_orgaos$DES_ORGAO)
+  distancia <- levsim(nome_orgao, dic_orgaos$DES_ORGAO)
   dic_orgaos$SGL_ORGAO[distancia == max(distancia)][[1]]
 }
 
