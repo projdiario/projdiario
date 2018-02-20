@@ -1,0 +1,68 @@
+<table><tr><td>>1 e =5 t</td><td>50</td><td rowspan="5"></td><td rowspan="5"></td><td>10 kg</td><td>13,5 kg</td><td rowspan="2"></td><td rowspan="2"></td></tr><tr><td>>0,5 e = 1t</td><td>30</td><td>6 kg</td><td>8,1 kg</td></tr><tr><td>>0,2 e = 0,5 t</td><td>20</td><td>4 kg</td><td>5,4 kg</td><td>4 kg</td><td>5,4 kg</td></tr><tr><td>>0,1 e = 0,2 t</td><td>15</td><td>3 kg</td><td>4 kg</td><td>3 kg</td><td>4 kg</td></tr><tr><td>=0,1t</td><td>10</td><td>2 kg</td><td>2,7 kg</td><td>2 kg</td><td>2,7 kg</td></tr></table><br>       Art. 20. A amostragem em produto embalado será realizada retirando-se um número de pacotes suficiente para se obter uma amostra de, no mínimo, 9 kg (nove quilogramas) de amendoim em grãos e 11 kg (onze quilogramas) de amendoim em casca, conforme o caso, observando-se as massas de amostra de trabalho para análise de aflatoxinas, previstas na Tabela 2 desta Instrução Normativa.
+Art. 21. A amostra destinada a detecção de aflatoxinas, extraída conforme os procedimentos descritos neste Capítulo, deverá ser devidamente acondicionada, lacrada, identificada, autenticada e encaminhada
+para análise laboratorial.
+       Art. 22. A amostra destinada à classificação, extraída conforme os procedimentos descritos neste Capítulo, deverá conter, no mínimo, 4 kg (quatro quilogramas), e deverá ser homogeneizada, quarteada e reduzida a, no mínimo, 4 (quatro) amostras de, no mínimo, 1 kg (um quilograma) cada.
+§ 1o As amostras para classificação deverão ser devidamente acondicionadas, lacradas, identificadas, autenticadas e terão a seguinte destinação: I - uma amostra para a realização da classificação;
+II - uma amostra que será colocada à disposição do interessado;
+III - uma amostra para atender um eventual pedido de arbitragem; e
+IV - uma amostra destinada ao controle interno de qualidade por parte da Entidade Credenciada.
+§ 2o Na classificação de fiscalização, as amostras deverão ser devidamente acondicionadas, lacradas, identificadas, autenticadas, e terão a seguinte destinação: I - uma amostra para a realização da classificação de fiscalização;
+II - uma amostra que será colocada à disposição do fiscalizado;
+III - uma amostra para atender um eventual pedido de perícia; e
+IV - uma amostra de segurança, caso uma das vias seja inutilizada ou haja necessidade de análises complementares, com exceção de análises que exijam uma metodologia de amostragem específica.
+Art. 23. Quando a amostra for coletada e enviada pelo interessado, deverão ser observados os mesmos critérios e procedimentos de amostragem previstos nesta Instrução Normativa.
+Art. 24. A quantidade remanescente do processo de amostragem, homogeneização e quarteamento será recolocada no lote ou devolvida ao interessado no produto.
+Art. 25. O responsável pela coleta da amostra não será obrigado a recompor ou ressarcir o produto amostrado, que porventura foi danificado ou que teve sua quantidade diminuída, em função da realização
+da amostragem e da classificação.
+CAPÍTULO V
+DOS PROCEDIMENTOS OPERACIONAIS OU ROTEIRO PARA CLASSIFICAÇÃO
+Art. 26. Coletar amostras conforme os critérios definidos no Capítulo IV desta Instrução Normativa.
+Seção I
+Do Roteiro para a Classificação do Amendoim
+Art. 27. Nos procedimentos operacionais ou roteiro para classificação do amendoim, deve ser observado o que segue:
+       I - antes da realização da classificação o Classificador deve verificar se a amostra apresenta insetos vivos ou qualquer situação desclassificante, de acordo com o previsto no art. 9o desta Instrução Normativa; e, na hipótese de constatação de qualquer situação desclassificante, ele deve emitir o correspondente documento enquadrando o produto como desclassificado e comunicar o fato à SFA da Unidade da Federação onde o produto se encontra estocado, para as providências cabíveis;
+       II - constatada a presença de insetos vivos, o Classificador deverá recomendar o expurgo do lote amostrado e, após este procedimento, realizar nova coleta de amostra para a classificação; e
+       III - estando o produto em condições de ser classificado, definir o Grupo a que pertence o produto, observando o contido nos incisos I e II do § 1o do art. 7o desta Instrução Normativa, anotando a informação no laudo de classificação.
+Seção II
+Do Roteiro para Classificação do Amendoim do Grupo I
+       Art. 28. Homogeneizar a amostra de 1 kg (um quilograma) destinada à classificação, reduzi-la pelo processo de quarteamento até a obtenção da amostra de trabalho, ou seja, no mínimo, 250g (duzentos e cinquenta gramas), pesada em balança previamente aferida, anotando-se o peso obtido para efeito dos cálculos dos percentuais de defeitos.
+       Parágrafo único. Com base nas informações disponibilizadas pelo interessado e observando o disposto no § 2o do art. 7o desta Instrução Normativa, anotar no campo específico do laudo de classificação a informação referente ao Subgrupo a que pertence o produto.
+       Art. 29. Da amostra de trabalho de, no mínimo, 250g (duzentos e cinquenta gramas), retiram-se as matérias estranhas e impurezas utilizando-se peneira de crivos circulares de 5,0 mm (cinco milímetros) de diâmetro, executando movimentos contínuos e uniformes durante 30 (trinta) segundos e observando-se os seguintes critérios:
+       I - os grãos em casca e descascados inteiros ou quebrados e grãos chochos que vazarem na peneira retornarão à amostra de trabalho; e
+       II - as impurezas e matérias estranhas que ficarem retidas na peneira serão catadas manualmente, adicionadas às que vazaram na peneira e pesadas, determinando seu percentual e anotando-se o valor encontradono laudo de classificação.
+Art. 30. Para a determinação dos defeitos do amendoim em casca, deve-se utilizar a amostra isenta de matérias estranhas e impurezas.
+       § 1o Com auxílio da peneira de crivos circulares de 5 mm (cinco milímetros), retirar os grãos sem casca, pesar e anotar no laudo, fazendo a conversão dos valores pela fórmula a seguir, sendo seu resultado expresso com uma casa decimal: % = peso de grãos sem casca (g) x 100 / peso (g) do amendoim em casca aferido conforme previsto no art. 28 desta Instrução Normativa.
+§ 2o Da amostra isenta de amendoins sem casca, separar as vagens escuras e corroídas e as vagens quebradas, observando-se as definições previstas no art. 2o desta Instrução Normativa.
+     § 3o Pesar todos os defeitos isoladamente e anotar no laudo de classificação o peso e o percentual encontrado de cada defeito, fazendo a conversão dos valores pela fórmula a seguir, sendo seu resultado expresso com uma casa decimal: % = peso das vagens defeituosas (g) x 100 / peso (g) do amendoim em casca aferido conforme previsto no art. 28 desta Instrução Normativa. § 4o Proceder à debulha das vagens sadias e defeituosas, pesar a quantidade de grãos resultante da debulha e anotar o valor.
+§ 5o Calcular a renda e anotar o valor obtido no laudo de classificação, utilizando-se da seguinte fórmula: Renda (%) = peso de grãos debulhados (g) x 100 / peso de amendoim em casca (g).
+       § 6o Da amostra de grãos debulhados, proceder à separação dos defeitos mofados, brotados, ardidos, chochos, imaturos, danificados por insetos, observando-se as definições previstas no art. 2o desta Instrução Normativa.
+§ 7o Após a separação dos grãos defeituosos, proceder a abertura dos grãos remanescentes da amostra, para melhor identificação de defeitos, sendo que: I - caso o grão apresente mais de um defeito, prevalecerá o mais grave para efeito de classificação e enquadramento em Tipo; e II - deve-se considerar a escala de gravidade, em ordem decrescente, na sequência dos defeitos prevista no § 6o deste artigo.
+       § 8o Pesar todos os defeitos isoladamente e anotar no laudo de classificação o peso e o percentual encontrado de cada defeito, fazendo a conversão dos valores pela fórmula a seguir, sendo seu resultado expresso com duas casas decimais: %= peso do defeito (g) x 100 / peso dos grãos debulhados (g).
+§ 9o Para classificação em Tipo do amendoim em casca, proceder conforme se segue:
+I - somar os percentuais obtidos para os defeitos ardidos, brotados e mofados e anotar o valor no laudo de classificação;
+II - somar os percentuais obtidos para os defeitos chochos, imaturos e danificados por insetos e anotar o valor no laudo de classificação;
+III - somar os percentuais obtidos para os defeitos vagens escuras e corroídas e vagens quebradas e anotar o valor no laudo de classificação;
+IV - proceder ao enquadramento do produto em Tipo, considerando os percentuais encontrados, conforme a distribuição dos defeitos e respectivas tolerâncias, contidos no Anexo I, II ou III desta Instrução
+Normativa; e
+V - o enquadramento do produto deverá ser feito em função do pior Tipo encontrado.
+       Art. 31. No restante da amostra de, no mínimo, 1 kg (um quilograma) que foi utilizada na classificação, será determinada a umidade, observando as recomendações do fabricante do aparelho utilizado, anotando o resultado no laudo de classificação.
+Seção III
+Do Roteiro para Classificação do Amendoim do Grupo II
+       Art. 32. Homogeneizar a amostra de, no mínimo, 1kg (um quilograma) destinada à classificação, reduzi-la pelo processo de quarteamento até a obtenção da amostra de trabalho, ou seja, no mínimo 250g (duzentos e cinquenta gramas), pesada em balança previamente aferida, anotando-se o peso obtido para efeito dos cálculos necessários à classificação.
+       Parágrafo único. Com base nas informações disponibilizadas pelo interessado e observando o disposto no § 3o do art. 7o desta Instrução Normativa, anotar no campo específico do laudo de classificação a informação referente ao Subgrupo a que pertence o produto.
+       Art. 33. Da amostra de trabalho de, no mínimo, 250 g (duzentos e cinquenta gramas), retiram-se as matérias estranhas e impurezas utilizando-se peneira de crivos circulares de 5,0 mm (cinco milímetros) de diâmetro, executando movimentos contínuos e uniformes durante 30 (trinta) segundos e observando-se os seguintes critérios: I - os grãos quebrados, chochos e imaturos que vazarem na peneira retornarão à amostra de trabalho; e
+       II - as impurezas e matérias estranhas que ficarem retidas na peneira serão catadas manualmente, adicionadas às que vazaram na peneira e pesadas, determinando seu percentual e anotando-se o valor encontrado no laudo de classificação.
+Art. 34. Para determinação da Classe do amendoim do Grupo II, observar o disposto no § 5o do art. 7o desta Instrução Normativa e proceder como segue:
+       I - após a retirada de Matérias Estranhas e Impurezas, aferir o peso da amostra, anotar no laudo de classificação, separar os grãos com película de coloração vermelha clara ou escura e roxa dos grãos de películaclara, pesar as quantidades de grãos encontradas das duas colorações e anotar o valor encontrado no laudo de classificação, considerando duas casas decimais;
+       II - fazer a conversão de valores em percentual, para cada uma das duas colorações de grãos, de acordo com a fórmula a seguir: % de grãos de película vermelha = peso dos grãos de película vermelha (g)x 100 / peso da subamostra (g); % de grãos de película clara = peso dos grãos de película clara (g) x 100 / peso da amostra (g), aferida conforme consta do inciso anterior; e
+       III - com base nos percentuais obtidos, fazer o enquadramento em Classe, de acordo com o contido nos incisos I, II e III do § 5o do art. 7o desta Instrução Normativa, anotando a informação no laudo de classificação; observando que não será feito o enquadramento em classe para os subgrupos HPS Blancheado e HPS Partido Blancheado.
+Art. 35. Em se tratando de amendoim do Grupo II, do Subgrupo HPS, proceder à classificação em Subclasses, de acordo com o que segue:
+I - da mesma amostra utilizada para determinação da classe, excluir os grãos partidos e quebrados, pesar e anotar no laudo de classificação o peso exato encontrado, considerando duas casas decimais;
+II - fazer a contagem dos grãos existentes nessa subamostra obtida, conforme acima descrito, e anotar a quantidade encontrada no laudo de classificação;
+III - fazer a conversão de valores em grãos por onça de acordo com a fórmula, grãos por onça = quantidade de grãos da subamostra x 28,35 (g) / peso da subamostra (g);
+IV - do valor obtido na fórmula acima (em grãos por onça), fazer o enquadramento em Subclasse, observando-se o disposto na Tabela 1 desta Instrução Normativa, anotando-se o resultado encontrado e o
+
+enquadramento em Subclasse no laudo de classificação; e
+V - retornar os grãos utilizados nesse procedimento para a amostra de trabalho.
+Este documento pode ser verificado no endereço eletrônico http://www.in.gov.br/autenticidade.html , pelo código 00012016082500015
+Documento assinado digitalmente conforme MP no- 2.200-2 de 24/08/2001, que institui a Infraestrutura de Chaves Públicas Brasileira - ICP-Brasil.

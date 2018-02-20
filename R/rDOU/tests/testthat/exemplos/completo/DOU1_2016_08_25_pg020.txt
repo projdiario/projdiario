@@ -1,0 +1,30 @@
+I - anotações de controle de entrada de produtos na UC, com os respectivos números dos CFO, CFOC, PTV, CF e CFR que compuseram cada lote, conforme Anexo XII desta Instrução Normativa, e a legislação
+específica;
+II - espécie;
+III - cultivar ou clone;
+IV - quantidade do lote;
+V - controle de saída das partidas certificadas com o CFOC; e
+VI - registro das inspeções realizadas pelo RT e por fiscal estadual ou federal.
+       § 4o A UP ou a UC que aderir ao sistema de Produção Integrada do MAPA poderá substituir o livro, citado neste artigo, pelos cadernos de campo e de pós-colheita, previstos nas Diretrizes Gerais para a Produção Integrada de Frutas - DGPIF, desde que as informações mínimas obrigatórias para cada UP ou lote estejam abrangidas pelos registros.
+§ 5o As anotações de acompanhamento, quando elaboradas e mantidas na forma eletrônica, devem ser impressas e numeradas, formando um Livro de Acompanhamento, para efeito de fiscalização e
+auditoria.
+§ 6o Os documentos comprobatórios das atividades realizadas pelo RT deverão estar à disposição da fiscalização.
+Art. 25. As irregularidades verificadas em relação ao CFO e ao CFOC serão formalmente apuradas pelo OEDSV.
+§ 1o As irregularidades comprovadas acarretarão advertência por escrito, sendo a reincidência motivo de suspensão ou desabilitação.
+§ 2o Não havendo comprovação de má-fé, o profissional poderá ser novamente habilitado após novo treinamento.
+       § 3o Os casos de comprovada má-fé resultarão em desabilitação imediata e irreversível do RT, sendo notificado o fato ao CREA e o encaminhamento do processo ao Ministério Público Federal, para enquadramento nas penalidades previstas no Art. 259, do Código Penal Brasileiro, e no art. 61 da Lei no 9.605, de 12 de fevereiro de 1998 (Lei de Crimes Ambientais). CAPÍTULO VII
+DAS DISPOSIÇÕES FINAIS
+       Art. 26. O RT deverá encaminhar, mensalmente, ao OEDSV, até o vigésimo dia do mês subsequente, relatórios sobre CFO e CFOC emitidos no mês anterior, conforme os Anexos XI e XII desta Instrução Normativa.
+       Art. 27. O OEDSV deverá encaminhar relatórios consolidados com informações sobre os CFO e CFOC emitidos a cada semestre à área de sanidade vegetal da SFA na UF, até o último dia do mês subsequente ao semestre, conforme o Anexo XIII desta Instrução Normativa.
+Art. 28. Havendo sistema informatizado para emissão de CFO e de CFOC, os formulários, documentos e relatórios serão emitidos ou anexados eletronicamente.
+       Art. 29. O OEDSV estabelecerá sistema de controle interno e fiscalizará as atividades dos RTs credenciados, cabendo ao MAPA realizar auditoria em todo o processo de Certificação Fitossanitária de Origem.
+Art. 30. Aprovar o modelo do CFO, do CFOC e dos demais modelos, conforme os Anexos I a XIII desta Instrução Normativa.
+Art. 31. Esta Instrução Normativa entra em vigor na data de sua publicação.
+Art. 32. Fica revogada a Instrução Normativa no 55, de 04 de novembro de 2007.
+BLAIRO MAGGI
+ANEXO I
+MODELO DO CFO
+<table><tr><td rowspan="26">SÍMBOLO DO OEDSV</td>NOME DO ÓRGÃO ESTADUAL DE DEFESA SANITÁRIA VEGETAL<tr><td rowspan="26">CERTIFICADO FITOSSANITÁRIO DE ORIGEM: N°</td><tr><td rowspan="26">Nome do produtor/nome empresarial:</td><tr><td rowspan="26">Endereço:</td><tr><td rowspan="26">Município:</td>UF:<tr><td rowspan="26">CNPJ / CPF/ Identificação da propriedade:</td><tr><td rowspan="26">Identificação do Produto Nome Científico Cultivar/Clone</td><tr><td rowspan="26">Código da UP</td>ProdutoQuantidadeUnidadePeríodo de colheita<tr><td rowspan="26"></td><tr><td rowspan="26"></td><tr><td rowspan="26"></td><tr><td rowspan="26">Certifico que, mediante acompanhamento técnico, o(s) produto(s) acima especificado(s) se apresenta(m):
+1) ( ) livre(s) da(s) Praga(s) Quarentenária(s) A2; 2) ( ) dentro do(s) limite(s) de tolerância para a(s) Praga(s) Não Quarentenária(s) Regulamentada(s); 3) ( ) livre(s) da(s) Praga(s) específica(s), por exigência interna; 4) ( ) livre(s) da(s) Praga(s) específica(s), por exigência do país importador; conforme regulamentação do Ministério da Agricultura, Pecuária e Abastecimento - MA PA .</td><tr><td rowspan="26">Declaração adicional:</td><tr><td rowspan="26"></td><tr><td rowspan="26"></td><tr><td rowspan="26"></td><tr><td rowspan="26"></td><tr><td rowspan="26">Partida lacrada na origem: sim ( ) não ( ) n° Lacre n° porão n° conteiner</td><tr><td rowspan="26">Este certificado é válido por dias e será nulo se rasurado</td><tr><td rowspan="26">Dados do responsável Técnico habilitado:</td><tr><td rowspan="26">Nome do Responsável Técnico Habilitado:</td><tr><td rowspan="26">N° da habilitação:</td>N° do CREA)<tr><td rowspan="26"></td><tr><td rowspan="26"></td><tr><td rowspan="26">Local e data: Assinatura e carimbo
+/</td><tr><td rowspan="26"></td>ANEXO I-A
+<table><tr><td colspan="2">Formulário para informações complementares do Certificado Fitossanitário de Origem - CFO</td><td></td></tr><tr><td>SÍMBOLO DO OEDSV</td><td></td><td>Nome do Órgão Estadual de Defesa Sanitária Vegetal - OEDSV</td></tr><tr><td colspan="2">Informações Complementares Vinculada(s) ao Certificado Fitossanitário de Origem:</td><td></td></tr><tr><td colspan="2">N° de / / 20 , que obrigatoriamente está anexado</td><td></td></tr></table><br>Este documento pode ser verificado no endereço eletrônico http://www.in.gov.br/autenticidade.html ,	Documento assinado digitalmente conforme MP no- 2.200-2 de 24/08/2001, que institui a pelo código 00012016082500020	Infraestrutura de Chaves Públicas Brasileira - ICP-Brasil.
