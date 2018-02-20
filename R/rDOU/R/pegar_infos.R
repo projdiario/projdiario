@@ -506,6 +506,9 @@ levsim <- function (str1, str2) {
 #'
 #' @examples
 pegar_sigla_orgao <- function(nome_orgao) {
+  if (length(nome_orgao) > 1) {
+    return(purrr::map_chr(nome_orgao, pegar_sigla_orgao))
+  }
   distancia <- levsim(nome_orgao, dic_orgaos$DES_ORGAO)
   dic_orgaos$SGL_ORGAO[distancia == max(distancia)][[1]]
 }
