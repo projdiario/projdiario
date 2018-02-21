@@ -380,43 +380,26 @@ criar_tabela_app <- function(lista_de_atos) {
                grep("RETIFICAÇÕES", normas$DES_TITULO))
 
   if (length(remover) > 0) {
-    multiplas <- lapply(normas$TXT_TEXTO[remover], function(x) {
-      stringr::str_split(x, "\n")[[1]]
-    })
+    novas_obs <- purrr::map(remover, novas_observacoes, normas)
 
-    novas <- lapply(multiplas, multipla_para_individualizada)
-
-    tam_novas <- sapply(novas, length)
-
-    remover <- remover[tam_novas >= 1]
-
-    novas <- novas[tam_novas >= 1]
-
-    novas_vetor <- unlist(novas)
-
-    tamanhos <- sapply(novas, length)
-
-    repete_dado <- function(variavel) {
-      res <- purrr::map2(normas[[variavel]][remover], tamanhos, ~ rep(.x, each = .y))
-      unlist(res)
+    for (i in seq_along(remover)) {
+      if (!'atual' %in% ls()) {
+        antes <- seq_len(remover[i])
+        atual <- dplyr::bind_rows(normas[antes[-length(antes)], ],
+                                  novas_obs[[i]])
+      } else {
+        anteriores <- seq_len(remover[i-1])
+        antes <- seq_len(remover[i])[-anteriores]
+        atual <- dplyr::bind_rows(atual, normas[antes[-length(antes)], ],
+                                  novas_obs[[i]])
+      }
     }
-
-    novas_obs <- tibble::tibble(
-      NUM_ATO = sapply(novas_vetor, pegar_numero, USE.NAMES = FALSE),
-      SGL_TIPO = sapply(novas_vetor, pegar_tipo, USE.NAMES = FALSE),
-      VLR_ANO = repete_dado("VLR_ANO"),
-      SGL_ORGAO = repete_dado("SGL_ORGAO"),
-      COD_TIPO = sapply(novas_vetor, pegar_tipo, 'cod', USE.NAMES = FALSE),
-      TXT_TEXTO = novas_vetor,
-      DTA_PROMULGACAO = as.Date(repete_dado("DTA_PROMULGACAO"), origin = "1970-01-01"),
-      TXT_EMENTA = lapply(novas_vetor, function(x) strsplit(x, '\n')[[1]]) %>%
-        sapply(pegar_resumo, USE.NAMES = FALSE),
-      DES_TITULO = sapply(novas_vetor, pegar_titulo, USE.NAMES = FALSE),
-      NUM_PAGINA = repete_dado("NUM_PAGINA"),
-      ID_TIPO_SECAO = repete_dado("ID_TIPO_SECAO")
-    )
-
-    res <- dplyr::bind_rows(normas[-remover, ], novas_obs)
+    if (remover[i] != nrow(normas)) {
+      ultimas <- seq(remover[i] + 1, nrow(normas))
+      res <- dplyr::bind_rows(atual, normas[ultimas, ])
+    } else {
+      res <- atual
+    }
   } else {
     res <- normas
   }

@@ -103,12 +103,12 @@ eliminar_quebras <- function(texto) {
   # texto = string7
   regex_boas <- '\\n[a-zA-Z]{1,3} ?[\\)\\.-]|\\n[IVXCDLivxcld]+ ?[\\)\\.-]|\\n[A-Z]|\\n[0-9]{1,2} ?[\\)\\.-]'
   quebras_boas <- stringr::str_locate_all(texto, regex_boas)[[1]]
-  
+
   for (i in sort(seq_len(nrow(quebras_boas)), TRUE)) {
     stringr::str_sub(texto, quebras_boas[i, , drop = FALSE]) <- stringr::str_sub(texto, quebras_boas[i, , drop = FALSE]) %>%
       stringr::str_replace_all('\\n', '{quebra}')
   } # texto
-  
+
   quebras <- stringr::str_locate_all(texto, '\n ?[[:alnum:]]')[[1]]
   while (length(quebras) > 0) {
     encontrado <- stringr::str_sub(texto, quebras)
@@ -242,5 +242,45 @@ multipla_para_individualizada <- function(portaria) {
   }
 
   individualizadas
+}
+
+novas_observacoes <- function(lista_de_indices, df) {
+  multiplas <- lapply(df$TXT_TEXTO[lista_de_indices], function(x) {
+    stringr::str_split(x, "\n")[[1]]
+  })
+
+  novas <- lapply(multiplas, multipla_para_individualizada)
+
+  tam_novas <- sapply(novas, length)
+
+  remover <- lista_de_indices[tam_novas >= 1]
+
+  novas <- novas[tam_novas >= 1]
+
+  novas_vetor <- unlist(novas)
+
+  tamanhos <- sapply(novas, length)
+
+  repete_dado <- function(variavel) {
+    res <- purrr::map2(df[[variavel]][remover], tamanhos, ~ rep(.x, each = .y))
+    unlist(res)
+  }
+
+  novas_obs <- tibble::tibble(
+    NUM_ATO = sapply(novas_vetor, pegar_numero, USE.NAMES = FALSE),
+    SGL_TIPO = sapply(novas_vetor, pegar_tipo, USE.NAMES = FALSE),
+    VLR_ANO = repete_dado("VLR_ANO"),
+    SGL_ORGAO = repete_dado("SGL_ORGAO"),
+    COD_TIPO = sapply(novas_vetor, pegar_tipo, 'cod', USE.NAMES = FALSE),
+    TXT_TEXTO = novas_vetor,
+    DTA_PROMULGACAO = as.Date(repete_dado("DTA_PROMULGACAO"), origin = "1970-01-01"),
+    TXT_EMENTA = purrr::map(novas_vetor, ~strsplit(.x, '\n')[[1]]) %>%
+      sapply(pegar_resumo, USE.NAMES = FALSE),
+    DES_TITULO = sapply(novas_vetor, pegar_titulo, USE.NAMES = FALSE),
+    NUM_PAGINA = repete_dado("NUM_PAGINA"),
+    ID_TIPO_SECAO = repete_dado("ID_TIPO_SECAO")
+  )
+
+  novas_obs
 }
 
