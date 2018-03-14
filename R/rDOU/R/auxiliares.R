@@ -133,13 +133,22 @@ eliminar_quebras <- function(texto) {
 #' @export
 multipla_para_individualizada <- function(portaria) {
   # portaria <- normas$DS_CONTEUDO[remover[8]] %>% stringr::str_split("\n") %>% .[[1]]
+  # Função para verificar existencia de "chunks"
+  casos <- function(texto){
+    resolve <- grep("resolve[::punct::]", texto)
+    cessao <- grep("cess[ãa]o[\\.:]", texto)
+    # if (length(cessao) > 0)
+    #   warning(paste(texto[cessao], collapse = '|\n'), call. = FALSE)
+    sort(unique(c(resolve, cessao)))
+    #resolve
+  }
 
   if (length(procurar_inicio(portaria[length(portaria)], "<table><tr><td>")) == 1) {
     portaria <- portaria[-length(portaria)]
   }
-
+  # Regra para retificações
   if (grepl('RETIFIC', portaria[1])) {
-    padrao <- 'onde se l[êe]:'
+    padrao <- 'onde se l[êe]:?'
     inicios <- c(grep(padrao, tolower(portaria)), length(portaria) + 1)
 
     indices <- vector("list", length(inicios) - 1)
@@ -160,8 +169,9 @@ multipla_para_individualizada <- function(portaria) {
     individualizadas <- gsub(paste0(padrao, ' ?-'), "", unlist(lista_portarias))
     return(individualizadas)
   }
-
-  if (length(grep("resolve:", portaria)) == 0) {
+  # Regra para caso de cultivadores
+  # if (length(grep("resolve:", portaria)) == 0) {
+  if (length(casos(portaria)) == 0) {
     # 'proteção:'
     padrao <- 'Nº ?[0-9]+\\.?[0-9]*'
     inicios <- c(grep(padrao, portaria), length(portaria))
@@ -189,8 +199,8 @@ multipla_para_individualizada <- function(portaria) {
     }
 
     individualizadas <- gsub(paste0(padrao, ' ?-'), "", unlist(lista_portarias))
-  } else if (length(grep("resolve:", portaria)) != 1) {
-    novas_ind <- c(grep("resolve:", portaria), length(portaria) - 1)
+  } else if (length(casos(portaria)) != 1) {
+    novas_ind <- c(casos(portaria), length(portaria))
     nome <- portaria[1]
     rodape <- portaria[length(portaria)]
 
@@ -206,12 +216,12 @@ multipla_para_individualizada <- function(portaria) {
       novas[[i]] <- c(nome, portaria[ lista_ind[[i]] ], rodape)
     }
 
-    if (any(sapply(novas, function(x) (length(grep("resolve:", x)) != 1) ))) {
-      individualizadas <- "Erro"
+    if (any(sapply(novas, function(x) (length(casos(x)) != 1) ))) {
+      individualizadas <- "AJUSTE"
     } else {
       individualizadas <- unlist(lapply(novas, multipla_para_individualizada))
     }
-
+  # Caso padrão: 1 resolve ou cessão
   } else {
     padrao <- 'Nº ?[0-9]+\\.?[0-9]*'
     inicios <- c(grep(padrao, portaria), length(portaria))
@@ -240,7 +250,6 @@ multipla_para_individualizada <- function(portaria) {
 
     individualizadas <- gsub(paste0(padrao, ' ?-'), "", unlist(lista_portarias))
   }
-
   individualizadas
 }
 

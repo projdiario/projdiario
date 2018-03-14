@@ -31,12 +31,16 @@ pegar_data <- function(ato) {
 #' @export
 pegar_limites_orgaos <- function(pagina) {
   # Procurar termos na página:
-  gab <- procurar_inicio(pagina, "GABINETE") # GABINETE
-  sec <- procurar_inicio(pagina, "SECRETARIA") # SECRETARIA
-  inst <- procurar_inicio(pagina, "INSTITUTO") # INSTITUTO
-  sfa <- procurar_inicio(pagina, "SUPERINTENDÊNCIA") # SUPERINTENDÊNCIA
+  gab <- procurar_inicio(pagina, "GABINETE") # GM
+  sec <- procurar_inicio(pagina, "SECRETARIA") # Secretarias
+  inst <- procurar_inicio(pagina, "INSTITUTO") # INMET
+  sfa <- procurar_inicio(pagina, "SUPERINTENDÊNCIA") # SFAs
+  sub <- procurar_inicio(pagina, "SUBSECRETARIA") # SPOA
+  comissao <- procurar_inicio(pagina, "COMISSÃO") # CEPLAC
+  empresa <- procurar_inicio(pagina, "EMPRESA") # Embrapa
+  companhia <- procurar_inicio(pagina, "COMPANHIA") # Conab
 
-  res <- c(gab, sec, inst, sfa)
+  res <- c(gab, sec, inst, sfa, sub, comissao, empresa, companhia)
   names(res) <- pagina[res]
 
   # retorna um vetor numérico nomeado com o inicio dos orgaos
@@ -47,16 +51,26 @@ pegar_limites_orgaos <- function(pagina) {
 #'
 #' @param ato um vetor com o conteudo de um ato
 #'
-#' @return A data de \code{vetor} no formato dia DE MES_POR_EXTENSO DE ANO
+#' @return O numero de \code{ato} com 8 digitos (completados com 0)
 #' @export
 pegar_numero <- function(ato) {
-  stringr::str_extract(ato[1], "(N|n).{2,3}[0-9]+\\.?[0-9]*") %>%
+  # Se for retificação voltar NA
+  if (grepl('RETIF', ato[1], ignore.case =  TRUE)) {
+    return(NA_character_)
+  }
+
+  # Caso contrário retornar sem numero
+  numero <- stringr::str_extract(ato[1], "(N|n).{2,3}[0-9]+\\.?[0-9]*") %>%
     gsub(pattern = "\\.", replacement = "") %>%
     stringr::str_extract("[0-9]+") %>%
-    as.numeric() %>% formatC(width = 8, flag = 0)
+    as.numeric()
+  if (is.na(numero)) {
+    return(NA_character_)
+  }
+  formatC(numero, width = 8, flag = 0)
 }
 
-#' Pegar numero dos vetors
+#' Pegar resumo do ato
 #'
 #' @param ato um vetor com o conteudo de um ato
 #'
