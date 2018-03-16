@@ -2,13 +2,19 @@ suppressPackageStartupMessages(library(purrr))
 # library(rDOU); library(testthat)
 context('Teste completo')
 
-expect_margem <- function(obj, expectativa, margem = 0.95) {
-  dif <- abs(expectativa - obj) / expectativa
-  if (dif <= (1 - margem) && dif != 0) {
-    warning(paste0('Teste passou dentro da margem (', dif,').\n'))
-  }
-  expect_lte(dif, 1 - margem)
+expect_gabarito <- function(campo_resultado, campo_gabarito){
+  map2(
+    map(tabelas, campo_resultado),
+    map(gabarito, campo_gabarito),
+    expect_identical
+    )
+  cat('|')
 }
+
+formatar <- function(x){
+  formatC(x, width = 8, flag = '0')
+}
+
 
 arquivos <- lapply(list(1:24, 33:36, 25:32, 37:40), function(indice)
   dir('exemplos/completo', full.names = TRUE,
@@ -17,9 +23,9 @@ normas <- lapply(arquivos, pegar_normas_dou)
 tabelas <- map(normas, criar_tabela_app)
 
 gabarito <- readxl::read_xlsx('exemplos/completo/gabarito.xlsx') %>%
-  dplyr::mutate(NR_ATO = ifelse(
-    is.na(NR_ATO), NA_character_, formatC(NR_ATO, width = 8, flag = '0')
-  )) %>%
+  dplyr::mutate(NR_ATO = ifelse(is.na(NR_ATO), NA_character_, formatar(NR_ATO)),
+                AN_ATO = as.character(AN_ATO),
+                DT_PROMULGACAO = as.Date(DT_PROMULGACAO)) %>%
   split(factor(paste(.$DT_PROMULGACAO, .$ID_TIPO_SECAO))) %>%
   set_names(NULL)
 
@@ -54,25 +60,32 @@ test_that('Consegue identificar o órgão de cada norma', {
 
 test_that('Resultado possui dimensões esperadas', {
   # linhas
-  walk2(map_int(tabelas, nrow), map_int(gabarito, nrow), expect_margem)
+  map2(map_int(tabelas, nrow), map_int(gabarito, nrow), expect_identical)
   cat('|')
   # colunas
-  walk2(map_int(tabelas, ncol), map_int(gabarito, ncol), expect_margem)
-  cat('|')
+  map2(map_int(tabelas, ncol), map_int(gabarito, ncol), expect_identical)
 })
 
 # ORDEM DAS NORMAS
-test_that('Ordem das normas', {
-  # Órgãos
-  map2(map(tabelas, 'SGL_ORGAO'), map(gabarito, 'SG_ORGAO'), expect_identical)
-  cat('|')
-  # Número
-  map2(map(tabelas, 'NUM_ATO'), map(gabarito, 'NR_ATO'), expect_identical)
-  cat('|')
+context('Teste completo: campos')
+test_that('Informações são extraídas exatamente como esperado', {
+  # Número da norma
+  expect_gabarito('NUM_ATO', 'NR_ATO')
+  # # Tipo da norma
+  # expect_gabarito('SGL_TIPO', 'SG_TIPO')
+  # Ano da norma
+  expect_gabarito('VLR_ANO', 'AN_ATO')
+  # Órgãos emissor
+  expect_gabarito('SGL_ORGAO', 'SG_ORGAO')
+  # Data de promulgadação
+  expect_gabarito('DTA_PROMULGACAO', 'DT_PROMULGACAO')
+  # Título da norma
+  expect_gabarito('DES_TITULO', 'DS_TITULO')
+  # # Página em que a norma foi encontrada
+  # expect_gabarito('NUM_PAGINA', 'NM_PAGINA')
+  # Seção do DOU
+  expect_gabarito('ID_TIPO_SECAO', 'ID_TIPO_SECAO')
 })
-
-# O teste provavelmente está falhando porque
-# há quebra de linha ruim no texto
 
 # COMPARARAR (==) TODOS OS CAMPOS
 

@@ -21,7 +21,7 @@ limpar_texto <- function(texto) {
   #           'O SECRETARIO LALALALALALA no uso de suas atri-', 'buições decide:',
   #           'Art. 1o - Designar fulano para alksdjalsjdlak',
   #           'Art. 2° - parara: ', 'I- lalala', 'FULANO DE TAL', 'SECRETARIO SDA')
-  texto %>% stringr::str_replace_all("N(o-|°-|°)? ?(?=[0-9])", "Nº ") %>%
+  texto %>% stringr::str_replace_all("N(o|o-|°-|°)? ?(?=[0-9])", "Nº ") %>%
     stringr::str_replace_all("(?<=[0-9])(o-|o|°-|°) ?", "º ") %>%
     stringr::str_replace_all("(?<=[0-9])(a-|a) ?", "ª ") %>%
     stringr::str_trim("both") %>%
@@ -183,10 +183,7 @@ multipla_para_individualizada <- function(portaria) {
   casos <- function(texto){
     resolve <- grep("resolve[::punct::]", texto)
     cessao <- grep("cess[ãa]o[\\.:]", texto)
-    # if (length(cessao) > 0)
-    #   warning(paste(texto[cessao], collapse = '|\n'), call. = FALSE)
     sort(unique(c(resolve, cessao)))
-    #resolve
   }
 
   if (length(procurar_inicio(portaria[length(portaria)], "<table><tr><td>")) == 1) {
@@ -215,16 +212,15 @@ multipla_para_individualizada <- function(portaria) {
     individualizadas <- gsub(paste0(padrao, ' ?-'), "", unlist(lista_portarias))
     return(individualizadas)
   }
-  # Regra para caso de cultivadores
-  # if (length(grep("resolve:", portaria)) == 0) {
+  # Regra para caso de cultivares
   if (length(casos(portaria)) == 0) {
     # 'proteção:'
     padrao <- 'Nº ?[0-9]+\\.?[0-9]*'
     inicios <- c(grep(padrao, portaria), length(portaria))
+    numeros <- stringr::str_extract(portaria, padrao) %>% extract(!is.na(.))
 
-    nomes <- paste("DECISÃO", stringr::str_extract(portaria, padrao) %>%
-                     extract(!is.na(.)),
-                   stringr::str_sub(portaria[1], 11))
+    nomes <- paste0("DECISÃO ", numeros, ', ',
+                    stringr::str_extract(portaria[1], 'DE .+ [0-9]{4}'))
 
     cabeca <- paste0(portaria[2:( inicios[1]-1 )], collapse = " ")
 
@@ -271,10 +267,10 @@ multipla_para_individualizada <- function(portaria) {
   } else {
     padrao <- 'Nº ?[0-9]+\\.?[0-9]*'
     inicios <- c(grep(padrao, portaria), length(portaria))
+    numeros <- stringr::str_extract(portaria, padrao) %>% extract(!is.na(.))
 
-    nomes <- paste("PORTARIA", stringr::str_extract(portaria, padrao) %>%
-                     extract(!is.na(.)),
-                   stringr::str_sub(portaria[1], 11))
+    nomes <- paste0("PORTARIA ", numeros, ', ',
+                    stringr::str_extract(portaria[1], 'DE .+ [0-9]{4}'))
 
     cabeca <- paste0(portaria[2:( inicios[1]-1 )], collapse = " ")
 
