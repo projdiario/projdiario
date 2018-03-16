@@ -7,15 +7,98 @@
 #'
 #' @export
 procurar_inicio <- function(vetor, termo) {
-  termo_sem_regex <- stringr::str_replace_all(termo, "\\[.+?\\]", "") %>%
-    stringr::str_replace_all("\\{.+?\\}", "") %>%
-    stringr::str_replace_all("[+^?*]", "")
-  indice <- stringr::str_which(stringr::str_sub(vetor, 1,
-                                                stringr::str_length(termo_sem_regex)),
-                               termo)
+  stringr::str_which(vetor, paste0('^', termo))
+}
 
-  # retorna ínidice em que letras iniciais batem com o termo
-  indice
+#' Remover erros de interpretacao (parse) do texto
+#'
+#' @param texto O texto que sera limpo
+#'
+#' @return O mesmo texto limpo
+#' @export
+limpar_texto <- function(texto) {
+  # texto = c('SECRETARIA DE DEFESA AGROPECUARIA', 'PORTARIA No- 23 de 24 de maio de 2016',
+  #           'O SECRETARIO LALALALALALA no uso de suas atri-', 'buições decide:',
+  #           'Art. 1o - Designar fulano para alksdjalsjdlak',
+  #           'Art. 2° - parara: ', 'I- lalala', 'FULANO DE TAL', 'SECRETARIO SDA')
+  texto %>% stringr::str_replace_all("N(o-|°-|°)? ?(?=[0-9])", "Nº ") %>%
+    stringr::str_replace_all("(?<=[0-9])(o-|o|°-|°) ?", "º ") %>%
+    stringr::str_replace_all("(?<=[0-9])(a-|a) ?", "ª ") %>%
+    stringr::str_trim("both") %>%
+    # extract(!stringr::str_detect(., "Este documento pode ser verificado no endereço")) %>%
+    eliminar_quebras() %>%
+    stringr::str_trim("both") %>%
+    extract(. != "")
+}
+
+#' Eliminar quebras indesejadas
+#'
+#' @param texto Texto que tera as quebras de linhas erradas eliminadas
+#'
+#' @return O mesmo texto sem as quebras indesejadas
+#'
+#' @examples
+#' eliminar_quebras('Um texto com \n2 quebras de linha\n')
+#'
+#' @export
+eliminar_quebras <- function(texto) {
+  # texto = 'Um monte de quebras Nº \n21000....'
+  # texto = 'Multiplas\n quebras de linhas\n na mesma \nstring'
+  # texto = string7
+  entrou_colapsado <- length(texto) == 1
+  texto <- paste0(texto, collapse = "\n") %>%
+    stringr::str_replace_all('-\\n', '') %>%
+    stringr::str_replace_all('(?<=,)\\n', ' ') %>%
+    stringr::str_replace_all('(?<=\\s(DO|NO))\\n', ' ') %>%
+    stringr::str_replace_all('\\n ?(?=[a-z][^\\)-])', ' ') %>%
+    stringr::str_replace_all('(?<![;:\\.]) ?\\n ?(?=[0-9]{2,})', ' ') %>%
+    stringr::str_replace_all('(?<=[0-9][\\.,\\/]) ?\\n ?(?=[0-9])', '') %>%
+    stringr::str_replace_all('[ ]{2,}', ' ')
+
+
+  # Casos ruins
+  # X Quebra depois de ',', '-', 'DO' ou 'NO'.
+  # X Quebra antes de '[a-z]' (frase quebrada no meio),
+  ## X '([0-9](.|-/\)[0-9]+)' (número de processo ou RG ou CPF),
+  ##
+
+  # Casos bons
+  # Quebra depois de '.', ';', ':',
+  # '\nDetermina que' (Quebra antes de letra maiúscula),
+  # 'II)', 'ii)', 'a)', 'A)',
+  # '1. asdklajsdkla.\n# 2. asiodasjlkda.'
+
+
+  if (entrou_colapsado) {
+    res <- texto # devolver com tamanho 1
+  } else {
+    res <- strsplit(texto, "\\n")[[1]] # devolver como vetor
+  }
+  res
+
+  # regex_boas <- '\\n[a-zA-Z]{1,3} ?[\\)\\.-]|\\n[IVXCDLivxcld]+ ?[\\)\\.-]|\\n[A-Z]|\\n[0-9]{1,2} ?[\\)\\.-]'
+  # quebras_boas <- stringr::str_locate_all(texto, regex_boas)[[1]]
+  #
+  # for (i in sort(seq_len(nrow(quebras_boas)), TRUE)) {
+  #   stringr::str_sub(texto, quebras_boas[i, , drop = FALSE]) <- stringr::str_sub(texto, quebras_boas[i, , drop = FALSE]) %>%
+  #     stringr::str_replace_all('\\n', '{quebra}')
+  # } # texto
+  #
+  # quebras <- stringr::str_locate_all(texto, '\n ?[[:alnum:]]')[[1]]
+  # while (length(quebras) > 0) {
+  #   encontrado <- stringr::str_sub(texto, quebras)
+  #   if (stringr::str_detect(encontrado[1], ' ')) {
+  #     trecho <- quebras[1, ] - c(0, 2)
+  #   } else {
+  #     trecho <- quebras[1, ] - c(0, 1)
+  #   }
+  #   stringr::str_sub(texto, trecho[1], trecho[2]) <- ''
+  #   quebras <- stringr::str_locate_all(texto, '\n ?[[:alnum:]]')[[1]]
+  # }
+  #
+  # res <- texto %>% stringr::str_replace_all('\\{quebra\\}', '\n')
+  # res <- ifelse(colapsar, strsplit(texto, "\\n") %>% extract2(1), texto)
+  # res
 }
 
 #' Qual faixa de b (limite) contem a (conteudo)?
@@ -85,43 +168,6 @@ texto_para_html <- function(texto, orgao) {
     gsub("\\r" , "", .) %>%
     paste0("<p>MINISTÉRIO DA AGRICULTURA, PECUÁRIA E ABASTECIMENTO</p>",
           "<p>", orgao,"</p>", .)
-}
-
-#' Eliminar quebras indesejadas
-#'
-#' @param texto Texto que tera as quebras de linhas erradas eliminadas
-#'
-#' @return O mesmo texto sem as quebras indesejadas
-#'
-#' @examples
-#' eliminar_quebras('Um texto com \n2 quebras de linha\n')
-#'
-#' @export
-eliminar_quebras <- function(texto) {
-  # texto = 'Um monte de quebras Nº \n21000....'
-  # texto = 'Multiplas\n quebras de linhas\n na mesma \nstring'
-  # texto = string7
-  regex_boas <- '\\n[a-zA-Z]{1,3} ?[\\)\\.-]|\\n[IVXCDLivxcld]+ ?[\\)\\.-]|\\n[A-Z]|\\n[0-9]{1,2} ?[\\)\\.-]'
-  quebras_boas <- stringr::str_locate_all(texto, regex_boas)[[1]]
-
-  for (i in sort(seq_len(nrow(quebras_boas)), TRUE)) {
-    stringr::str_sub(texto, quebras_boas[i, , drop = FALSE]) <- stringr::str_sub(texto, quebras_boas[i, , drop = FALSE]) %>%
-      stringr::str_replace_all('\\n', '{quebra}')
-  } # texto
-
-  quebras <- stringr::str_locate_all(texto, '\n ?[[:alnum:]]')[[1]]
-  while (length(quebras) > 0) {
-    encontrado <- stringr::str_sub(texto, quebras)
-    if (stringr::str_detect(encontrado[1], ' ')) {
-      trecho <- quebras[1, ] - c(0, 2)
-    } else {
-      trecho <- quebras[1, ] - c(0, 1)
-    }
-    stringr::str_sub(texto, trecho[1], trecho[2]) <- ''
-    quebras <- stringr::str_locate_all(texto, '\n ?[[:alnum:]]')[[1]]
-  }
-
-  texto %>% stringr::str_replace_all('\\{quebra\\}', '\n')
 }
 
 #' Cria um objeto para cada portaria em objeto de portarias multiplas

@@ -5,5 +5,5 @@ ato2 <- c("DESPACHO DO SECRETÁRIO EXECUTIVO", "Em 22 de fevereiro de 2017", "  
 
 test_that("pega_numero() funciona como esperado", {
   expect_equal(pegar_numero(ato1), '00000016')
-  expect_equal(pegar_numero(ato2), '      NA')
+  expect_equal(pegar_numero(ato2), NA_character_)
 })

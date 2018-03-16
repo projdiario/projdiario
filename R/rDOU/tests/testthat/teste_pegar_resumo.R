@@ -1,7 +1,9 @@
 context('pegar_resumo()')
 
-arquivos <- lapply(list(1:4, 5:10, 11:18, 19:20, 21:23, 24:28),
-                   function(indice) dir('exemplos', full.names = TRUE)[indice])
+arquivos <- lapply(list(1:4, 5:10, 11:18, 19:20, 21:23, 24:28), function(indice) {
+  dir('exemplos', full.names = TRUE)[indice + 1]
+  # + 1 incluído para ignorar nome da pasta que vem ao inicio
+  })
 
 tmp1 <- pegar_normas_dou(arquivos[[3]]) %>% criar_tabela_app()
 tmp2 <- pegar_normas_dou(arquivos[[5]]) %>% criar_tabela_app()
@@ -17,9 +19,9 @@ test_that('Resumos são como esperados', {
   resumo3 <- '<p>Na Portaria GAB/SFA/RJ Nº 103, de 30 de Março de 2017, publicada no D.O.U. de 03 de Abril de 2017, seção 2, página 7, Onde se lê: \"...acrescido de 17% (dezessete po cento) relativos à Gratificação Adicional por Tempo de Serviço...\", leia-se: \"...acrescido de 20% (vinte por cento) relativos à Gratificação Adicional por Tempo de Serviço...\".</p>'
   resumo4 <- '<p>Designa a servidora MÔNICA AROUCHE LIMA, ocupante do cargo de Agente Administrativo, matrícula SIAPE nº 1829705, pertencente ao Quadro de Pessoal deste Ministério, para exercer o encargo de Substituto de Chefe da Divisão FCPE 101.2 BRUNO RAPHAEL RIBEIRO GUIMARÃES, matrícula SIAPE 1465514, desta Superintendência, nos seus afastamentos e impedimentos legais e regulamentares.</p>'
   expect_equivalent(normas$TXT_EMENTA[4], resumo1)
-  expect_equivalent(normas$TXT_EMENTA[22], resumo2)
-  expect_equivalent(normas$TXT_EMENTA[24], resumo3)
-  expect_equivalent(normas$TXT_EMENTA[18], resumo4)
+  expect_equivalent(normas$TXT_EMENTA[23], resumo2)
+  expect_equivalent(normas$TXT_EMENTA[25], resumo3)
+  expect_equivalent(normas$TXT_EMENTA[19], resumo4)
 })
 
 

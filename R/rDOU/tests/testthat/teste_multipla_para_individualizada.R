@@ -13,8 +13,10 @@ esperado <- c( "PORTARIA Nº 1 DE 25 DE FEVEREIRO DE 2017\nO FULANO resolve:\n B
                "PORTARIA Nº 2 DE 25 DE FEVEREIRO DE 2017\nO FULANO resolve:\n TAL COISA:\nArt. 1 - FAZ ISSO\nArt. 2 - FAZ AQUILO\nEstas portarias entram em vigor a partir desta data",
                "PORTARIA Nº 3 DE 25 DE FEVEREIRO DE 2017\nO FULANO resolve:\n LOREM IPSUM\nEstas portarias entram em vigor a partir desta data")
 
-arquivos <- lapply(list(1:4, 5:10, 11:18, 19:20, 21:23, 24:28),
-                   function(indice) dir('exemplos', full.names = TRUE)[indice])
+arquivos <- lapply(list(1:4, 5:10, 11:18, 19:20, 21:23, 24:28), function(indice) {
+  dir('exemplos', full.names = TRUE, include.dirs = FALSE)[indice + 1]
+  # + 1 incluído para ignorar nome da pasta que vem ao inicio
+  })
 
 tmp1 <- pegar_normas_dou(arquivos[[3]]) %>% criar_tabela_app()
 tmp2 <- pegar_normas_dou(arquivos[[5]]) %>% criar_tabela_app()

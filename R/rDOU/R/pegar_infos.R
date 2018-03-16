@@ -221,8 +221,8 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
   encodificacao <- 'latin1'
 
   conteudo <- lapply(arquivos, readLines, encoding = encodificacao) %>% unlist()
-
-  lim_orgaos <- grep("\\.\\.\\.*? *?[0-9]+", readLines(arquivos[1], encoding = encodificacao)) %>% range()
+  pag1 <- readLines(arquivos[1], encoding = encodificacao)
+  lim_orgaos <- grep("[\\.]{2,} *?[0-9]+", pag1) %>% range()
   orgaos <- conteudo[lim_orgaos[1]:lim_orgaos[2]] %>% paste(collapse = "") %>%
     stringr::str_split("\\.") %>%
     extract2(1) %>% extract(. != "") %>%
@@ -276,12 +276,8 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
   # ministerios <- c("Agricultura", "Meio", "Saúde")
   ministerios <- c("Agricultura")
 
-  ###
   conteudo_limpo <- lapply(ministerios, conteudo_orgao) %>% unlist() %>%
-    stringr::str_replace_all("No-", "Nº") %>%
-    stringr::str_trim("both") %>%
-    extract(!stringr::str_detect(., "Este documento pode ser verificado no endereço")) %>%
-    extract(. != "") %>% c("") # linha que não aparece pela forma do loop
+    rDOU:::limpar_texto() %>% c("") # linha que não aparece pela forma do loop
 
   # 3 - fazer busca pelo inicio dos atos
   # padrão TIPO DE ATO ao inicio da linha
@@ -335,14 +331,7 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
   lista_atos <- vector("list", length(atos) - 1)
 
   for (i in seq_along(lista_atos)) {
-    lista_atos[[i]] <- conteudo_limpo[indices_limpos[[i]]] %>%
-      paste0(collapse = "\n")%>%
-      gsub(pattern = "o-", replacement = "º") %>%
-      gsub(pattern = "°-", replacement = "º") %>%
-      gsub(pattern = "°", replacement = "º") %>%
-      gsub(pattern = "-\\n", replacement = "") %>%
-      gsub(pattern = ",\\n", replacement = ", ") %>%
-      strsplit("\\n") %>% extract2(1)
+    lista_atos[[i]] <- conteudo_limpo[indices_limpos[[i]]]
   }
 
   data_dou <- stringr::str_extract(arquivos, "[0-9]{4}_[0-9]{2}_[0-9]{2}") %>%
