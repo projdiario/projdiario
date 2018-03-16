@@ -72,7 +72,7 @@ test_that('Informações são extraídas exatamente como esperado', {
   # Número da norma
   expect_gabarito('NUM_ATO', 'NR_ATO')
   # # Tipo da norma
-  # expect_gabarito('SGL_TIPO', 'SG_TIPO')
+  expect_gabarito('SGL_TIPO', 'SG_TIPO')
   # Ano da norma
   expect_gabarito('VLR_ANO', 'AN_ATO')
   # Órgãos emissor

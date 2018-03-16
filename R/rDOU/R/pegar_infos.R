@@ -110,17 +110,24 @@ pegar_resumo <- function (ato) {
 #'
 #' @export
 pegar_tipo <- function(ato, retorno = 'txt') {
+  primeira_linha <- ato[[1]]
+  regex_tipo <- '([A-ZÃÕÁÉÍÓÚÂÊÎÔÛÇ]+( )?)+'
+  termo_busca <- primeira_linha %>% stringr::str_to_upper() %>%
+    stringr::str_extract(regex_tipo) %>%
+    stringr::str_replace_all('MINIST.*', '') %>%
+    stringr::str_replace_all('SECRETÁR.*', '') %>%
+    stringr::str_replace_all('DIRETOR.*', '') %>%
+    stringr::str_replace_all('COORDENADOR.*', '') %>%
+    stringr::str_replace_all(' D[AEO]S? ?$', '') %>%
+    stringr::str_trim('both')
 
-  para_buscar <- stringr::str_to_upper(ato[[1]]) %>% stringr::str_extract('[A-Z]+ ?[A-Z]* ?[A-Z]*')
-
-  distancia <- RecordLinkage::levenshteinSim(para_buscar, dic_tipos$DES_TIPO)
-
-  res <- dic_tipos$DES_TIPO[distancia == max(distancia)]
+  distancia <- rDOU:::levsim(termo_busca, dic_tipos$DES_TIPO)
+  maior <- which(distancia == max(distancia))[[1]]
+  res <- dic_tipos$DES_TIPO[maior]
 
   retorno <- match.arg(retorno, c('txt', 'cod'))
-
   if (retorno == 'txt') {
-    res <- dic_tipos$SGL_TIPO[dic_tipos$DES_TIPO == res]
+    res <- dic_tipos$SGL_TIPO[maior]
   } else {
     res <- switch (res,
                    "LEI" = 'A',"PORTARIA" = 'A', "DESPACHO" = 'A',
@@ -130,7 +137,6 @@ pegar_tipo <- function(ato, retorno = 'txt') {
                    NA_character_
     )
   }
-
   res
 }
 
