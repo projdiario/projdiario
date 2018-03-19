@@ -82,9 +82,11 @@ test_that('Informações são extraídas exatamente como esperado', {
   # Título da norma
   expect_gabarito('DES_TITULO', 'DS_TITULO')
   # # Página em que a norma foi encontrada
-  # expect_gabarito('NUM_PAGINA', 'NM_PAGINA')
+  expect_gabarito('NUM_PAGINA', 'NM_PAGINA')
   # Seção do DOU
   expect_gabarito('ID_TIPO_SECAO', 'ID_TIPO_SECAO')
+  # NUM_PAGINA é ordenado e crescente
+  expect_equal(map_lgl(tabelas, ~all(diff(.x$NUM_PAGINA) >= 0)), rep(TRUE, 4))
 })
 
 # COMPARARAR (==) TODOS OS CAMPOS

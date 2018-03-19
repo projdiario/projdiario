@@ -295,7 +295,7 @@ multipla_para_individualizada <- function(portaria) {
   individualizadas
 }
 
-novas_observacoes <- function(lista_de_indices, df) {
+novas_observacoes <- function(lista_de_indices, df, arquivos) {
   multiplas <- lapply(df$TXT_TEXTO[lista_de_indices], function(x) {
     stringr::str_split(x, "\n")[[1]]
   })
@@ -328,7 +328,7 @@ novas_observacoes <- function(lista_de_indices, df) {
     TXT_EMENTA = purrr::map(novas_vetor, ~strsplit(.x, '\n')[[1]]) %>%
       sapply(pegar_resumo, USE.NAMES = FALSE),
     DES_TITULO = sapply(novas_vetor, pegar_titulo, USE.NAMES = FALSE),
-    NUM_PAGINA = repete_dado("NUM_PAGINA"),
+    NUM_PAGINA = sapply(novas_vetor, pegar_pagina, arquivos, USE.NAMES = FALSE),
     ID_TIPO_SECAO = repete_dado("ID_TIPO_SECAO")
   )
 

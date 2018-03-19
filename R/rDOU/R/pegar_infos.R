@@ -166,46 +166,41 @@ pegar_titulo <- function(ato) {
 #'
 #' @export
 pegar_pagina <- function(ato, arquivos) {
-  for (arq in arquivos) {
-    arq2 <- readLines(arq) %>% stringr::str_replace_all("No-",
-                                                        "Nº") %>% stringr::str_trim("both") %>% extract(!stringr::str_detect(.,
-                                                                                                                             "Este documento pode ser verificado no endereço")) %>%
-      extract(. != "") %>% c("") %>% paste0(collapse = "\\n") %>%
-      gsub(pattern = "o-", replacement = "º") %>% gsub(pattern = "°-",
-                                                       replacement = "º") %>% gsub(pattern = "°", replacement = "º") %>%
-      gsub(pattern = "-\\\\n", replacement = "") %>%
-      gsub(pattern = ",\\\\n", replacement = ", ") %>%
-      strsplit("\\\\n") %>% extract2(1)
-    if (all(ato %in% arq2)) {
-      return(stringr::str_extract(arq, "pg[0-9]{3}") %>%
-               sub(pattern = "pg", replacement = "") %>% as.numeric())
-    }
+  if (length(ato) == 1) {
+    ato <- stringr::str_split(ato, '\n')[[1]]
   }
-  cont <- 1
+
+  exrtair_pagina <- function(x) {
+    stringr::str_extract(x, "pg[0-9]{3}") %>%
+      sub(pattern = "pg", replacement = "") %>%
+      as.numeric()
+  }
+
+  titulo_buscado <- pegar_titulo(ato)
+
   paginas <- integer(length(arquivos))
-  for (arq in arquivos) {
-    arq2 <- readLines(arq) %>% stringr::str_replace_all("No-",
-                                                        "Nº") %>% stringr::str_trim("both") %>% extract(!stringr::str_detect(.,
-                                                                                                                             "Este documento pode ser verificado no endereço")) %>%
-      extract(. != "") %>% c("") %>% paste0(collapse = "\\n") %>%
-      gsub(pattern = "o-", replacement = "º") %>% gsub(pattern = "°-",
-                                                       replacement = "º") %>% gsub(pattern = "°", replacement = "º") %>%
-      gsub(pattern = "-\\\\n", replacement = "") %>%
-      gsub(pattern = ",\\\\n", replacement = ", ") %>%
-      strsplit("\\\\n") %>% extract2(1)
-    paginas[cont] <- sum(ato %in% arq2)
-    cont <- cont + 1
+
+  for (i in seq_along(arquivos)) {
+    texto <- readLines(arquivos[i], encoding = 'latin1') %>% limpar_texto()
+
+    if (all(ato %in% texto)) {
+      return(exrtair_pagina(arquivos[i]))
+    }
+
+    if (any(texto == titulo_buscado) && titulo_buscado != 'RETIFICAÇÃO') {
+      return(exrtair_pagina(arquivos[i]))
+    }
+
+    paginas[i] <- sum(unique(ato) %in% unique(texto))
   }
-  resp <- stringr::str_extract(arquivos[which.max(paginas)],
-                               "pg[0-9]{3}") %>% sub(pattern = "pg", replacement = "") %>%
-    as.numeric()
+
+  resp <- exrtair_pagina(arquivos[which.max(paginas)])
   if (!is.na(resp)) {
     return(resp)
   }
   else {
-    warning("Este ato não foi encontrado em nenhuma página",
-            call. = FALSE)
-    NA
+    warning("Este ato não foi encontrado em nenhuma página", call. = FALSE)
+    return(NA_real_)
   }
 }
 
@@ -364,32 +359,33 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
 
 #' Tabela para Validação na Aplicação
 #'
-#' @param lista_de_atos
+#' @param lista_de_normas
 #'
 #' @return tabela com informações que precisam ser validadas na aplicação
 #' @export
-criar_tabela_app <- function(lista_de_atos) {
+criar_tabela_app <- function(lista_de_normas) {
+  arquivos <- attr(lista_de_normas, 'arquivos')
 
   normas <- tibble::tibble(
-    NUM_ATO = sapply(lista_de_atos, pegar_numero, USE.NAMES = FALSE), # Ok
-    SGL_TIPO = sapply(lista_de_atos, pegar_tipo, USE.NAMES = FALSE), # Ok
-    VLR_ANO = attr(lista_de_atos, 'data_dou') %>% lubridate::year() %>% as.character(), # Deriva de DTA_PROMULGACAO
-    SGL_ORGAO = attr(lista_de_atos, 'orgao'), # Ok
-    COD_TIPO = sapply(lista_de_atos, pegar_tipo, 'cod', USE.NAMES = FALSE), # tem que derivar do tipo
-    TXT_TEXTO = sapply(lista_de_atos, paste, collapse = "\n", USE.NAMES = FALSE), # Ok
-    DTA_PROMULGACAO = attr(lista_de_atos, 'data_dou'), # Ok
-    TXT_EMENTA = sapply(lista_de_atos, pegar_resumo, USE.NAMES = FALSE), # A principio fora
-    DES_TITULO = sapply(lista_de_atos, pegar_titulo, USE.NAMES = FALSE),
-    NUM_PAGINA = sapply(lista_de_atos, pegar_pagina, attr(lista_de_atos, 'arquivos'), USE.NAMES = FALSE),
-    ID_TIPO_SECAO = attr(lista_de_atos, 'secao')
+    NUM_ATO = sapply(lista_de_normas, pegar_numero, USE.NAMES = FALSE), # Ok
+    SGL_TIPO = sapply(lista_de_normas, pegar_tipo, USE.NAMES = FALSE), # Ok
+    VLR_ANO = attr(lista_de_normas, 'data_dou') %>% lubridate::year() %>% as.character(), # Deriva de DTA_PROMULGACAO
+    SGL_ORGAO = attr(lista_de_normas, 'orgao'), # Ok
+    COD_TIPO = sapply(lista_de_normas, pegar_tipo, 'cod', USE.NAMES = FALSE), # tem que derivar do tipo
+    TXT_TEXTO = sapply(lista_de_normas, paste, collapse = "\n", USE.NAMES = FALSE), # Ok
+    DTA_PROMULGACAO = attr(lista_de_normas, 'data_dou'), # Ok
+    TXT_EMENTA = sapply(lista_de_normas, pegar_resumo, USE.NAMES = FALSE), # A principio fora
+    DES_TITULO = sapply(lista_de_normas, pegar_titulo, USE.NAMES = FALSE),
+    NUM_PAGINA = sapply(lista_de_normas, pegar_pagina, arquivos, USE.NAMES = FALSE),
+    ID_TIPO_SECAO = attr(lista_de_normas, 'secao')
   )
 
-  remover <- c(grep("PORTARIAS", normas$DES_TITULO),
-               grep("DECISÕES", normas$DES_TITULO),
-               grep("RETIFICAÇÕES", normas$DES_TITULO))
+  remover <- sort(c(grep("PORTARIAS", normas$DES_TITULO),
+                    grep("DECISÕES", normas$DES_TITULO),
+                    grep("RETIFICAÇÕES", normas$DES_TITULO)))
 
   if (length(remover) > 0) {
-    novas_obs <- purrr::map(remover, novas_observacoes, normas)
+    novas_obs <- purrr::map(remover, novas_observacoes, normas, arquivos)
 
     for (i in seq_along(remover)) {
       if (!'atual' %in% ls()) {
