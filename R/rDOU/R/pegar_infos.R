@@ -54,13 +54,13 @@ pegar_limites_orgaos <- function(pagina) {
 #' @return O numero de \code{ato} com 8 digitos (completados com 0)
 #' @export
 pegar_numero <- function(ato) {
-  # Se for retificação voltar NA
+  # Se for retificaçao voltar NA
   if (grepl('RETIF', ato[1], ignore.case =  TRUE)) {
     return(NA_character_)
   }
 
   # Caso contrário retornar sem numero
-  numero <- stringr::str_extract(ato[1], "(N|n).{2,3}[0-9]+\\.?[0-9]*") %>%
+  numero <- stringr::str_extract(ato[1], "[Nn].{2,3}[0-9]+\\.?[0-9]*") %>%
     gsub(pattern = "\\.", replacement = "") %>%
     stringr::str_extract("[0-9]+") %>%
     as.numeric()
@@ -91,14 +91,14 @@ pegar_resumo <- function (ato) {
       texto <- ato[dois_pontos + 1]
     }
   }
-  texto %>%
+  resp <- texto %>%
     sub(pattern = padrao, replacement = "") %>%
     sub(pattern = "Nº ?[0-9]+\\.?[0-9]* ?-", replacement = "") %>%
     sub(pattern = "^I -", replacement = "") %>%
     sub(pattern = "[rR][ ,]", replacement = " ") %>%
     gsub(pattern = "\\s\\s", replacement = " ") %>%
-    stringr::str_trim() %>%
-    paste0('<p>', ., '</p>')
+    stringr::str_trim()
+  paste0('<p>', resp, '</p>')
 }
 
 #' Pegar tipo dos ato
@@ -121,13 +121,15 @@ pegar_tipo <- function(ato, retorno = 'txt') {
     stringr::str_replace_all(' D[AEO]S? ?$', '') %>%
     stringr::str_trim('both')
 
-  # Ajusta termo encontrado (RETIFICAÇÃO) ao termo
-  # usado no banco de dados (AVISO DE RETIFICAÇÃO)
+  # Ajusta termo encontrado (RETIFICAÇaO) ao termo
+  # usado no banco de dados (AVISO DE RETIFICAÇaO)
   if (termo_busca == 'RETIFICAÇÃO') {
     termo_busca <- 'AVISO DE RETIFICAÇÃO'
   }
 
-  distancia <- rDOU:::levsim(termo_busca, dic_tipos$DES_TIPO)
+  dic_tipos <- rDOU::dic_tipos
+
+  distancia <- levsim(termo_busca, dic_tipos$DES_TIPO)
   maior <- which(distancia == max(distancia))[[1]]
   res <- dic_tipos$DES_TIPO[maior]
 
@@ -148,13 +150,13 @@ pegar_tipo <- function(ato, retorno = 'txt') {
 
 #' Título do Ato
 #'
-#' @param ato
+#' @param ato Vetor de texto com conteudo da norma legal
 #'
 #' @return Título de um ato de seu corpo de texto
 #'
 #' @export
 pegar_titulo <- function(ato) {
-  # primeira linha de todo ato é seu título
+  # primeira linha de todo ato e seu titulo
   titulo <- stringr::str_split(ato, '\n')[[1]][1]
   if (stringr::str_length(titulo) > 400) {
     stringr::str_sub(titulo, 1, 400)
@@ -163,7 +165,7 @@ pegar_titulo <- function(ato) {
   }
 }
 
-#' Número da Página do ato
+#' Numero da Pagina do ato
 #'
 #' @param ato um vetor com o conteudo de um ato
 #' @param arquivos vetor com caminho dos arquivos em que o ato pode estar
@@ -212,7 +214,7 @@ pegar_pagina <- function(ato, arquivos) {
 
 #' Pega todos os dados de todos os atos de um dia do DOU (txt)
 #'
-#' @param debug A função está sendo debugada?
+#' @param debug A funçao está sendo debugada?
 #' @param arquivos um vetor com os caminhos dos arquivos (.txt) de um dia do DOU
 #'
 #' @return Uma lista com todas as normas extraidas do DOU e algumas mata-informações
@@ -231,8 +233,8 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
   pag1 <- readLines(arquivos[1], encoding = encodificacao)
   lim_orgaos <- grep("[\\.]{2,} *?[0-9]+", pag1) %>% range()
   orgaos <- conteudo[lim_orgaos[1]:lim_orgaos[2]] %>% paste(collapse = "") %>%
-    stringr::str_split("\\.") %>%
-    extract2(1) %>% extract(. != "") %>%
+    stringr::str_split("\\.") %>% extract2(1)
+  orgaos <- orgaos[orgaos != ""] %>%
     stringr::str_replace_all("[0-9]+", "") %>% stringr::str_trim()
 
   # 2 - Delimitar atos dos Ministérios
@@ -244,8 +246,8 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
       gsub(pattern = "</?tr>", replacement = "") %>%
       gsub(pattern = "</?td>", replacement = "")
     if (any(grepl(padrao, orgaos))) {
-      alvo <- procurar_inicio(conteudo_orig, padrao) %>%
-        extract(which(!grepl(pattern = "[0-9]+", conteudo[. + 1])))
+      alvo <- procurar_inicio(conteudo_orig, padrao)
+      alvo <- alvo[grep(pattern = "\\D+", conteudo[alvo + 1])]
       if (length(alvo) > 1) {
         alvo <- alvo[alvo > 30][1]
       }
@@ -253,17 +255,17 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
         stringr::str_extract("Ministério [[:alpha:]]+ [[:alpha:]]+")
 
       suppressWarnings({
-        prox_alvo <- procurar_inicio(conteudo_orig, nome_prox_alvo) %>%
-          extract(. > alvo) %>% min()
+        prox_alvo <- procurar_inicio(conteudo_orig, nome_prox_alvo)
+        prox_alvo <- prox_alvo[prox_alvo > alvo] %>% min()
       })
 
       if (is.infinite(prox_alvo)) {
         suppressWarnings({
-          prox_alvo <- procurar_inicio(conteudo_orig, paste0("\t", nome_prox_alvo)) %>%
-            extract(. > alvo) %>% min()
+          prox_alvo <- procurar_inicio(conteudo_orig, paste0("\t", nome_prox_alvo))
+          prox_alvo <- prox_alvo[prox_alvo > alvo] %>% min()
         })
       }
-      # Se falhou até então erro na conversão é muito provável
+      # Se falhou até entao erro na conversao é muito provável
       if (is.infinite(prox_alvo)) {
         message('O início do Ministério subsequente ao Ministério alvo não foi encontrado no ',
                 SECAO, ' de ', DATA,'.\n',
@@ -284,20 +286,20 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
   ministerios <- c("Agricultura")
 
   conteudo_limpo <- lapply(ministerios, conteudo_orgao) %>% unlist() %>%
-    rDOU:::limpar_texto() %>% c("") # linha que não aparece pela forma do loop
+    limpar_texto() %>% c("") # linha que nao aparece pela forma do loop
 
   # 3 - fazer busca pelo inicio dos atos
-  # padrão TIPO DE ATO ao inicio da linha
+  # padrao TIPO DE ATO ao inicio da linha
 
   # tipo de ATO
   # Lei
   # Decreto
-  # DECISÃO
+  # DECISaO
   # PORTARIAS DE XX
   # PORTARIA Nº XXX
   # DESPACHO
-  # RETIFICAÇÃO[ÕES]
-  # INSTRUÇÃO
+  # RETIFICAÇaO[ÕES]
+  # INSTRUÇaO
   # RESOLUÇÃO
   # ATO
   # ATA
@@ -345,7 +347,8 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
     as.Date(format = "%Y_%m_%d") %>% unique()
 
   meio <- arquivos[1] %>% stringr::str_split('/') %>%
-    extract2(1) %>% extract(length(.)) %>% stringr::str_sub(1, 4)
+    extract2(1)
+  meio <- meio %>% extract(length(meio)) %>% stringr::str_sub(1, 4)
   tipo_secao <- switch(meio, "DOU1" = 1, "DOU2" = 2, "DOU3" = 3,
                        "DOUE" = 4, # Edição extra
                        "DOUS" = 5,  NA) # Suplemento e caso padrão
@@ -365,7 +368,7 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
 
 #' Tabela para Validação na Aplicação
 #'
-#' @param lista_de_normas
+#' @param lista_de_normas Lista de normas retornada pela função \code{pegar_normas_dou}.
 #'
 #' @return tabela com informações que precisam ser validadas na aplicação
 #' @export
@@ -426,7 +429,7 @@ criar_tabela_app <- function(lista_de_normas) {
 #' @param pastas Vetor com pastas em que se encontram as paginas txt de uma unidade do DOU
 #' @param debug Debugando?
 #'
-#' @return
+#' @return \code{TRUE} caso tenha escrito no banco ou erro
 #' @export
 #'
 parsear_e_escrever <- function(conexao, pastas, debug = FALSE) {
@@ -437,8 +440,8 @@ parsear_e_escrever <- function(conexao, pastas, debug = FALSE) {
     maior_id <- max(as.numeric(parseadas$ID))
 
     datas <- parseadas$DTA_PROMULGACAO %>% substr(1, 10) %>%
-      as.Date(format = '%Y-%m-%d') %>% format(format = "%Y/%B/%d") %>%
-      paste0('DOU', parseadas$ID_TIPO_SECAO, '/',.) %>%
+      as.Date(format = '%Y-%m-%d') %>% format(format = "%Y/%B/%d")
+    datas <- paste0('DOU', parseadas$ID_TIPO_SECAO, '/', datas) %>%
       unique()
 
     pastas_lidas <- purrr::map(datas, grep, pastas) %>% Reduce(f = c)
@@ -494,15 +497,17 @@ levsim <- function (str1, str2) {
 
 #' Pegar Sigla do Orgao
 #'
-#' @param nome_orgao
+#' @param nome_orgao Nome do orgao cuja sigla sera buscada
 #'
 #' @return A sigla do orgao passado como argumento
 #'
-#' @examples
 pegar_sigla_orgao <- function(nome_orgao) {
   if (length(nome_orgao) > 1) {
     return(purrr::map_chr(nome_orgao, pegar_sigla_orgao))
   }
+
+  dic_orgaos <- rDOU::dic_orgaos
+
   distancia <- levsim(nome_orgao, dic_orgaos$DES_ORGAO)
   dic_orgaos$SGL_ORGAO[distancia == max(distancia)][[1]]
 }

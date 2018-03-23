@@ -17,18 +17,15 @@ procurar_inicio <- function(vetor, termo) {
 #' @return O mesmo texto limpo
 #' @export
 limpar_texto <- function(texto) {
-  # texto = c('SECRETARIA DE DEFESA AGROPECUARIA', 'PORTARIA No- 23 de 24 de maio de 2016',
-  #           'O SECRETARIO LALALALALALA no uso de suas atri-', 'buições decide:',
-  #           'Art. 1o - Designar fulano para alksdjalsjdlak',
-  #           'Art. 2° - parara: ', 'I- lalala', 'FULANO DE TAL', 'SECRETARIO SDA')
-  texto %>% stringr::str_replace_all("N(o|o-|°-|°)? ?(?=[0-9])", "Nº ") %>%
+  resp <- texto %>% stringr::str_replace_all("N(o|o-|°-|°)? ?(?=[0-9])", "Nº ") %>%
     stringr::str_replace_all("(?<=[0-9])(o-|o|°-|°) ?", "º ") %>%
     stringr::str_replace_all("(?<=[0-9])(a-|a) ?", "ª ") %>%
     stringr::str_trim("both") %>%
     # extract(!stringr::str_detect(., "Este documento pode ser verificado no endereço")) %>%
     eliminar_quebras() %>%
-    stringr::str_trim("both") %>%
-    extract(. != "")
+    stringr::str_trim("both")
+
+  resp[resp != ""]
 }
 
 #' Eliminar quebras indesejadas
@@ -42,9 +39,6 @@ limpar_texto <- function(texto) {
 #'
 #' @export
 eliminar_quebras <- function(texto) {
-  # texto = 'Um monte de quebras Nº \n21000....'
-  # texto = 'Multiplas\n quebras de linhas\n na mesma \nstring'
-  # texto = string7
   entrou_colapsado <- length(texto) == 1
   texto <- paste0(texto, collapse = "\n") %>%
     stringr::str_replace_all('-\\n', '') %>%
@@ -54,7 +48,6 @@ eliminar_quebras <- function(texto) {
     stringr::str_replace_all('(?<![;:\\.]) ?\\n ?(?=[0-9]{2,})', ' ') %>%
     stringr::str_replace_all('(?<=[0-9][\\.,\\/]) ?\\n ?(?=[0-9])', '') %>%
     stringr::str_replace_all('[ ]{2,}', ' ')
-
 
   # Casos ruins
   # X Quebra depois de ',', '-', 'DO' ou 'NO'.
@@ -75,38 +68,14 @@ eliminar_quebras <- function(texto) {
     res <- strsplit(texto, "\\n")[[1]] # devolver como vetor
   }
   res
-
-  # regex_boas <- '\\n[a-zA-Z]{1,3} ?[\\)\\.-]|\\n[IVXCDLivxcld]+ ?[\\)\\.-]|\\n[A-Z]|\\n[0-9]{1,2} ?[\\)\\.-]'
-  # quebras_boas <- stringr::str_locate_all(texto, regex_boas)[[1]]
-  #
-  # for (i in sort(seq_len(nrow(quebras_boas)), TRUE)) {
-  #   stringr::str_sub(texto, quebras_boas[i, , drop = FALSE]) <- stringr::str_sub(texto, quebras_boas[i, , drop = FALSE]) %>%
-  #     stringr::str_replace_all('\\n', '{quebra}')
-  # } # texto
-  #
-  # quebras <- stringr::str_locate_all(texto, '\n ?[[:alnum:]]')[[1]]
-  # while (length(quebras) > 0) {
-  #   encontrado <- stringr::str_sub(texto, quebras)
-  #   if (stringr::str_detect(encontrado[1], ' ')) {
-  #     trecho <- quebras[1, ] - c(0, 2)
-  #   } else {
-  #     trecho <- quebras[1, ] - c(0, 1)
-  #   }
-  #   stringr::str_sub(texto, trecho[1], trecho[2]) <- ''
-  #   quebras <- stringr::str_locate_all(texto, '\n ?[[:alnum:]]')[[1]]
-  # }
-  #
-  # res <- texto %>% stringr::str_replace_all('\\{quebra\\}', '\n')
-  # res <- ifelse(colapsar, strsplit(texto, "\\n") %>% extract2(1), texto)
-  # res
 }
 
 #' Qual faixa de b (limite) contem a (conteudo)?
 #'
 #' @rdname em
 #'
-#' @param conteudo
-#' @param limite
+#' @param conteudo vetor a ser analisado
+#' @param limite vetor com limites
 #'
 #' @return Em qual intervalo de \code{limite} encontra-se cada elemento de \code{conteudo}.
 #'
@@ -155,19 +124,20 @@ gerar_id <- function(df, anterior) {
 #' Transformar Texto em Parágrafos de HTML
 #'
 #' @param texto Um vetor com texto
+#' @param orgao Nome do orgao que sera inserido no texto
 #'
 #' @return O mesmo texto com as quebras de linha substituídas por tags de parágrafos \code{<p>}.
 #'         Adiciona um cabeçalho.
 #'
 #' @export
 texto_para_html <- function(texto, orgao) {
-  gsub("\\n<" , "\r<", texto) %>%
-    gsub("\\n\\s" , "\n", .) %>%
-    gsub("\\n" , "</p><p>\n", .) %>% # Aqui estou incluindo um '\n',
-    # não sei bem porque fiz isso. Vou deixar até testar
-    gsub("\\r" , "", .) %>%
-    paste0("<p>MINISTÉRIO DA AGRICULTURA, PECUÁRIA E ABASTECIMENTO</p>",
-          "<p>", orgao,"</p>", .)
+  resp <- gsub("\\n<" , "\r<", texto) %>%
+    stringr::str_replace_all("\\n\\s" , "\n") %>%
+    stringr::str_replace_all("\\n" , "</p>\n<p>") %>%
+    stringr::str_replace_all("\\r" , "")
+
+  paste0("<p>MINISTÉRIO DA AGRICULTURA, PECUÁRIA E ABASTECIMENTO</p>",
+          "<p>", orgao,"</p>", resp)
 }
 
 #' Cria um objeto para cada portaria em objeto de portarias multiplas
@@ -178,7 +148,6 @@ texto_para_html <- function(texto, orgao) {
 #'
 #' @export
 multipla_para_individualizada <- function(portaria) {
-  # portaria <- normas$DS_CONTEUDO[remover[8]] %>% stringr::str_split("\n") %>% .[[1]]
   # Função para verificar existencia de "chunks"
   casos <- function(texto){
     resolve <- grep("resolve[::punct::]", texto)
@@ -217,7 +186,8 @@ multipla_para_individualizada <- function(portaria) {
     # 'proteção:'
     padrao <- 'Nº ?[0-9]+\\.?[0-9]*'
     inicios <- c(grep(padrao, portaria), length(portaria))
-    numeros <- stringr::str_extract(portaria, padrao) %>% extract(!is.na(.))
+    numeros <- stringr::str_extract(portaria, padrao)
+    numeros <- numeros[!is.na(numeros)]
 
     nomes <- paste0("DECISÃO ", numeros, ', ',
                     stringr::str_extract(portaria[1], 'DE .+ [0-9]{4}'))
@@ -267,7 +237,8 @@ multipla_para_individualizada <- function(portaria) {
   } else {
     padrao <- 'Nº ?[0-9]+\\.?[0-9]*'
     inicios <- c(grep(padrao, portaria), length(portaria))
-    numeros <- stringr::str_extract(portaria, padrao) %>% extract(!is.na(.))
+    numeros <- stringr::str_extract(portaria, padrao)
+    numeros <- numeros[!is.na(numeros)]
 
     nomes <- paste0("PORTARIA ", numeros, ', ',
                     stringr::str_extract(portaria[1], 'DE .+ [0-9]{4}'))
@@ -334,4 +305,14 @@ novas_observacoes <- function(lista_de_indices, df, arquivos) {
 
   novas_obs
 }
+
+#' @importFrom magrittr %>%
+magrittr::`%>%`
+
+
+#' @importFrom magrittr extract
+magrittr::extract
+
+#' @importFrom magrittr extract2
+magrittr::extract2
 
