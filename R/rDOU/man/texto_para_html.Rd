@@ -4,10 +4,12 @@
 \alias{texto_para_html}
 \title{Transformar Texto em Parágrafos de HTML}
 \usage{
-texto_para_html(texto)
+texto_para_html(texto, orgao)
 }
 \arguments{
 \item{texto}{Um vetor com texto}
+
+\item{orgao}{Nome do orgao que sera inserido no texto}
 }
 \value{
 O mesmo texto com as quebras de linha substituídas por tags de parágrafos \code{<p>}.

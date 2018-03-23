@@ -7,7 +7,9 @@
 conteudo \%em\% limite
 }
 \arguments{
-\item{limite}{}
+\item{conteudo}{vetor a ser analisado}
+
+\item{limite}{vetor com limites}
 }
 \value{
 Em qual intervalo de \code{limite} encontra-se cada elemento de \code{conteudo}.

@@ -7,7 +7,7 @@
 pegar_titulo(ato)
 }
 \arguments{
-\item{ato}{}
+\item{ato}{Vetor de texto com conteudo da norma legal}
 }
 \value{
 Título de um ato de seu corpo de texto

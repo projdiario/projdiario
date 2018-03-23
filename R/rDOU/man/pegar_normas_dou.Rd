@@ -9,7 +9,7 @@ pegar_normas_dou(arquivos, debug = FALSE)
 \arguments{
 \item{arquivos}{um vetor com os caminhos dos arquivos (.txt) de um dia do DOU}
 
-\item{debug}{A função está sendo debugada?}
+\item{debug}{A funçao está sendo debugada?}
 }
 \value{
 Uma lista com todas as normas extraidas do DOU e algumas mata-informações

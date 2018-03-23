@@ -4,10 +4,10 @@
 \alias{criar_tabela_app}
 \title{Tabela para Validação na Aplicação}
 \usage{
-criar_tabela_app(lista_de_atos)
+criar_tabela_app(lista_de_normas)
 }
 \arguments{
-\item{lista_de_atos}{}
+\item{lista_de_normas}{Lista de normas retornada pela função \code{pegar_normas_dou}.}
 }
 \value{
 tabela com informações que precisam ser validadas na aplicação
