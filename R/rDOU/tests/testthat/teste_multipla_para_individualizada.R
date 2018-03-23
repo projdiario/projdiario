@@ -1,12 +1,8 @@
 context("Portarias multiplas")
 
-entrada <- c("PORTARIAS DE 25 DE FEVEREIRO DE 2017",
-             "O FULANO resolve:",
-             "Nº 1 - BLABLA",
-             "Nº 2 - TAL COISA:",
-             "Art. 1 - FAZ ISSO",
-             "Art. 2 - FAZ AQUILO",
-             "Nº 3 - LOREM IPSUM",
+entrada <- c("PORTARIAS DE 25 DE FEVEREIRO DE 2017", "O FULANO resolve:",
+             "Nº 1 - BLABLA", "Nº 2 - TAL COISA:", "Art. 1 - FAZ ISSO",
+             "Art. 2 - FAZ AQUILO", "Nº 3 - LOREM IPSUM",
              "Estas portarias entram em vigor a partir desta data")
 
 esperado <- c( "PORTARIA Nº 1, DE 25 DE FEVEREIRO DE 2017\nO FULANO resolve:\n BLABLA\nEstas portarias entram em vigor a partir desta data",
