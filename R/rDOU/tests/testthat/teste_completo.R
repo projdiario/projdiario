@@ -89,8 +89,5 @@ test_that('Informações são extraídas exatamente como esperado', {
   expect_equal(map_lgl(tabelas, ~all(diff(.x$NUM_PAGINA) >= 0)), rep(TRUE, 4))
 })
 
-# COMPARARAR (==) TODOS OS CAMPOS
-
-# QUANTOS CORRETOS (AO LONGO DOS CAMPOS)
 
 

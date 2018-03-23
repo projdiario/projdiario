@@ -121,6 +121,12 @@ pegar_tipo <- function(ato, retorno = 'txt') {
     stringr::str_replace_all(' D[AEO]S? ?$', '') %>%
     stringr::str_trim('both')
 
+  # Ajusta termo encontrado (RETIFICAÇÃO) ao termo
+  # usado no banco de dados (AVISO DE RETIFICAÇÃO)
+  if (termo_busca == 'RETIFICAÇÃO') {
+    termo_busca <- 'AVISO DE RETIFICAÇÃO'
+  }
+
   distancia <- rDOU:::levsim(termo_busca, dic_tipos$DES_TIPO)
   maior <- which(distancia == max(distancia))[[1]]
   res <- dic_tipos$DES_TIPO[maior]
