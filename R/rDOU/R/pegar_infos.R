@@ -31,12 +31,16 @@ pegar_data <- function(ato) {
 #' @export
 pegar_limites_orgaos <- function(pagina) {
   # Procurar termos na página:
-  gab <- procurar_inicio(pagina, "GABINETE") # GABINETE
-  sec <- procurar_inicio(pagina, "SECRETARIA") # SECRETARIA
-  inst <- procurar_inicio(pagina, "INSTITUTO") # INSTITUTO
-  sfa <- procurar_inicio(pagina, "SUPERINTENDÊNCIA") # SUPERINTENDÊNCIA
+  gab <- procurar_inicio(pagina, "GABINETE") # GM
+  sec <- procurar_inicio(pagina, "SECRETARIA") # Secretarias
+  inst <- procurar_inicio(pagina, "INSTITUTO") # INMET
+  sfa <- procurar_inicio(pagina, "SUPERINTENDÊNCIA") # SFAs
+  sub <- procurar_inicio(pagina, "SUBSECRETARIA") # SPOA
+  comissao <- procurar_inicio(pagina, "COMISSÃO") # CEPLAC
+  empresa <- procurar_inicio(pagina, "EMPRESA") # Embrapa
+  companhia <- procurar_inicio(pagina, "COMPANHIA") # Conab
 
-  res <- c(gab, sec, inst, sfa)
+  res <- c(gab, sec, inst, sfa, sub, comissao, empresa, companhia)
   names(res) <- pagina[res]
 
   # retorna um vetor numérico nomeado com o inicio dos orgaos
@@ -47,16 +51,26 @@ pegar_limites_orgaos <- function(pagina) {
 #'
 #' @param ato um vetor com o conteudo de um ato
 #'
-#' @return A data de \code{vetor} no formato dia DE MES_POR_EXTENSO DE ANO
+#' @return O numero de \code{ato} com 8 digitos (completados com 0)
 #' @export
 pegar_numero <- function(ato) {
-  stringr::str_extract(ato[1], "(N|n).{2,3}[0-9]+\\.?[0-9]*") %>%
+  # Se for retificaçao voltar NA
+  if (grepl('RETIF', ato[1], ignore.case =  TRUE)) {
+    return(NA_character_)
+  }
+
+  # Caso contrário retornar sem numero
+  numero <- stringr::str_extract(ato[1], "[Nn].{2,3}[0-9]+\\.?[0-9]*") %>%
     gsub(pattern = "\\.", replacement = "") %>%
     stringr::str_extract("[0-9]+") %>%
-    as.numeric() %>% formatC(width = 8, flag = 0)
+    as.numeric()
+  if (is.na(numero)) {
+    return(NA_character_)
+  }
+  formatC(numero, width = 8, flag = 0)
 }
 
-#' Pegar numero dos vetors
+#' Pegar resumo do ato
 #'
 #' @param ato um vetor com o conteudo de um ato
 #'
@@ -77,14 +91,14 @@ pegar_resumo <- function (ato) {
       texto <- ato[dois_pontos + 1]
     }
   }
-  texto %>%
+  resp <- texto %>%
     sub(pattern = padrao, replacement = "") %>%
     sub(pattern = "Nº ?[0-9]+\\.?[0-9]* ?-", replacement = "") %>%
     sub(pattern = "^I -", replacement = "") %>%
     sub(pattern = "[rR][ ,]", replacement = " ") %>%
     gsub(pattern = "\\s\\s", replacement = " ") %>%
-    stringr::str_trim() %>%
-    paste0('<p>', ., '</p>')
+    stringr::str_trim()
+  paste0('<p>', resp, '</p>')
 }
 
 #' Pegar tipo dos ato
@@ -96,17 +110,32 @@ pegar_resumo <- function (ato) {
 #'
 #' @export
 pegar_tipo <- function(ato, retorno = 'txt') {
+  primeira_linha <- ato[[1]]
+  regex_tipo <- '([A-ZÃÕÁÉÍÓÚÂÊÎÔÛÇ]+( )?)+'
+  termo_busca <- primeira_linha %>% stringr::str_to_upper() %>%
+    stringr::str_extract(regex_tipo) %>%
+    stringr::str_replace_all('MINIST.*', '') %>%
+    stringr::str_replace_all('SECRETÁR.*', '') %>%
+    stringr::str_replace_all('DIRETOR.*', '') %>%
+    stringr::str_replace_all('COORDENADOR.*', '') %>%
+    stringr::str_replace_all(' D[AEO]S? ?$', '') %>%
+    stringr::str_trim('both')
 
-  para_buscar <- stringr::str_to_upper(ato[[1]]) %>% stringr::str_extract('[A-Z]+ ?[A-Z]* ?[A-Z]*')
+  # Ajusta termo encontrado (RETIFICAÇaO) ao termo
+  # usado no banco de dados (AVISO DE RETIFICAÇaO)
+  if (termo_busca == 'RETIFICAÇÃO') {
+    termo_busca <- 'AVISO DE RETIFICAÇÃO'
+  }
 
-  distancia <- RecordLinkage::levenshteinSim(para_buscar, dic_tipos$DES_TIPO)
+  dic_tipos <- rDOU::dic_tipos
 
-  res <- dic_tipos$DES_TIPO[distancia == max(distancia)]
+  distancia <- levsim(termo_busca, dic_tipos$DES_TIPO)
+  maior <- which(distancia == max(distancia))[[1]]
+  res <- dic_tipos$DES_TIPO[maior]
 
   retorno <- match.arg(retorno, c('txt', 'cod'))
-
   if (retorno == 'txt') {
-    res <- dic_tipos$SGL_TIPO[dic_tipos$DES_TIPO == res]
+    res <- dic_tipos$SGL_TIPO[maior]
   } else {
     res <- switch (res,
                    "LEI" = 'A',"PORTARIA" = 'A', "DESPACHO" = 'A',
@@ -116,19 +145,18 @@ pegar_tipo <- function(ato, retorno = 'txt') {
                    NA_character_
     )
   }
-
   res
 }
 
 #' Título do Ato
 #'
-#' @param ato
+#' @param ato Vetor de texto com conteudo da norma legal
 #'
 #' @return Título de um ato de seu corpo de texto
 #'
 #' @export
 pegar_titulo <- function(ato) {
-  # primeira linha de todo ato é seu título
+  # primeira linha de todo ato e seu titulo
   titulo <- stringr::str_split(ato, '\n')[[1]][1]
   if (stringr::str_length(titulo) > 400) {
     stringr::str_sub(titulo, 1, 400)
@@ -137,7 +165,7 @@ pegar_titulo <- function(ato) {
   }
 }
 
-#' Número da Página do ato
+#' Numero da Pagina do ato
 #'
 #' @param ato um vetor com o conteudo de um ato
 #' @param arquivos vetor com caminho dos arquivos em que o ato pode estar
@@ -146,52 +174,47 @@ pegar_titulo <- function(ato) {
 #'
 #' @export
 pegar_pagina <- function(ato, arquivos) {
-  for (arq in arquivos) {
-    arq2 <- readLines(arq) %>% stringr::str_replace_all("No-",
-                                                        "Nº") %>% stringr::str_trim("both") %>% extract(!stringr::str_detect(.,
-                                                                                                                             "Este documento pode ser verificado no endereço")) %>%
-      extract(. != "") %>% c("") %>% paste0(collapse = "\\n") %>%
-      gsub(pattern = "o-", replacement = "º") %>% gsub(pattern = "°-",
-                                                       replacement = "º") %>% gsub(pattern = "°", replacement = "º") %>%
-      gsub(pattern = "-\\\\n", replacement = "") %>%
-      gsub(pattern = ",\\\\n", replacement = ", ") %>%
-      strsplit("\\\\n") %>% extract2(1)
-    if (all(ato %in% arq2)) {
-      return(stringr::str_extract(arq, "pg[0-9]{3}") %>%
-               sub(pattern = "pg", replacement = "") %>% as.numeric())
-    }
+  if (length(ato) == 1) {
+    ato <- stringr::str_split(ato, '\n')[[1]]
   }
-  cont <- 1
+
+  exrtair_pagina <- function(x) {
+    stringr::str_extract(x, "pg[0-9]{3}") %>%
+      sub(pattern = "pg", replacement = "") %>%
+      as.numeric()
+  }
+
+  titulo_buscado <- pegar_titulo(ato)
+
   paginas <- integer(length(arquivos))
-  for (arq in arquivos) {
-    arq2 <- readLines(arq) %>% stringr::str_replace_all("No-",
-                                                        "Nº") %>% stringr::str_trim("both") %>% extract(!stringr::str_detect(.,
-                                                                                                                             "Este documento pode ser verificado no endereço")) %>%
-      extract(. != "") %>% c("") %>% paste0(collapse = "\\n") %>%
-      gsub(pattern = "o-", replacement = "º") %>% gsub(pattern = "°-",
-                                                       replacement = "º") %>% gsub(pattern = "°", replacement = "º") %>%
-      gsub(pattern = "-\\\\n", replacement = "") %>%
-      gsub(pattern = ",\\\\n", replacement = ", ") %>%
-      strsplit("\\\\n") %>% extract2(1)
-    paginas[cont] <- sum(ato %in% arq2)
-    cont <- cont + 1
+
+  for (i in seq_along(arquivos)) {
+    texto <- readLines(arquivos[i], encoding = 'latin1') %>% limpar_texto()
+
+    if (all(ato %in% texto)) {
+      return(exrtair_pagina(arquivos[i]))
+    }
+
+    if (any(texto == titulo_buscado) && titulo_buscado != 'RETIFICAÇÃO') {
+      return(exrtair_pagina(arquivos[i]))
+    }
+
+    paginas[i] <- sum(unique(ato) %in% unique(texto))
   }
-  resp <- stringr::str_extract(arquivos[which.max(paginas)],
-                               "pg[0-9]{3}") %>% sub(pattern = "pg", replacement = "") %>%
-    as.numeric()
+
+  resp <- exrtair_pagina(arquivos[which.max(paginas)])
   if (!is.na(resp)) {
     return(resp)
   }
   else {
-    warning("Este ato não foi encontrado em nenhuma página",
-            call. = FALSE)
-    NA
+    warning("Este ato não foi encontrado em nenhuma página", call. = FALSE)
+    return(NA_real_)
   }
 }
 
 #' Pega todos os dados de todos os atos de um dia do DOU (txt)
 #'
-#' @param debug A função está sendo debugada?
+#' @param debug A funçao está sendo debugada?
 #' @param arquivos um vetor com os caminhos dos arquivos (.txt) de um dia do DOU
 #'
 #' @return Uma lista com todas as normas extraidas do DOU e algumas mata-informações
@@ -207,11 +230,11 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
   encodificacao <- 'latin1'
 
   conteudo <- lapply(arquivos, readLines, encoding = encodificacao) %>% unlist()
-
-  lim_orgaos <- grep("\\.\\.\\.*? *?[0-9]+", readLines(arquivos[1], encoding = encodificacao)) %>% range()
+  pag1 <- readLines(arquivos[1], encoding = encodificacao)
+  lim_orgaos <- grep("[\\.]{2,} *?[0-9]+", pag1) %>% range()
   orgaos <- conteudo[lim_orgaos[1]:lim_orgaos[2]] %>% paste(collapse = "") %>%
-    stringr::str_split("\\.") %>%
-    extract2(1) %>% extract(. != "") %>%
+    stringr::str_split("\\.") %>% extract2(1)
+  orgaos <- orgaos[orgaos != ""] %>%
     stringr::str_replace_all("[0-9]+", "") %>% stringr::str_trim()
 
   # 2 - Delimitar atos dos Ministérios
@@ -223,8 +246,8 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
       gsub(pattern = "</?tr>", replacement = "") %>%
       gsub(pattern = "</?td>", replacement = "")
     if (any(grepl(padrao, orgaos))) {
-      alvo <- procurar_inicio(conteudo_orig, padrao) %>%
-        extract(which(!grepl(pattern = "[0-9]+", conteudo[. + 1])))
+      alvo <- procurar_inicio(conteudo_orig, padrao)
+      alvo <- alvo[grep(pattern = "\\D+", conteudo[alvo + 1])]
       if (length(alvo) > 1) {
         alvo <- alvo[alvo > 30][1]
       }
@@ -232,17 +255,17 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
         stringr::str_extract("Ministério [[:alpha:]]+ [[:alpha:]]+")
 
       suppressWarnings({
-        prox_alvo <- procurar_inicio(conteudo_orig, nome_prox_alvo) %>%
-          extract(. > alvo) %>% min()
+        prox_alvo <- procurar_inicio(conteudo_orig, nome_prox_alvo)
+        prox_alvo <- prox_alvo[prox_alvo > alvo] %>% min()
       })
 
       if (is.infinite(prox_alvo)) {
         suppressWarnings({
-          prox_alvo <- procurar_inicio(conteudo_orig, paste0("\t", nome_prox_alvo)) %>%
-            extract(. > alvo) %>% min()
+          prox_alvo <- procurar_inicio(conteudo_orig, paste0("\t", nome_prox_alvo))
+          prox_alvo <- prox_alvo[prox_alvo > alvo] %>% min()
         })
       }
-      # Se falhou até então erro na conversão é muito provável
+      # Se falhou até entao erro na conversao é muito provável
       if (is.infinite(prox_alvo)) {
         message('O início do Ministério subsequente ao Ministério alvo não foi encontrado no ',
                 SECAO, ' de ', DATA,'.\n',
@@ -262,25 +285,21 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
   # ministerios <- c("Agricultura", "Meio", "Saúde")
   ministerios <- c("Agricultura")
 
-  ###
   conteudo_limpo <- lapply(ministerios, conteudo_orgao) %>% unlist() %>%
-    stringr::str_replace_all("No-", "Nº") %>%
-    stringr::str_trim("both") %>%
-    extract(!stringr::str_detect(., "Este documento pode ser verificado no endereço")) %>%
-    extract(. != "") %>% c("") # linha que não aparece pela forma do loop
+    limpar_texto() %>% c("") # linha que nao aparece pela forma do loop
 
   # 3 - fazer busca pelo inicio dos atos
-  # padrão TIPO DE ATO ao inicio da linha
+  # padrao TIPO DE ATO ao inicio da linha
 
   # tipo de ATO
   # Lei
   # Decreto
-  # DECISÃO
+  # DECISaO
   # PORTARIAS DE XX
   # PORTARIA Nº XXX
   # DESPACHO
-  # RETIFICAÇÃO[ÕES]
-  # INSTRUÇÃO
+  # RETIFICAÇaO[ÕES]
+  # INSTRUÇaO
   # RESOLUÇÃO
   # ATO
   # ATA
@@ -321,21 +340,15 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
   lista_atos <- vector("list", length(atos) - 1)
 
   for (i in seq_along(lista_atos)) {
-    lista_atos[[i]] <- conteudo_limpo[indices_limpos[[i]]] %>%
-      paste0(collapse = "\n")%>%
-      gsub(pattern = "o-", replacement = "º") %>%
-      gsub(pattern = "°-", replacement = "º") %>%
-      gsub(pattern = "°", replacement = "º") %>%
-      gsub(pattern = "-\\n", replacement = "") %>%
-      gsub(pattern = ",\\n", replacement = ", ") %>%
-      strsplit("\\n") %>% extract2(1)
+    lista_atos[[i]] <- conteudo_limpo[indices_limpos[[i]]]
   }
 
   data_dou <- stringr::str_extract(arquivos, "[0-9]{4}_[0-9]{2}_[0-9]{2}") %>%
     as.Date(format = "%Y_%m_%d") %>% unique()
 
   meio <- arquivos[1] %>% stringr::str_split('/') %>%
-    extract2(1) %>% extract(length(.)) %>% stringr::str_sub(1, 4)
+    extract2(1)
+  meio <- meio %>% extract(length(meio)) %>% stringr::str_sub(1, 4)
   tipo_secao <- switch(meio, "DOU1" = 1, "DOU2" = 2, "DOU3" = 3,
                        "DOUE" = 4, # Edição extra
                        "DOUS" = 5,  NA) # Suplemento e caso padrão
@@ -355,68 +368,52 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
 
 #' Tabela para Validação na Aplicação
 #'
-#' @param lista_de_atos
+#' @param lista_de_normas Lista de normas retornada pela função \code{pegar_normas_dou}.
 #'
 #' @return tabela com informações que precisam ser validadas na aplicação
 #' @export
-criar_tabela_app <- function(lista_de_atos) {
+criar_tabela_app <- function(lista_de_normas) {
+  arquivos <- attr(lista_de_normas, 'arquivos')
 
   normas <- tibble::tibble(
-    NUM_ATO = sapply(lista_de_atos, pegar_numero, USE.NAMES = FALSE), # Ok
-    SGL_TIPO = sapply(lista_de_atos, pegar_tipo, USE.NAMES = FALSE), # Ok
-    VLR_ANO = attr(lista_de_atos, 'data_dou') %>% lubridate::year() %>% as.character(), # Deriva de DTA_PROMULGACAO
-    SGL_ORGAO = attr(lista_de_atos, 'orgao'), # Ok
-    COD_TIPO = sapply(lista_de_atos, pegar_tipo, 'cod', USE.NAMES = FALSE), # tem que derivar do tipo
-    TXT_TEXTO = sapply(lista_de_atos, paste, collapse = "\n", USE.NAMES = FALSE), # Ok
-    DTA_PROMULGACAO = attr(lista_de_atos, 'data_dou'), # Ok
-    TXT_EMENTA = sapply(lista_de_atos, pegar_resumo, USE.NAMES = FALSE), # A principio fora
-    DES_TITULO = sapply(lista_de_atos, pegar_titulo, USE.NAMES = FALSE),
-    NUM_PAGINA = sapply(lista_de_atos, pegar_pagina, attr(lista_de_atos, 'arquivos'), USE.NAMES = FALSE),
-    ID_TIPO_SECAO = attr(lista_de_atos, 'secao')
+    NUM_ATO = sapply(lista_de_normas, pegar_numero, USE.NAMES = FALSE), # Ok
+    SGL_TIPO = sapply(lista_de_normas, pegar_tipo, USE.NAMES = FALSE), # Ok
+    VLR_ANO = attr(lista_de_normas, 'data_dou') %>% lubridate::year() %>% as.character(), # Deriva de DTA_PROMULGACAO
+    SGL_ORGAO = attr(lista_de_normas, 'orgao'), # Ok
+    COD_TIPO = sapply(lista_de_normas, pegar_tipo, 'cod', USE.NAMES = FALSE), # tem que derivar do tipo
+    TXT_TEXTO = sapply(lista_de_normas, paste, collapse = "\n", USE.NAMES = FALSE), # Ok
+    DTA_PROMULGACAO = attr(lista_de_normas, 'data_dou'), # Ok
+    TXT_EMENTA = sapply(lista_de_normas, pegar_resumo, USE.NAMES = FALSE), # A principio fora
+    DES_TITULO = sapply(lista_de_normas, pegar_titulo, USE.NAMES = FALSE),
+    NUM_PAGINA = sapply(lista_de_normas, pegar_pagina, arquivos, USE.NAMES = FALSE),
+    ID_TIPO_SECAO = attr(lista_de_normas, 'secao')
   )
 
-  remover <- c(grep("PORTARIAS", normas$DES_TITULO),
-               grep("DECISÕES", normas$DES_TITULO),
-               grep("RETIFICAÇÕES", normas$DES_TITULO))
+  remover <- sort(c(grep("PORTARIAS", normas$DES_TITULO),
+                    grep("DECISÕES", normas$DES_TITULO),
+                    grep("RETIFICAÇÕES", normas$DES_TITULO)))
 
   if (length(remover) > 0) {
-    multiplas <- lapply(normas$TXT_TEXTO[remover], function(x) {
-      stringr::str_split(x, "\n")[[1]]
-    })
+    novas_obs <- purrr::map(remover, novas_observacoes, normas, arquivos)
 
-    novas <- lapply(multiplas, multipla_para_individualizada)
-
-    tam_novas <- sapply(novas, length)
-
-    remover <- remover[tam_novas >= 1]
-
-    novas <- novas[tam_novas >= 1]
-
-    novas_vetor <- unlist(novas)
-
-    tamanhos <- sapply(novas, length)
-
-    repete_dado <- function(variavel) {
-      res <- purrr::map2(normas[[variavel]][remover], tamanhos, ~ rep(.x, each = .y))
-      unlist(res)
+    for (i in seq_along(remover)) {
+      if (!'atual' %in% ls()) {
+        antes <- seq_len(remover[i])
+        atual <- dplyr::bind_rows(normas[antes[-length(antes)], ],
+                                  novas_obs[[i]])
+      } else {
+        anteriores <- seq_len(remover[i-1])
+        antes <- seq_len(remover[i])[-anteriores]
+        atual <- dplyr::bind_rows(atual, normas[antes[-length(antes)], ],
+                                  novas_obs[[i]])
+      }
     }
-
-    novas_obs <- tibble::tibble(
-      NUM_ATO = sapply(novas_vetor, pegar_numero, USE.NAMES = FALSE),
-      SGL_TIPO = sapply(novas_vetor, pegar_tipo, USE.NAMES = FALSE),
-      VLR_ANO = repete_dado("VLR_ANO"),
-      SGL_ORGAO = repete_dado("SGL_ORGAO"),
-      COD_TIPO = sapply(novas_vetor, pegar_tipo, 'cod', USE.NAMES = FALSE),
-      TXT_TEXTO = novas_vetor,
-      DTA_PROMULGACAO = as.Date(repete_dado("DTA_PROMULGACAO"), origin = "1970-01-01"),
-      TXT_EMENTA = lapply(novas_vetor, function(x) strsplit(x, '\n')[[1]]) %>%
-        sapply(pegar_resumo, USE.NAMES = FALSE),
-      DES_TITULO = sapply(novas_vetor, pegar_titulo, USE.NAMES = FALSE),
-      NUM_PAGINA = repete_dado("NUM_PAGINA"),
-      ID_TIPO_SECAO = repete_dado("ID_TIPO_SECAO")
-    )
-
-    res <- dplyr::bind_rows(normas[-remover, ], novas_obs)
+    if (remover[i] != nrow(normas)) {
+      ultimas <- seq(remover[i] + 1, nrow(normas))
+      res <- dplyr::bind_rows(atual, normas[ultimas, ])
+    } else {
+      res <- atual
+    }
   } else {
     res <- normas
   }
@@ -432,7 +429,7 @@ criar_tabela_app <- function(lista_de_atos) {
 #' @param pastas Vetor com pastas em que se encontram as paginas txt de uma unidade do DOU
 #' @param debug Debugando?
 #'
-#' @return
+#' @return \code{TRUE} caso tenha escrito no banco ou erro
 #' @export
 #'
 parsear_e_escrever <- function(conexao, pastas, debug = FALSE) {
@@ -443,8 +440,8 @@ parsear_e_escrever <- function(conexao, pastas, debug = FALSE) {
     maior_id <- max(as.numeric(parseadas$ID))
 
     datas <- parseadas$DTA_PROMULGACAO %>% substr(1, 10) %>%
-      as.Date(format = '%Y-%m-%d') %>% format(format = "%Y/%B/%d") %>%
-      paste0('DOU', parseadas$ID_TIPO_SECAO, '/',.) %>%
+      as.Date(format = '%Y-%m-%d') %>% format(format = "%Y/%B/%d")
+    datas <- paste0('DOU', parseadas$ID_TIPO_SECAO, '/', datas) %>%
       unique()
 
     pastas_lidas <- purrr::map(datas, grep, pastas) %>% Reduce(f = c)
@@ -483,8 +480,35 @@ parsear_e_escrever <- function(conexao, pastas, debug = FALSE) {
   RJDBC::dbCommit(conexao)
 }
 
+#' Aplicacao de algoritmo de levenshtein entre vetor e valor escalar
+#'
+#' @param str1 primeira string
+#' @param str2 segunda string
+#'
+#' @return vetor de distancias
+#'
+# Esta funcao foi tirada deste link
+# https://stackoverflow.com/questions/11535625/similarity-scores-based-on-string-comparison-in-r-edit-distance#11535768
+levsim <- function (str1, str2) {
+  indice <- RecordLinkage::levenshteinDist(str1, str2)
+  tamanho_maior <- max(nchar(str1), nchar(str2))
+  return(1 - (indice / tamanho_maior))
+}
+
+#' Pegar Sigla do Orgao
+#'
+#' @param nome_orgao Nome do orgao cuja sigla sera buscada
+#'
+#' @return A sigla do orgao passado como argumento
+#'
 pegar_sigla_orgao <- function(nome_orgao) {
-  distancia <- RecordLinkage::levenshteinSim(nome_orgao, dic_orgaos$DES_ORGAO)
+  if (length(nome_orgao) > 1) {
+    return(purrr::map_chr(nome_orgao, pegar_sigla_orgao))
+  }
+
+  dic_orgaos <- rDOU::dic_orgaos
+
+  distancia <- levsim(nome_orgao, dic_orgaos$DES_ORGAO)
   dic_orgaos$SGL_ORGAO[distancia == max(distancia)][[1]]
 }
 

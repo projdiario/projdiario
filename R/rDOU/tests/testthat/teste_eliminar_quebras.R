@@ -29,7 +29,7 @@ test_that('Elimina muitas quebras na mesma string', {
   expect_equal(eliminar_quebras(string4), resposta4)
 })
 
-test_that('Não elimina casos que "boas quebras"', {
+test_that('Não elimina casos de "quebras boas"', {
   expect_equal(eliminar_quebras(string5), string5)
   expect_equal(eliminar_quebras(string6), string6)
   expect_equal(eliminar_quebras(string7), string7)

@@ -7,23 +7,75 @@
 #'
 #' @export
 procurar_inicio <- function(vetor, termo) {
-  termo_sem_regex <- stringr::str_replace_all(termo, "\\[.+?\\]", "") %>%
-    stringr::str_replace_all("\\{.+?\\}", "") %>%
-    stringr::str_replace_all("[+^?*]", "")
-  indice <- stringr::str_which(stringr::str_sub(vetor, 1,
-                                                stringr::str_length(termo_sem_regex)),
-                               termo)
+  stringr::str_which(vetor, paste0('^', termo))
+}
 
-  # retorna ínidice em que letras iniciais batem com o termo
-  indice
+#' Remover erros de interpretacao (parse) do texto
+#'
+#' @param texto O texto que sera limpo
+#'
+#' @return O mesmo texto limpo
+#' @export
+limpar_texto <- function(texto) {
+  resp <- texto %>% stringr::str_replace_all("N(o|o-|°-|°)? ?(?=[0-9])", "Nº ") %>%
+    stringr::str_replace_all("(?<=[0-9])(o-|o|°-|°) ?", "º ") %>%
+    stringr::str_replace_all("(?<=[0-9])(a-|a) ?", "ª ") %>%
+    stringr::str_trim("both") %>%
+    # extract(!stringr::str_detect(., "Este documento pode ser verificado no endereço")) %>%
+    eliminar_quebras() %>%
+    stringr::str_trim("both")
+
+  resp[resp != ""]
+}
+
+#' Eliminar quebras indesejadas
+#'
+#' @param texto Texto que tera as quebras de linhas erradas eliminadas
+#'
+#' @return O mesmo texto sem as quebras indesejadas
+#'
+#' @examples
+#' eliminar_quebras('Um texto com \n2 quebras de linha\n')
+#'
+#' @export
+eliminar_quebras <- function(texto) {
+  entrou_colapsado <- length(texto) == 1
+  texto <- paste0(texto, collapse = "\n") %>%
+    stringr::str_replace_all('-\\n', '') %>%
+    stringr::str_replace_all('(?<=,)\\n', ' ') %>%
+    stringr::str_replace_all('(?<=\\s(DO|NO))\\n', ' ') %>%
+    stringr::str_replace_all('\\n ?(?=[a-z][^\\)-])', ' ') %>%
+    stringr::str_replace_all('(?<![;:\\.]) ?\\n ?(?=[0-9]{2,})', ' ') %>%
+    stringr::str_replace_all('(?<=[0-9][\\.,\\/]) ?\\n ?(?=[0-9])', '') %>%
+    stringr::str_replace_all('[ ]{2,}', ' ')
+
+  # Casos ruins
+  # X Quebra depois de ',', '-', 'DO' ou 'NO'.
+  # X Quebra antes de '[a-z]' (frase quebrada no meio),
+  ## X '([0-9](.|-/\)[0-9]+)' (número de processo ou RG ou CPF),
+  ##
+
+  # Casos bons
+  # Quebra depois de '.', ';', ':',
+  # '\nDetermina que' (Quebra antes de letra maiúscula),
+  # 'II)', 'ii)', 'a)', 'A)',
+  # '1. asdklajsdkla.\n# 2. asiodasjlkda.'
+
+
+  if (entrou_colapsado) {
+    res <- texto # devolver com tamanho 1
+  } else {
+    res <- strsplit(texto, "\\n")[[1]] # devolver como vetor
+  }
+  res
 }
 
 #' Qual faixa de b (limite) contem a (conteudo)?
 #'
 #' @rdname em
 #'
-#' @param conteudo
-#' @param limite
+#' @param conteudo vetor a ser analisado
+#' @param limite vetor com limites
 #'
 #' @return Em qual intervalo de \code{limite} encontra-se cada elemento de \code{conteudo}.
 #'
@@ -72,56 +124,20 @@ gerar_id <- function(df, anterior) {
 #' Transformar Texto em Parágrafos de HTML
 #'
 #' @param texto Um vetor com texto
+#' @param orgao Nome do orgao que sera inserido no texto
 #'
 #' @return O mesmo texto com as quebras de linha substituídas por tags de parágrafos \code{<p>}.
 #'         Adiciona um cabeçalho.
 #'
 #' @export
 texto_para_html <- function(texto, orgao) {
-  gsub("\\n<" , "\r<", texto) %>%
-    gsub("\\n\\s" , "\n", .) %>%
-    gsub("\\n" , "</p><p>\n", .) %>% # Aqui estou incluindo um '\n',
-    # não sei bem porque fiz isso. Vou deixar até testar
-    gsub("\\r" , "", .) %>%
-    paste0("<p>MINISTÉRIO DA AGRICULTURA, PECUÁRIA E ABASTECIMENTO</p>",
-          "<p>", orgao,"</p>", .)
-}
+  resp <- gsub("\\n<" , "\r<", texto) %>%
+    stringr::str_replace_all("\\n\\s" , "\n") %>%
+    stringr::str_replace_all("\\n" , "</p>\n<p>") %>%
+    stringr::str_replace_all("\\r" , "")
 
-#' Eliminar quebras indesejadas
-#'
-#' @param texto Texto que tera as quebras de linhas erradas eliminadas
-#'
-#' @return O mesmo texto sem as quebras indesejadas
-#'
-#' @examples
-#' eliminar_quebras('Um texto com \n2 quebras de linha\n')
-#'
-#' @export
-eliminar_quebras <- function(texto) {
-  # texto = 'Um monte de quebras Nº \n21000....'
-  # texto = 'Multiplas\n quebras de linhas\n na mesma \nstring'
-  # texto = string7
-  regex_boas <- '\\n[a-zA-Z]{1,3} ?[\\)\\.-]|\\n[IVXCDLivxcld]+ ?[\\)\\.-]|\\n[A-Z]|\\n[0-9]{1,2} ?[\\)\\.-]'
-  quebras_boas <- stringr::str_locate_all(texto, regex_boas)[[1]]
-  
-  for (i in sort(seq_len(nrow(quebras_boas)), TRUE)) {
-    stringr::str_sub(texto, quebras_boas[i, , drop = FALSE]) <- stringr::str_sub(texto, quebras_boas[i, , drop = FALSE]) %>%
-      stringr::str_replace_all('\\n', '{quebra}')
-  } # texto
-  
-  quebras <- stringr::str_locate_all(texto, '\n ?[[:alnum:]]')[[1]]
-  while (length(quebras) > 0) {
-    encontrado <- stringr::str_sub(texto, quebras)
-    if (stringr::str_detect(encontrado[1], ' ')) {
-      trecho <- quebras[1, ] - c(0, 2)
-    } else {
-      trecho <- quebras[1, ] - c(0, 1)
-    }
-    stringr::str_sub(texto, trecho[1], trecho[2]) <- ''
-    quebras <- stringr::str_locate_all(texto, '\n ?[[:alnum:]]')[[1]]
-  }
-
-  texto %>% stringr::str_replace_all('\\{quebra\\}', '\n')
+  paste0("<p>MINISTÉRIO DA AGRICULTURA, PECUÁRIA E ABASTECIMENTO</p>",
+          "<p>", orgao,"</p>", resp)
 }
 
 #' Cria um objeto para cada portaria em objeto de portarias multiplas
@@ -132,14 +148,19 @@ eliminar_quebras <- function(texto) {
 #'
 #' @export
 multipla_para_individualizada <- function(portaria) {
-  # portaria <- normas$DS_CONTEUDO[remover[8]] %>% stringr::str_split("\n") %>% .[[1]]
+  # Função para verificar existencia de "chunks"
+  casos <- function(texto){
+    resolve <- grep("resolve[::punct::]", texto)
+    cessao <- grep("cess[ãa]o[\\.:]", texto)
+    sort(unique(c(resolve, cessao)))
+  }
 
   if (length(procurar_inicio(portaria[length(portaria)], "<table><tr><td>")) == 1) {
     portaria <- portaria[-length(portaria)]
   }
-
+  # Regra para retificações
   if (grepl('RETIFIC', portaria[1])) {
-    padrao <- 'onde se l[êe]:'
+    padrao <- 'onde se l[êe]:?'
     inicios <- c(grep(padrao, tolower(portaria)), length(portaria) + 1)
 
     indices <- vector("list", length(inicios) - 1)
@@ -160,15 +181,16 @@ multipla_para_individualizada <- function(portaria) {
     individualizadas <- gsub(paste0(padrao, ' ?-'), "", unlist(lista_portarias))
     return(individualizadas)
   }
-
-  if (length(grep("resolve:", portaria)) == 0) {
+  # Regra para caso de cultivares
+  if (length(casos(portaria)) == 0) {
     # 'proteção:'
     padrao <- 'Nº ?[0-9]+\\.?[0-9]*'
     inicios <- c(grep(padrao, portaria), length(portaria))
+    numeros <- stringr::str_extract(portaria, padrao)
+    numeros <- numeros[!is.na(numeros)]
 
-    nomes <- paste("DECISÃO", stringr::str_extract(portaria, padrao) %>%
-                     extract(!is.na(.)),
-                   stringr::str_sub(portaria[1], 11))
+    nomes <- paste0("DECISÃO ", numeros, ', ',
+                    stringr::str_extract(portaria[1], 'DE .+ [0-9]{4}'))
 
     cabeca <- paste0(portaria[2:( inicios[1]-1 )], collapse = " ")
 
@@ -189,8 +211,8 @@ multipla_para_individualizada <- function(portaria) {
     }
 
     individualizadas <- gsub(paste0(padrao, ' ?-'), "", unlist(lista_portarias))
-  } else if (length(grep("resolve:", portaria)) != 1) {
-    novas_ind <- c(grep("resolve:", portaria), length(portaria) - 1)
+  } else if (length(casos(portaria)) != 1) {
+    novas_ind <- c(casos(portaria), length(portaria))
     nome <- portaria[1]
     rodape <- portaria[length(portaria)]
 
@@ -206,19 +228,20 @@ multipla_para_individualizada <- function(portaria) {
       novas[[i]] <- c(nome, portaria[ lista_ind[[i]] ], rodape)
     }
 
-    if (any(sapply(novas, function(x) (length(grep("resolve:", x)) != 1) ))) {
-      individualizadas <- "Erro"
+    if (any(sapply(novas, function(x) (length(casos(x)) != 1) ))) {
+      individualizadas <- "AJUSTE"
     } else {
       individualizadas <- unlist(lapply(novas, multipla_para_individualizada))
     }
-
+  # Caso padrão: 1 resolve ou cessão
   } else {
     padrao <- 'Nº ?[0-9]+\\.?[0-9]*'
     inicios <- c(grep(padrao, portaria), length(portaria))
+    numeros <- stringr::str_extract(portaria, padrao)
+    numeros <- numeros[!is.na(numeros)]
 
-    nomes <- paste("PORTARIA", stringr::str_extract(portaria, padrao) %>%
-                     extract(!is.na(.)),
-                   stringr::str_sub(portaria[1], 11))
+    nomes <- paste0("PORTARIA ", numeros, ', ',
+                    stringr::str_extract(portaria[1], 'DE .+ [0-9]{4}'))
 
     cabeca <- paste0(portaria[2:( inicios[1]-1 )], collapse = " ")
 
@@ -240,7 +263,56 @@ multipla_para_individualizada <- function(portaria) {
 
     individualizadas <- gsub(paste0(padrao, ' ?-'), "", unlist(lista_portarias))
   }
-
   individualizadas
 }
+
+novas_observacoes <- function(lista_de_indices, df, arquivos) {
+  multiplas <- lapply(df$TXT_TEXTO[lista_de_indices], function(x) {
+    stringr::str_split(x, "\n")[[1]]
+  })
+
+  novas <- lapply(multiplas, multipla_para_individualizada)
+
+  tam_novas <- sapply(novas, length)
+
+  remover <- lista_de_indices[tam_novas >= 1]
+
+  novas <- novas[tam_novas >= 1]
+
+  novas_vetor <- unlist(novas)
+
+  tamanhos <- sapply(novas, length)
+
+  repete_dado <- function(variavel) {
+    res <- purrr::map2(df[[variavel]][remover], tamanhos, ~ rep(.x, each = .y))
+    unlist(res)
+  }
+
+  novas_obs <- tibble::tibble(
+    NUM_ATO = sapply(novas_vetor, pegar_numero, USE.NAMES = FALSE),
+    SGL_TIPO = sapply(novas_vetor, pegar_tipo, USE.NAMES = FALSE),
+    VLR_ANO = repete_dado("VLR_ANO"),
+    SGL_ORGAO = repete_dado("SGL_ORGAO"),
+    COD_TIPO = sapply(novas_vetor, pegar_tipo, 'cod', USE.NAMES = FALSE),
+    TXT_TEXTO = novas_vetor,
+    DTA_PROMULGACAO = as.Date(repete_dado("DTA_PROMULGACAO"), origin = "1970-01-01"),
+    TXT_EMENTA = purrr::map(novas_vetor, ~strsplit(.x, '\n')[[1]]) %>%
+      sapply(pegar_resumo, USE.NAMES = FALSE),
+    DES_TITULO = sapply(novas_vetor, pegar_titulo, USE.NAMES = FALSE),
+    NUM_PAGINA = sapply(novas_vetor, pegar_pagina, arquivos, USE.NAMES = FALSE),
+    ID_TIPO_SECAO = repete_dado("ID_TIPO_SECAO")
+  )
+
+  novas_obs
+}
+
+#' @importFrom magrittr %>%
+magrittr::`%>%`
+
+
+#' @importFrom magrittr extract
+magrittr::extract
+
+#' @importFrom magrittr extract2
+magrittr::extract2
 

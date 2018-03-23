@@ -10,7 +10,7 @@ pegar_numero(ato)
 \item{ato}{um vetor com o conteudo de um ato}
 }
 \value{
-A data de \code{vetor} no formato dia DE MES_POR_EXTENSO DE ANO
+O numero de \code{ato} com 8 digitos (completados com 0)
 }
 \description{
 Pegar numero dos atos

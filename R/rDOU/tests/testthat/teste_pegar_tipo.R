@@ -5,5 +5,5 @@ ato2 <- c("DESPACHO DO SECRETÁRIO EXECUTIVO", "Em 22 de fevereiro de 2017", "  
 
 test_that("pega_tipo funciona", {
   expect_equal(pegar_tipo(ato1), "POR")
-  expect_equal(pegar_tipo(ato2), "DPC")
+  expect_equal(pegar_tipo(ato2), "DCH")
 })

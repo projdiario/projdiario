@@ -2,7 +2,7 @@
 % Please edit documentation in R/pegar_infos.R
 \name{pegar_pagina}
 \alias{pegar_pagina}
-\title{Número da Página do ato}
+\title{Numero da Pagina do ato}
 \usage{
 pegar_pagina(ato, arquivos)
 }
@@ -15,5 +15,5 @@ pegar_pagina(ato, arquivos)
 Página de cada ato
 }
 \description{
-Número da Página do ato
+Numero da Pagina do ato
 }

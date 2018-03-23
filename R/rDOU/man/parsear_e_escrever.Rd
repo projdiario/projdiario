@@ -13,6 +13,9 @@ parsear_e_escrever(conexao, pastas, debug = FALSE)
 
 \item{debug}{Debugando?}
 }
+\value{
+\code{TRUE} caso tenha escrito no banco ou erro
+}
 \description{
 Parsear normas em uma sessao do DOU e escrever na base
 }

@@ -5,10 +5,9 @@ Version: 0.9.0
 Author: Tomas Barcellos
 Maintainer: Tomas Barcellos <tomas.barcellos@agricultura.gov.br>
 Description: Agrupa uma serie de funcoes utilizadas para retirar informacoes
-    sobre normas do DOU
+    sobre normas do DOU.
 Depends:
-    R (>= 3.3.0),
-    magrittr
+    R (>= 3.3.0)
 Imports:
     stringr,
     rvest,
@@ -20,7 +19,8 @@ Imports:
     lubridate,
     dplyr,
     RJDBC,
-    RecordLinkage
+    RecordLinkage,
+    magrittr
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
