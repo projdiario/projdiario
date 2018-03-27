@@ -1,0 +1,39 @@
+26
+ISSN 1677 7042
+Diário Oficial da União - Seção   i
+Nº 164, quinta-feira, 25 de agosto de 2016
+<table><tr><td>Latitude:</td><td>Longitude:</td><td>Altitude:</td></tr>
+<tr><td>Local em que o livro deverá estar disponível:</td><td></td><td></td></tr>
+<tr><td>Capacidade de processamento / armazenamento: Tipo de apresentação do produto e forma de identificação:</td><td></td><td></td></tr>
+<tr><td>Assinatura do R.T.:</td><td></td><td></td></tr>
+<tr><td>Assinatura do representante legal da empresa:</td><td></td><td></td></tr>
+<tr><td>//</td><td></td><td>Local e data: Assinatura e carimbo do dirigente do OEDSV</td></tr></table>
+ANEXO X
+<table><tr><td>MODELO DO LAUDO DE VISTORIA PARA FINS DE CERTIFICAÇÃO FITOSSANITÁRIA DE ORIGEM CONSOLIDADA</td><td></td><td></td><td></td></tr>
+<tr><td>SÍMBOLO DO OEDSV                                                           NOME DO ÓRGÃO ESTADUAL DE DEFESA SANITÁRIA VEGETAL</td><td></td><td></td><td></td></tr>
+<tr><td>LAUDO DE VISTORIA PARA FINS DE CERTIFICAÇÃO FISTOSSANITÁRIA DE ORIGEM CONSOLIDADA N° Nome da empresa: CNPJ:</td><td></td><td></td><td></td></tr>
+<tr><td>Endereço:</td><td></td><td></td><td>N°:</td></tr>
+<tr><td>Bairro:</td><td></td><td></td><td></td></tr>
+<tr><td>Município:</td><td>Estado:</td><td></td><td>CEP:</td></tr>
+<tr><td>Te l e f o n e :                                                                                                                                                                                            Fax:</td><td></td><td></td><td></td></tr>
+<tr><td>Email: Nome do representante legal da empresa: CPF:</td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td>RG</td><td></td></tr>
+<tr><td>Nome do responsável técnico habilitado: CPF:</td><td></td><td>RG</td><td></td></tr>
+<tr><td>: Localização do beneficiamento/armazenamento da empresa</td><td></td><td></td><td></td></tr>
+<tr><td>Descrição das instalações :</td><td></td><td></td><td></td></tr>
+<tr><td>Exigências a serem cumpridas :</td><td></td><td></td><td></td></tr>
+<tr><td>Prazo :</td><td></td><td></td><td></td></tr>
+<tr><td>Conclusão da vistoria :</td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td></tr>
+<tr><td>Data da vistoria : / /</td><td></td><td>Assinatura do RT habilitado do OEDSV</td><td></td></tr>
+<tr><td>Local e data: //</td><td></td><td></td><td></td></tr></table>
+ANEXO XI
+RELATÓRIO TÉCNICO DO RT - UP Data                                              Produto
+Código da UP
+CFO nº
+Quantidade
+Unidade
+Local e data
+Assinatura do Responsável Técnico
+Este documento pode ser verificado no endereço eletrônico http://www.in.gov.br/autenticidade.html , pelo código 00012016082500026
+Documento assinado digitalmente conforme MP no- 2.200-2 de 24/08/2001, que institui a Infraestrutura de Chaves Públicas Brasileira - ICP-Brasil.

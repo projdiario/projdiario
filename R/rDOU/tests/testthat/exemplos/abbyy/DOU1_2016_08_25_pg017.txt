@@ -1,0 +1,71 @@
+**&!■
+Nº 164, quinta-feira, 25 de agosto de 2016
+Diário Oficial da União - Seção
+ISSN 1677-7042
+17
+Art. 50. A informação qualitativa referente ao Tipo deve ser grafada com a palavra Tipo, seguida da nomenclatura correspondente, na forma contida nos Anexos desta Instrução Normativa.
+Art. 51. As informações relativas ao Grupo, à Subclasse e ao Tipo devem ser grafadas em caracteres do mesmo tamanho, segundo as dimensões especificadas para o peso líquido em legislação específica.
+CAPÍTULO VIII
+DAS DISPOSIÇÕES FINAIS
+Art. 52. Com o objetivo de uniformizar os critérios de classificação, a área técnica competente do Ministério da Agricultura, Pecuária e Abastecimento poderá elaborar um referencial fotográfico, identificando e caracterizando os requisitos de qualidade que servirão de base para a classificação do amendoim previstos nesta Instrução Normativa.
+Art. 53. Esta Instrução Normativa entra em vigor decorridos 30 (trinta) dias da data de sua publicação, concedendo o prazo de um ano, após o início de sua vigência, para a adequação das embalagens às especificações de rotulagem.
+Art. 54. Fica revogada a Portaria no 147, de 14 de julho de 1987.
+BLAIRO MAGGI
+ANEXO I
+Amendoim do Grupo I - Em Casca - Subgrupo Comum (Limites Máximos de Tolerância em %)
+<table><tr><td>Ti p o</td><td>Matérias Estranhas e Impurezas</td><td>Ardidos e Mofados</td><td>Grãos Sem Casca</td><td>Germinados, Chochos, Imaturos e Danificados por Insetos</td><td>Vagens Escuras ou Corroídas e Vagens Quebradas</td></tr>
+<tr><td>1</td><td>3</td><td>2</td><td>2</td><td>5</td><td>10</td></tr>
+<tr><td>2</td><td>5</td><td>4</td><td>6</td><td>10</td><td>20</td></tr>
+<tr><td>Fora de Tipo</td><td>Maior que 5</td><td>Maior que 4 até 5</td><td>Maior que 6</td><td>Maior que 10</td><td>Maior que 20</td></tr></table>
+Amendoim do Grupo I - Em Casca - Subgrupo Ventilado (Limites Máximos de Tolerância em %)
+ANEXO II
+<table><tr><td>Ti p o</td><td>Matérias Estranhas e Impurezas</td><td>Ardidos e Mofados</td><td>Grãos Sem Casca</td><td>Germinados, Chochos, Imaturos e Danificados por Insetos</td><td>Vagens Escuras ou Corroídas e bradas</td><td>Vagens Que-</td></tr>
+<tr><td>1</td><td>2</td><td>2</td><td> 1</td><td>5</td><td> 6</td><td></td></tr>
+<tr><td>2</td><td>3</td><td>3</td><td>2</td><td>6</td><td>8</td><td></td></tr>
+<tr><td>3</td><td>5</td><td>4</td><td>4</td><td>7</td><td>10</td><td></td></tr>
+<tr><td>Fora de Tipo</td><td>Maior que 5</td><td>Maior que 4 até 5</td><td>Maior que 4</td><td>Maior que 7</td><td>Maior que 10</td><td></td></tr></table>
+Amendoim do Grupo I - Em Casca - Subgrupo Selecionado e Catado a Mão (HPS) (Limites Máximos de Tolerância em %)
+ANEXO III
+<table><tr><td>Ti p o</td><td>Matérias Estranhas e Impurezas</td><td>Ardidos e Mofados</td><td>Grãos Sem Casca</td><td>Germinados, Chochos, Imaturos e Danificados por Insetos</td><td>Vagens Escuras ou Corroídase Vagens Quebradas</td></tr>
+<tr><td>1</td><td>1</td><td>2</td><td>1</td><td>5</td><td>5</td></tr>
+<tr><td>2</td><td>2</td><td>3</td><td>2</td><td>6</td><td>7</td></tr>
+<tr><td>3</td><td>3</td><td>4</td><td>4</td><td>7</td><td>9</td></tr>
+<tr><td>Fora de Tipo</td><td>Maior que 3</td><td>Maior que 4 até 5</td><td>Maior que 4</td><td>Maior que 7</td><td>Maior que 9</td></tr></table>
+Amendoim do Grupo II - Em Grãos - Subgrupo Bica Corrida (Limites Máximos de Tolerância em %)
+ANEXO IV
+<table><tr><td>Ti p o</td><td>Matérias Estranhas e Impurezas</td><td>Ardidos e Mofados</td><td>Partidos e Quebrados</td><td>Demais Defeitos</td></tr>
+<tr><td>Único</td><td>5</td><td>5</td><td>15</td><td>8</td></tr>
+<tr><td>Fora de Tipo</td><td>Maior que 5</td><td>Maior que 5</td><td>Maior que 15</td><td>Maior que 8</td></tr></table>
+Amendoim do Grupo II - Em Grãos - Subgrupo Selecionado (Moreirado) (Limites Máximos de Tolerância em %)
+ANEXO V
+Ti p o
+Único
+Fora de Tipo
+Matérias Estranhas e Impurezas
+3
+Maior que 3
+Ardidos e Mofados
+Maior que 3 até 5
+Partidos e Quebrados
+15
+Maior que 15
+Demais Defeitos
+5
+Maior que 5
+Amendoim do Grupo II - Em Grãos - Subgrupo Selecionado e Catado a Mao (HPS) (Limites Máximos de Tolerância em %)
+ANEXO VI
+<table><tr><td>Ti p o</td><td>Matérias Estranhas e Impurezas</td><td>Ardidos e Mofados</td><td>Grãos com Casca</td><td>Germinados, Chochos, Imaturos e Danificados por Insetos</td><td>Danos Mecânicos Partidos e Quebrados</td></tr>
+<tr><td>1</td><td>0,2</td><td>0,5</td><td>0,1</td><td>2</td><td>3</td></tr>
+<tr><td>2</td><td>0,4</td><td>1,5</td><td>0,2</td><td>3</td><td>10</td></tr>
+<tr><td>3</td><td>0,5</td><td>2,5</td><td>0,3</td><td>4</td><td>15</td></tr>
+<tr><td>Fora de Tipo</td><td>Maior que 0,5</td><td>Maior que 2,5 até 5</td><td>Maior que 0,3</td><td>Maior que 4</td><td>Maior que 15</td></tr></table>
+Amendoim do Grupo II - Em Grãos - Subgrupo HPS - Blancheado (Limites Máximos de Tolerância em%)
+ANEXO VII
+<table><tr><td>Ti p o</td><td>Matérias Estranhas e Impurezas</td><td>Ardidos e Mofados</td><td>Danos Mecânicos e Danificados por Insetos</td><td>Partidos e Quebrados</td><td>Peliculados</td></tr>
+<tr><td>1</td><td>0,2</td><td>0,5</td><td>2</td><td>20</td><td>5</td></tr>
+<tr><td>2</td><td>0,4</td><td>0,8</td><td>3</td><td>25</td><td>6</td></tr>
+<tr><td>3</td><td>0,5</td><td>1</td><td>5</td><td>30</td><td>7</td></tr>
+<tr><td>Fora de Tipo</td><td>Maior que 0,5</td><td>Maior que 1 até 5</td><td>Maior que 5</td><td>Maior que 30</td><td>Maior que 7</td></tr></table>
+Este documento pode ser verificado no endereço eletrônico http://www.in.gov.br/autenticidade.html , pelo código 00012016082500017
+Documento assinado digitalmente conforme MP no- 2.200-2 de 24/08/2001, que institui a Infraestrutura de Chaves Públicas Brasileira - ICP-Brasil.
+1
