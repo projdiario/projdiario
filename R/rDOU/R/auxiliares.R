@@ -294,7 +294,7 @@ novas_observacoes <- function(lista_de_indices, df, arquivos, encodificacao) {
     SG_TIPO = sapply(novas_vetor, pegar_tipo, USE.NAMES = FALSE),
     AN_ATO = repete_dado("AN_ATO"),
     SG_ORGAO = repete_dado("SG_ORGAO"),
-    CD_TIPO_ATO = NA_character_, # codigo é verificado na aplicação
+    CD_TIPO_ATO = 'A', # codigo é verificado na aplicação
     TX_TEXTO = novas_vetor,
     DT_PROMULGACAO = as.Date(repete_dado("DT_PROMULGACAO"), origin = "1970-01-01"),
     TX_EMENTA = purrr::map(novas_vetor, ~strsplit(.x, '\n')[[1]]) %>%

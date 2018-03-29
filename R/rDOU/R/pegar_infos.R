@@ -370,7 +370,7 @@ criar_tabela_app <- function(lista_de_normas) {
     SG_TIPO = sapply(lista_de_normas, pegar_tipo, USE.NAMES = FALSE), # Ok
     AN_ATO = attr(lista_de_normas, 'data_dou') %>% lubridate::year() %>% as.character(), # Deriva de DTA_PROMULGACAO
     SG_ORGAO = attr(lista_de_normas, 'orgao'), # Ok
-    CD_TIPO_ATO = NA_character_, # codigo é verificado na aplicação
+    CD_TIPO_ATO = 'A', # codigo é verificado na aplicação
     TX_TEXTO = sapply(lista_de_normas, paste, collapse = "\n", USE.NAMES = FALSE), # Ok
     DT_PROMULGACAO = attr(lista_de_normas, 'data_dou'), # Ok
     TX_EMENTA = sapply(lista_de_normas, pegar_resumo, USE.NAMES = FALSE), # A principio fora
