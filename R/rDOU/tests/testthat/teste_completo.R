@@ -1,11 +1,11 @@
 suppressPackageStartupMessages(library(purrr))
 # library(rDOU); library(testthat)
 context('Teste completo')
-
-expect_gabarito <- function(campo_resultado, campo_gabarito){
+Sys.setenv("R_TESTS" = "")
+expect_gabarito <- function(campo){
   map2(
-    map(tabelas, campo_resultado),
-    map(gabarito, campo_gabarito),
+    map(tabelas, campo),
+    map(gabarito, campo),
     expect_identical
     )
   cat('|')
@@ -70,21 +70,21 @@ test_that('Resultado possui dimensões esperadas', {
 context('Teste completo: campos')
 test_that('Informações são extraídas exatamente como esperado', {
   # Número da norma
-  expect_gabarito('NUM_ATO', 'NR_ATO')
+  expect_gabarito('NR_ATO')
   # # Tipo da norma
-  expect_gabarito('SGL_TIPO', 'SG_TIPO')
+  expect_gabarito('SG_TIPO')
   # Ano da norma
-  expect_gabarito('VLR_ANO', 'AN_ATO')
+  expect_gabarito('AN_ATO')
   # Órgãos emissor
-  expect_gabarito('SGL_ORGAO', 'SG_ORGAO')
+  expect_gabarito('SG_ORGAO')
   # Data de promulgadação
-  expect_gabarito('DTA_PROMULGACAO', 'DT_PROMULGACAO')
+  expect_gabarito('DT_PROMULGACAO')
   # Título da norma
-  expect_gabarito('DES_TITULO', 'DS_TITULO')
+  expect_gabarito('DS_TITULO')
   # # Página em que a norma foi encontrada
-  expect_gabarito('NUM_PAGINA', 'NM_PAGINA')
+  expect_gabarito('NM_PAGINA')
   # Seção do DOU
-  expect_gabarito('ID_TIPO_SECAO', 'ID_TIPO_SECAO')
+  expect_gabarito('ID_TIPO_SECAO')
   # NUM_PAGINA é ordenado e crescente
   expect_equal(map_lgl(tabelas, ~all(diff(.x$NUM_PAGINA) >= 0)), rep(TRUE, 4))
 })
