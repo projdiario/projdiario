@@ -4,12 +4,10 @@
 \alias{pegar_tipo}
 \title{Pegar tipo dos ato}
 \usage{
-pegar_tipo(ato, retorno = "txt")
+pegar_tipo(ato)
 }
 \arguments{
 \item{ato}{um vetor com o conteudo de um ato}
-
-\item{retorno}{Deve retornar 'txt' ou 'cod'?}
 }
 \value{
 O tipo do ato de \code{vetor}.

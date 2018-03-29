@@ -104,12 +104,11 @@ pegar_resumo <- function (ato) {
 #' Pegar tipo dos ato
 #'
 #' @param ato um vetor com o conteudo de um ato
-#' @param retorno Deve retornar 'txt' ou 'cod'?
 #'
 #' @return O tipo do ato de \code{vetor}.
 #'
 #' @export
-pegar_tipo <- function(ato, retorno = 'txt') {
+pegar_tipo <- function(ato) {
   primeira_linha <- ato[[1]]
   regex_tipo <- '([A-ZÃÕÁÉÍÓÚÂÊÎÔÛÇ]+( )?)+'
   termo_busca <- primeira_linha %>% stringr::str_to_upper() %>%
@@ -131,21 +130,8 @@ pegar_tipo <- function(ato, retorno = 'txt') {
 
   distancia <- levsim(termo_busca, dic_tipos$DES_TIPO)
   maior <- which(distancia == max(distancia))[[1]]
-  res <- dic_tipos$DES_TIPO[maior]
 
-  retorno <- match.arg(retorno, c('txt', 'cod'))
-  if (retorno == 'txt') {
-    res <- dic_tipos$SGL_TIPO[maior]
-  } else {
-    res <- switch (res,
-                   "LEI" = 'A',"PORTARIA" = 'A', "DESPACHO" = 'A',
-                   "RETIFI" = 'A', "DECRETO-LEI" = 'A',
-                   "DECRETO" = 'A', "ATO" = 'E', "ATA" = 'P',
-                   "INSTRUÇÃO NORMATIVA" = 'R', "RESOLU" = 'X',
-                   NA_character_
-    )
-  }
-  res
+  dic_tipos$SGL_TIPO[maior]
 }
 
 #' Título do Ato
@@ -169,11 +155,12 @@ pegar_titulo <- function(ato) {
 #'
 #' @param ato um vetor com o conteudo de um ato
 #' @param arquivos vetor com caminho dos arquivos em que o ato pode estar
+#' @param encodificacao encodificação dos arquivos
 #'
 #' @return Página de cada ato
 #'
 #' @export
-pegar_pagina <- function(ato, arquivos) {
+pegar_pagina <- function(ato, arquivos, encodificacao = 'latin1') {
   if (length(ato) == 1) {
     ato <- stringr::str_split(ato, '\n')[[1]]
   }
@@ -189,7 +176,8 @@ pegar_pagina <- function(ato, arquivos) {
   paginas <- integer(length(arquivos))
 
   for (i in seq_along(arquivos)) {
-    texto <- readLines(arquivos[i], encoding = 'latin1') %>% limpar_texto()
+    texto <- readLines(arquivos[i], encoding = encodificacao, warn = FALSE) %>%
+      limpar_texto()
 
     if (all(ato %in% texto)) {
       return(exrtair_pagina(arquivos[i]))
@@ -216,21 +204,21 @@ pegar_pagina <- function(ato, arquivos) {
 #'
 #' @param debug A funçao está sendo debugada?
 #' @param arquivos um vetor com os caminhos dos arquivos (.txt) de um dia do DOU
+#' @param encodificacao encodificação dos arquivos
 #'
 #' @return Uma lista com todas as normas extraidas do DOU e algumas mata-informações
 #'
 #' @export
-pegar_normas_dou <- function(arquivos, debug = FALSE) {
+pegar_normas_dou <- function(arquivos, encodificacao = 'latin1', debug = FALSE) {
   SECAO <- unique(stringr::str_extract(arquivos, "DOU[1-3]"))
   DATA <- stringr::str_extract(arquivos, "[0-9]{4}_[0-9]{2}_[0-9]{2}") %>%
     unique() %>% stringr::str_replace_all('_', '/')
 
   if (debug) cat(DATA,'\n')
 
-  encodificacao <- 'latin1'
-
-  conteudo <- lapply(arquivos, readLines, encoding = encodificacao) %>% unlist()
-  pag1 <- readLines(arquivos[1], encoding = encodificacao)
+  conteudo <- lapply(arquivos, readLines, warn = FALSE,
+                     encoding = encodificacao) %>% unlist()
+  pag1 <- readLines(arquivos[1], encoding = encodificacao, warn = FALSE)
   lim_orgaos <- grep("[\\.]{2,} *?[0-9]+", pag1) %>% range()
   orgaos <- conteudo[lim_orgaos[1]:lim_orgaos[2]] %>% paste(collapse = "") %>%
     stringr::str_split("\\.") %>% extract2(1)
@@ -361,7 +349,8 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
     orgao = conteudo_limpo[atos[-length(atos)] %em% limites_orgaos],
     arquivos = arquivos,
     data_dou = data_dou,
-    secao = tipo_secao
+    secao = tipo_secao,
+    encodificacao = encodificacao
   )
 
 }
@@ -374,18 +363,20 @@ pegar_normas_dou <- function(arquivos, debug = FALSE) {
 #' @export
 criar_tabela_app <- function(lista_de_normas) {
   arquivos <- attr(lista_de_normas, 'arquivos')
+  encodificacao <- attr(lista_de_normas, 'encodificacao')
 
   normas <- tibble::tibble(
     NR_ATO = sapply(lista_de_normas, pegar_numero, USE.NAMES = FALSE), # Ok
     SG_TIPO = sapply(lista_de_normas, pegar_tipo, USE.NAMES = FALSE), # Ok
     AN_ATO = attr(lista_de_normas, 'data_dou') %>% lubridate::year() %>% as.character(), # Deriva de DTA_PROMULGACAO
     SG_ORGAO = attr(lista_de_normas, 'orgao'), # Ok
-    CD_TIPO_ATO = sapply(lista_de_normas, pegar_tipo, 'cod', USE.NAMES = FALSE), # tem que derivar do tipo
+    CD_TIPO_ATO = NA_character_, # codigo é verificado na aplicação
     TX_TEXTO = sapply(lista_de_normas, paste, collapse = "\n", USE.NAMES = FALSE), # Ok
     DT_PROMULGACAO = attr(lista_de_normas, 'data_dou'), # Ok
     TX_EMENTA = sapply(lista_de_normas, pegar_resumo, USE.NAMES = FALSE), # A principio fora
     DS_TITULO = sapply(lista_de_normas, pegar_titulo, USE.NAMES = FALSE),
-    NM_PAGINA = sapply(lista_de_normas, pegar_pagina, arquivos, USE.NAMES = FALSE),
+    NM_PAGINA = sapply(lista_de_normas, pegar_pagina, arquivos,
+                       encodificacao, USE.NAMES = FALSE),
     ID_TIPO_SECAO = attr(lista_de_normas, 'secao')
   )
 
@@ -394,7 +385,8 @@ criar_tabela_app <- function(lista_de_normas) {
                     grep("RETIFICAÇÕES", normas$DS_TITULO)))
 
   if (length(remover) > 0) {
-    novas_obs <- purrr::map(remover, novas_observacoes, normas, arquivos)
+    novas_obs <- purrr::map(remover, novas_observacoes, normas, arquivos,
+                            encodificacao)
 
     for (i in seq_along(remover)) {
       if (!'atual' %in% ls()) {

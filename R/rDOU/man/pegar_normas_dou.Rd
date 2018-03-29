@@ -4,10 +4,12 @@
 \alias{pegar_normas_dou}
 \title{Pega todos os dados de todos os atos de um dia do DOU (txt)}
 \usage{
-pegar_normas_dou(arquivos, debug = FALSE)
+pegar_normas_dou(arquivos, encodificacao = "latin1", debug = FALSE)
 }
 \arguments{
 \item{arquivos}{um vetor com os caminhos dos arquivos (.txt) de um dia do DOU}
+
+\item{encodificacao}{encodificação dos arquivos}
 
 \item{debug}{A funçao está sendo debugada?}
 }

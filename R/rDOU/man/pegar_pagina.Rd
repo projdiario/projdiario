@@ -4,12 +4,14 @@
 \alias{pegar_pagina}
 \title{Numero da Pagina do ato}
 \usage{
-pegar_pagina(ato, arquivos)
+pegar_pagina(ato, arquivos, encodificacao = "latin1")
 }
 \arguments{
 \item{ato}{um vetor com o conteudo de um ato}
 
 \item{arquivos}{vetor com caminho dos arquivos em que o ato pode estar}
+
+\item{encodificacao}{encodificação dos arquivos}
 }
 \value{
 Página de cada ato

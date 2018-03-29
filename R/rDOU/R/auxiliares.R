@@ -267,7 +267,7 @@ multipla_para_individualizada <- function(portaria) {
   individualizadas
 }
 
-novas_observacoes <- function(lista_de_indices, df, arquivos) {
+novas_observacoes <- function(lista_de_indices, df, arquivos, encodificacao) {
   multiplas <- lapply(df$TX_TEXTO[lista_de_indices], function(x) {
     stringr::str_split(x, "\n")[[1]]
   })
@@ -294,13 +294,14 @@ novas_observacoes <- function(lista_de_indices, df, arquivos) {
     SG_TIPO = sapply(novas_vetor, pegar_tipo, USE.NAMES = FALSE),
     AN_ATO = repete_dado("AN_ATO"),
     SG_ORGAO = repete_dado("SG_ORGAO"),
-    CD_TIPO_ATO = sapply(novas_vetor, pegar_tipo, 'cod', USE.NAMES = FALSE),
+    CD_TIPO_ATO = NA_character_, # codigo é verificado na aplicação
     TX_TEXTO = novas_vetor,
     DT_PROMULGACAO = as.Date(repete_dado("DT_PROMULGACAO"), origin = "1970-01-01"),
     TX_EMENTA = purrr::map(novas_vetor, ~strsplit(.x, '\n')[[1]]) %>%
       sapply(pegar_resumo, USE.NAMES = FALSE),
     DS_TITULO = sapply(novas_vetor, pegar_titulo, USE.NAMES = FALSE),
-    NM_PAGINA = sapply(novas_vetor, pegar_pagina, arquivos, USE.NAMES = FALSE),
+    NM_PAGINA = sapply(novas_vetor, pegar_pagina, arquivos,
+                       encodificacao, USE.NAMES = FALSE),
     ID_TIPO_SECAO = repete_dado("ID_TIPO_SECAO")
   )
 
