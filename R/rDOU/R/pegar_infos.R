@@ -376,22 +376,22 @@ criar_tabela_app <- function(lista_de_normas) {
   arquivos <- attr(lista_de_normas, 'arquivos')
 
   normas <- tibble::tibble(
-    NUM_ATO = sapply(lista_de_normas, pegar_numero, USE.NAMES = FALSE), # Ok
-    SGL_TIPO = sapply(lista_de_normas, pegar_tipo, USE.NAMES = FALSE), # Ok
-    VLR_ANO = attr(lista_de_normas, 'data_dou') %>% lubridate::year() %>% as.character(), # Deriva de DTA_PROMULGACAO
-    SGL_ORGAO = attr(lista_de_normas, 'orgao'), # Ok
-    COD_TIPO = sapply(lista_de_normas, pegar_tipo, 'cod', USE.NAMES = FALSE), # tem que derivar do tipo
-    TXT_TEXTO = sapply(lista_de_normas, paste, collapse = "\n", USE.NAMES = FALSE), # Ok
-    DTA_PROMULGACAO = attr(lista_de_normas, 'data_dou'), # Ok
-    TXT_EMENTA = sapply(lista_de_normas, pegar_resumo, USE.NAMES = FALSE), # A principio fora
-    DES_TITULO = sapply(lista_de_normas, pegar_titulo, USE.NAMES = FALSE),
-    NUM_PAGINA = sapply(lista_de_normas, pegar_pagina, arquivos, USE.NAMES = FALSE),
+    NR_ATO = sapply(lista_de_normas, pegar_numero, USE.NAMES = FALSE), # Ok
+    SG_TIPO = sapply(lista_de_normas, pegar_tipo, USE.NAMES = FALSE), # Ok
+    AN_ATO = attr(lista_de_normas, 'data_dou') %>% lubridate::year() %>% as.character(), # Deriva de DTA_PROMULGACAO
+    SG_ORGAO = attr(lista_de_normas, 'orgao'), # Ok
+    CD_TIPO_ATO = sapply(lista_de_normas, pegar_tipo, 'cod', USE.NAMES = FALSE), # tem que derivar do tipo
+    TX_TEXTO = sapply(lista_de_normas, paste, collapse = "\n", USE.NAMES = FALSE), # Ok
+    DT_PROMULGACAO = attr(lista_de_normas, 'data_dou'), # Ok
+    TX_EMENTA = sapply(lista_de_normas, pegar_resumo, USE.NAMES = FALSE), # A principio fora
+    DS_TITULO = sapply(lista_de_normas, pegar_titulo, USE.NAMES = FALSE),
+    NM_PAGINA = sapply(lista_de_normas, pegar_pagina, arquivos, USE.NAMES = FALSE),
     ID_TIPO_SECAO = attr(lista_de_normas, 'secao')
   )
 
-  remover <- sort(c(grep("PORTARIAS", normas$DES_TITULO),
-                    grep("DECISÕES", normas$DES_TITULO),
-                    grep("RETIFICAÇÕES", normas$DES_TITULO)))
+  remover <- sort(c(grep("PORTARIAS", normas$DS_TITULO),
+                    grep("DECISÕES", normas$DS_TITULO),
+                    grep("RETIFICAÇÕES", normas$DS_TITULO)))
 
   if (length(remover) > 0) {
     novas_obs <- purrr::map(remover, novas_observacoes, normas, arquivos)
@@ -418,8 +418,8 @@ criar_tabela_app <- function(lista_de_normas) {
     res <- normas
   }
 
-  res$TXT_TEXTO <- res$TXT_TEXTO %>% purrr::map2_chr(res$SGL_ORGAO, texto_para_html)
-  res$SGL_ORGAO <- pegar_sigla_orgao(res$SGL_ORGAO)
+  res$TX_TEXTO <- res$TX_TEXTO %>% purrr::map2_chr(res$SG_ORGAO, texto_para_html)
+  res$SG_ORGAO <- pegar_sigla_orgao(res$SG_ORGAO)
   res
 }
 
@@ -433,18 +433,19 @@ criar_tabela_app <- function(lista_de_normas) {
 #' @export
 #'
 parsear_e_escrever <- function(conexao, pastas, debug = FALSE) {
-
-  parseadas <- RJDBC::dbGetQuery(conexao, 'SELECT ID, DTA_PROMULGACAO, ID_TIPO_SECAO FROM ATO_PARSE')
+  query <- paste('SELECT ID_ATO, DT_PROMULGACAO, ID_TIPO_SECAO',
+                 'FROM CARGA_SISLEGIS.S_ATO')
+  parseadas <- RJDBC::dbGetQuery(conexao, query)
 
   if (nrow(parseadas) > 0) {
-    maior_id <- max(as.numeric(parseadas$ID))
+    maior_id <- max(as.numeric(parseadas$ID_ATO))
 
-    datas <- parseadas$DTA_PROMULGACAO %>% substr(1, 10) %>%
+    datas <- parseadas$DT_PROMULGACAO %>% substr(1, 10) %>%
       as.Date(format = '%Y-%m-%d') %>% format(format = "%Y/%B/%d")
-    datas <- paste0('DOU', parseadas$ID_TIPO_SECAO, '/', datas) %>%
+    datas_lidas <- paste0('DOU', parseadas$ID_TIPO_SECAO, '/', datas) %>%
       unique()
 
-    pastas_lidas <- purrr::map(datas, grep, pastas) %>% Reduce(f = c)
+    pastas_lidas <- purrr::map(datas_lidas, grep, pastas) %>% Reduce(f = c)
     if (length(pastas_lidas) != 0) {
       pastas_ler <- pastas[-pastas_lidas]
       if (length(pastas_ler) == 0) {
@@ -461,6 +462,8 @@ parsear_e_escrever <- function(conexao, pastas, debug = FALSE) {
   }
 
   lista_arquivos <- lapply(pastas_ler, function(x) dir(x, full.names = T))
+  quantidade_arquivos <- sapply(lista_arquivos, length)
+  lista_arquivos <- lista_arquivos[quantidade_arquivos > 0]
 
   lista_de_normas <- purrr::map(lista_arquivos, pegar_normas_dou, debug = debug)
   normas <- purrr::map_df(lista_de_normas, criar_tabela_app) %>% gerar_id(anterior = maior_id)
@@ -468,16 +471,16 @@ parsear_e_escrever <- function(conexao, pastas, debug = FALSE) {
   for (linha in seq_len(nrow(normas))) {
     linha_atual <- normas[linha, ]
     RJDBC::dbSendUpdate(conexao,
-                        "INSERT INTO ATO_PARSE
+                        "INSERT INTO CARGA_SISLEGIS.S_ATO
                         VALUES (:1, :2, :3, :4, :5, :6, :7, TO_DATE(:8, 'yyyy-mm-dd'), :9, :10, :11, :12)",
-                        linha_atual$ID, formatC(linha_atual$NUM_ATO, width = 8, flag = 0), linha_atual$SGL_TIPO,
-                        linha_atual$VLR_ANO, substr(linha_atual$SGL_ORGAO, 1, 30), linha_atual$COD_TIPO,
-                        linha_atual$TXT_TEXTO, linha_atual$DTA_PROMULGACAO, linha_atual$TXT_EMENTA,
-                        linha_atual$DES_TITULO, linha_atual$NUM_PAGINA, linha_atual$ID_TIPO_SECAO
+                        linha_atual$ID_ATO, formatC(linha_atual$NR_ATO, width = 8, flag = 0), linha_atual$SG_TIPO,
+                        linha_atual$AN_ATO, substr(linha_atual$SG_ORGAO, 1, 30), linha_atual$CD_TIPO_ATO,
+                        linha_atual$TX_TEXTO, linha_atual$DT_PROMULGACAO, linha_atual$TX_EMENTA,
+                        linha_atual$DS_TITULO, linha_atual$NM_PAGINA, linha_atual$ID_TIPO_SECAO
     )
   }
   cat(nrow(normas), 'normas foram inseridas na base.\n')
-  RJDBC::dbCommit(conexao)
+  TRUE
 }
 
 #' Aplicacao de algoritmo de levenshtein entre vetor e valor escalar
@@ -506,9 +509,14 @@ pegar_sigla_orgao <- function(nome_orgao) {
     return(purrr::map_chr(nome_orgao, pegar_sigla_orgao))
   }
 
+  if (length(nome_orgao) == 0) {
+    return(character(0))
+  }
+
   dic_orgaos <- rDOU::dic_orgaos
 
   distancia <- levsim(nome_orgao, dic_orgaos$DES_ORGAO)
-  dic_orgaos$SGL_ORGAO[distancia == max(distancia)][[1]]
+  maximo <- max(distancia)
+  dic_orgaos$SGL_ORGAO[distancia == maximo][[1]]
 }
 
