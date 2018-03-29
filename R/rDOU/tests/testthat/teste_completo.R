@@ -1,7 +1,7 @@
 suppressPackageStartupMessages(library(purrr))
 # library(rDOU); library(testthat)
 context('Teste completo')
-Sys.setenv("R_TESTS" = "")
+
 expect_gabarito <- function(campo){
   map2(
     map(tabelas, campo),
@@ -86,7 +86,7 @@ test_that('Informações são extraídas exatamente como esperado', {
   # Seção do DOU
   expect_gabarito('ID_TIPO_SECAO')
   # NUM_PAGINA é ordenado e crescente
-  expect_equal(map_lgl(tabelas, ~all(diff(.x$NUM_PAGINA) >= 0)), rep(TRUE, 4))
+  expect_equal(map_lgl(tabelas, ~all(diff(.x$NM_PAGINA) >= 0)), rep(TRUE, 4))
 })
 
 
