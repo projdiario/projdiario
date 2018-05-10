@@ -200,6 +200,82 @@ pegar_pagina <- function(ato, arquivos, encodificacao = 'latin1') {
   }
 }
 
+#' Title
+#'
+#' @param orgao_alvo nome do orgao procurado
+#' @param conteudo vetor de texto com conteudo do DOU
+#' @param orgaos vetor de texto com orgaos publicados naquele dia e secao
+#'
+#' @return texto com as publicacoes do orgao alvo
+conteudo_orgao <- function(orgao_alvo, conteudo, orgaos) {
+  padrao <- paste0("Ministério *d..? *", orgao_alvo)
+  conteudo_orig <- conteudo %>%
+    gsub(pattern = "</?table>", replacement = "") %>%
+    gsub(pattern = "</?tr>", replacement = "") %>%
+    gsub(pattern = "</?td>", replacement = "")
+  if (any(grepl(padrao, orgaos))) {
+    alvo <- procurar_inicio(conteudo_orig, padrao)
+    alvo <- alvo[grep(pattern = "\\D+", conteudo[alvo + 1])]
+    if (length(alvo) > 1) {
+      alvo <- alvo[alvo > 30][1]
+    }
+    nome_prox_alvo <- orgaos[grep(orgao_alvo, orgaos) + 1] %>%
+      stringr::str_extract("Ministério [[:alpha:]]+ [[:alpha:]]+")
+
+    suppressWarnings({
+      prox_alvo <- procurar_inicio(conteudo_orig, nome_prox_alvo)
+      prox_alvo <- prox_alvo[prox_alvo > alvo] %>% min()
+    })
+
+    if (is.infinite(prox_alvo)) {
+      suppressWarnings({
+        prox_alvo <- procurar_inicio(conteudo_orig, paste0("\t", nome_prox_alvo))
+        prox_alvo <- prox_alvo[prox_alvo > alvo] %>% min()
+      })
+    }
+    # Se falhou até entao erro na conversao é muito provável
+    if (is.infinite(prox_alvo)) {
+      message('O início do Ministério subsequente ao Ministério alvo não foi encontrado no ',
+              SECAO, ' de ', DATA,'.\n',
+              'Verifique se todas as páginas do Ministério alvo foram convertidas para \'.txt\' corretamente')
+      res <- ""
+    } else {
+      # linhas que correspondem aos elementos
+      res <- conteudo[alvo: (prox_alvo - 1)]
+    }
+  } else {
+    message('Padrão não está entre os órgãos identificados no ', SECAO, ' de ', DATA)
+    res <- ""
+  }
+  res
+}
+
+#' Encontrar inicio dos atos no texto
+#'
+#' @param texto Texto em que as normas serao buscadas
+#'
+#' @return vetor  numerico com inicio dos atos
+inicios_atos <- function(texto) {
+  # tipo de ATO
+  # Lei
+  # Decreto
+  # DECISaO
+  # PORTARIAS DE XX
+  # PORTARIA Nº XXX
+  # DESPACHO
+  # RETIFICAÇaO[ÕES]
+  # INSTRUÇaO
+  # RESOLUÇÃO
+  # ATO
+  # ATA
+  atos <- c("LEI", "DECRETO", "DECIS", "PORTARIA", "DESPACHO",
+    "RETIFICAÇ", "INSTRUÇ", "RESOLUÇ", "ATO ", "ATA ") %>%
+    lapply(procurar_inicio, vetor = texto) %>%
+    unlist() %>% c(length(texto))
+
+  sort(atos)
+}
+
 #' Pega todos os dados de todos os atos de um dia do DOU (txt)
 #'
 #' @param debug A funçao está sendo debugada?
@@ -209,7 +285,7 @@ pegar_pagina <- function(ato, arquivos, encodificacao = 'latin1') {
 #' @return Uma lista com todas as normas extraidas do DOU e algumas mata-informações
 #'
 #' @export
-pegar_normas_dou <- function(arquivos, encodificacao = 'latin1', debug = FALSE) {
+pegar_normas_dou <- function(arquivos, orgao_alvo, encodificacao = 'latin1', debug = FALSE) {
   SECAO <- unique(stringr::str_extract(arquivos, "DOU[1-3]"))
   DATA <- stringr::str_extract(arquivos, "[0-9]{4}_[0-9]{2}_[0-9]{2}") %>%
     unique() %>% stringr::str_replace_all('_', '/')
@@ -226,95 +302,13 @@ pegar_normas_dou <- function(arquivos, encodificacao = 'latin1', debug = FALSE) 
     stringr::str_replace_all("[0-9]+", "") %>% stringr::str_trim()
 
   # 2 - Delimitar atos dos Ministérios
-  ###
-  conteudo_orgao <- function(nome) {
-    padrao <- paste0("Ministério *d..? *", nome)
-    conteudo_orig <- conteudo %>%
-      gsub(pattern = "</?table>", replacement = "") %>%
-      gsub(pattern = "</?tr>", replacement = "") %>%
-      gsub(pattern = "</?td>", replacement = "")
-    if (any(grepl(padrao, orgaos))) {
-      alvo <- procurar_inicio(conteudo_orig, padrao)
-      alvo <- alvo[grep(pattern = "\\D+", conteudo[alvo + 1])]
-      if (length(alvo) > 1) {
-        alvo <- alvo[alvo > 30][1]
-      }
-      nome_prox_alvo <- orgaos[grep(nome, orgaos) + 1] %>%
-        stringr::str_extract("Ministério [[:alpha:]]+ [[:alpha:]]+")
-
-      suppressWarnings({
-        prox_alvo <- procurar_inicio(conteudo_orig, nome_prox_alvo)
-        prox_alvo <- prox_alvo[prox_alvo > alvo] %>% min()
-      })
-
-      if (is.infinite(prox_alvo)) {
-        suppressWarnings({
-          prox_alvo <- procurar_inicio(conteudo_orig, paste0("\t", nome_prox_alvo))
-          prox_alvo <- prox_alvo[prox_alvo > alvo] %>% min()
-        })
-      }
-      # Se falhou até entao erro na conversao é muito provável
-      if (is.infinite(prox_alvo)) {
-        message('O início do Ministério subsequente ao Ministério alvo não foi encontrado no ',
-                SECAO, ' de ', DATA,'.\n',
-                'Verifique se todas as páginas do Ministério alvo foram convertidas para \'.txt\' corretamente')
-        res <- ""
-      } else {
-        # linhas que correspondem aos elementos
-        res <- conteudo[alvo: (prox_alvo - 1)]
-      }
-    } else {
-      message('Padrão não está entre os órgãos identificados no ', SECAO, ' de ', DATA)
-      res <- ""
-    }
-    res
-  }
-
-  # ministerios <- c("Agricultura", "Meio", "Saúde")
-  ministerios <- c("Agricultura")
-
-  conteudo_limpo <- lapply(ministerios, conteudo_orgao) %>% unlist() %>%
+  conteudo_limpo <- lapply(orgao_alvo, conteudo_orgao, conteudo, orgaos) %>%
+    unlist() %>%
     limpar_texto() %>% c("") # linha que nao aparece pela forma do loop
 
   # 3 - fazer busca pelo inicio dos atos
   # padrao TIPO DE ATO ao inicio da linha
-
-  # tipo de ATO
-  # Lei
-  # Decreto
-  # DECISaO
-  # PORTARIAS DE XX
-  # PORTARIA Nº XXX
-  # DESPACHO
-  # RETIFICAÇaO[ÕES]
-  # INSTRUÇaO
-  # RESOLUÇÃO
-  # ATO
-  # ATA
-
-  leis <- procurar_inicio(conteudo_limpo, "LEI")
-
-  decretos <- procurar_inicio(conteudo_limpo, "DECRETO")
-
-  decisao <- procurar_inicio(conteudo_limpo, "DECIS")
-
-  portarias <- procurar_inicio(conteudo_limpo, "PORTARIA")
-
-  despachos <- procurar_inicio(conteudo_limpo, "DESPACHO")
-
-  retificacao <- procurar_inicio(conteudo_limpo, "RETIFICAÇ")
-
-  instrucao <- procurar_inicio(conteudo_limpo, "INSTRUÇ")
-
-  resolucao <- procurar_inicio(conteudo_limpo, "RESOLUÇ")
-
-  ato <- procurar_inicio(conteudo_limpo, "ATO ")
-
-  ata <- procurar_inicio(conteudo_limpo, "ATA ")
-
-  atos <- c(leis, decretos, decisao, portarias, despachos, retificacao,
-            instrucao, resolucao, ato, ata, length(conteudo_limpo)) %>% sort()
-
+  atos <- inicios_atos(conteudo_limpo)
   indices <- vector("list", length(atos) - 1)
 
   for (i in seq_along(indices)) {

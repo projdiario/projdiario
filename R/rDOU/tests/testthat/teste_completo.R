@@ -16,10 +16,11 @@ formatar <- function(x){
 }
 
 
-arquivos <- lapply(list(1:24, 33:36, 25:32, 37:40), function(indice)
-  dir('exemplos/completo', full.names = TRUE,
-      pattern = '\\.txt')[indice])
-normas <- lapply(arquivos, pegar_normas_dou)
+arquivos <- map(
+  list(1:24, 33:36, 25:32, 37:40),
+  ~ dir('exemplos/completo', full.names = TRUE,pattern = '\\.txt')[.x]
+)
+normas <- map(arquivos, pegar_normas_dou, orgao_alvo = "Agricultura")
 tabelas <- map(normas, criar_tabela_app)
 
 gabarito <- readxl::read_xlsx('exemplos/completo/gabarito.xlsx') %>%
