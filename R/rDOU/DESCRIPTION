@@ -9,18 +9,16 @@ Description: Agrupa uma serie de funcoes utilizadas para retirar informacoes
 Depends:
     R (>= 3.3.0)
 Imports:
+    RecordLinkage,
+    magrittr,
     stringr,
-    rvest,
-    httr,
-    readxl,
-    tibble,
-    xml2,
-    purrr,
+    stringi,
     lubridate,
     dplyr,
-    RJDBC,
-    RecordLinkage,
-    magrittr
+    tibble,
+    purrr,
+    tools,
+    readxl
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
