@@ -349,7 +349,7 @@ pegar_normas_dou <- function(arquivos, orgao_alvo, encodificacao = 'latin1') {
 #'
 #' @return tabela com informações que precisam ser validadas na aplicação
 #' @export
-criar_tabela_app <- function(lista_de_normas) {
+estruturar_normas <- function(lista_de_normas) {
   data_dou <- attr(lista_de_normas, 'data_dou')
   arquivos <- attr(lista_de_normas, 'arquivos')
   encodificacao <- attr(lista_de_normas, 'encodificacao')

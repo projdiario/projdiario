@@ -20,7 +20,7 @@ arquivos <- map(
   ~ dir('exemplos/completo', full.names = TRUE,pattern = '\\.txt')[.x]
 )
 normas <- map(arquivos, pegar_normas_dou, orgao_alvo = "Agricultura")
-tabelas <- map(normas, criar_tabela_app)
+tabelas <- map(normas, estruturar_normas)
 
 gabarito <- readxl::read_xlsx('exemplos/completo/gabarito.xlsx') %>%
   dplyr::mutate(NR_ATO = ifelse(is.na(NR_ATO), NA_character_, formatar(NR_ATO)),
