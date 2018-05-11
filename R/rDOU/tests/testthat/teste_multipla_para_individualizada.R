@@ -14,9 +14,9 @@ arquivos <- lapply(list(1:4, 5:10, 11:18, 19:20, 21:23, 24:28), function(indice)
   # + 2 incluído para ignorar nome da pasta que vem ao inicio
   })
 
-tmp1 <- pegar_normas_dou(arquivos[[3]], orgao_alvo = "Agricultura") %>%
+tmp1 <- pegar_normas_dou(arquivos[[3]], "Agricultura") %>%
   criar_tabela_app()
-tmp2 <- pegar_normas_dou(arquivos[[5]], orgao_alvo = "Agricultura") %>%
+tmp2 <- pegar_normas_dou(arquivos[[5]], "Agricultura") %>%
   criar_tabela_app()
 normas <- rbind(tmp1, tmp2)
 

@@ -15,7 +15,6 @@ formatar <- function(x){
   formatC(x, width = 8, flag = '0')
 }
 
-
 arquivos <- map(
   list(1:24, 33:36, 25:32, 37:40),
   ~ dir('exemplos/completo', full.names = TRUE,pattern = '\\.txt')[.x]
