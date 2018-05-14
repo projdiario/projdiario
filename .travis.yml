@@ -2,18 +2,17 @@ language: r
 cache: packages
 sudo: false
 warnings_are_errors: false
+r_build_args: "--no-build-vignettes"
+r_check_args: "--no-vignettes"
 
 notifications:
   slack: min-agricultura:dff7wdgnfp9Sm2TIKiFEvQ5J
       
 before_install:
   - cd R/rDOU
-
+  
 r_github_packages:
   - jimhester/covr
-
-r_check_args: "--no-vignettes"
-
 
 after_success:
   - Rscript -e 'covr::codecov()'
