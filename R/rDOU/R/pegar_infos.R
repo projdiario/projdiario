@@ -32,7 +32,7 @@ pegar_data <- function(ato) {
 pegar_limites_orgaos <- function(pagina) {
   # # Procurar termos na página:
   res <- c("^GABINETE", "^SECRETARIA", "^INSTITUTO", "^SUPERINTEND\\u00caNCIA",
-           "^SUBSECRETARIA", "^COMISS\\u00c3O", "^EMPRESA", "^COMPANHIA") %>%
+           "^SUBSECRETARIA", "^COMISS\\u00c3O", "^EMPRESA", "^COMPANHIA", "^CONSELHO") %>%
     desescapar() %>%
     purrr::map(~ stringr::str_which(pagina, .x)) %>% unlist()
 
@@ -222,7 +222,7 @@ conteudo_orgao <- function(orgao_alvo, conteudo, orgaos, arquivo, consulta = FAL
       alvo <- alvo[alvo > 30][1]
     }
 
-    if (consulta) return(alvo)
+    if (consulta) return(conteudo_orig[alvo])
 
     nome_prox_alvo <- orgaos[grep(orgao_alvo, orgaos) + 1] %>%
       stringr::str_extract(paste0(desescapar(inicios), "( ?[[:alpha:]])+"))
