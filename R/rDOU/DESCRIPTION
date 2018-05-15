@@ -18,7 +18,8 @@ Imports:
     tibble,
     purrr,
     tools,
-    readxl
+    readxl,
+    reticulate
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

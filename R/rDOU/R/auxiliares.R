@@ -226,3 +226,56 @@ magrittr::extract2
 
 #' @importFrom stringi stri_unescape_unicode
 desescapar <- stringi::stri_unescape_unicode
+
+#' Download dos PDFs do Diario Oficial da Uniao
+#' @param data Data que sera baixada
+#' @param pdf_dir Pasta onde estao os arquivos PDF 
+#'
+#' @importFrom reticulate source_python
+#' @export
+download_dou <- function(data, dest_dir) {
+  script <- system.file("python", "downloader.py", package = "rDOU")
+  ambiente <- new.env()
+  reticulate::source_python(script, ambiente)
+  ambiente$download(data, normalizePath(dest_dir))
+  invisible(TRUE)
+}
+
+#' Converter PDFs em TXTs
+#' @param pdf_dir Pasta onde estao os arquivos PDF
+#' @param txt_dir Pasta onde ficarao os arquivos TXT
+#'
+#' @importFrom reticulate source_python
+#' @export
+converter_pdf <- function(dir_pdf = "pdf", secao, data,
+                          dest_dir = "txt") {
+  # script <- system.file("python", "converter.py", package = "rDOU")
+  script <- normalizePath("R/rDOU/inst/python/converter.py")
+  # reticulate::source_python(script)
+  # converter(stringi::stri_escape_unicode(normalizePath(pdf_dir)),
+  #           normalizePath(txt_dir))
+  
+  local <- ifelse(Sys.info()["sysname"] == "Windows", "Portuguese_Brazil.1252",
+                  "pt_BR.UTF-8")
+  dt_data <- lubridate::dmy(data)
+  
+  ano <- lubridate::year(dt_data)
+  mes <- dt_data %>% 
+    lubridate::month(label = TRUE, abbr = FALSE, locale = local) %>% 
+    as.character()
+  dia <- lubridate::day(dt_data)
+  
+  arg1 <- paste0(
+    stringr::str_replace_all(normalizePath(dir_pdf), "\\\\", "/"),
+    "/DOU", secao, "/", ano, "/", mes, "/", dia
+  )
+  arg2 <- stringr::str_replace_all(normalizePath(dest_dir), "\\\\", "/")
+  comando <- paste("python", script, arg1, arg2)
+  print(comando)
+  system(comando)
+  invisible(
+    dir(arg2, full.names = TRUE)
+  )
+}
+
+
