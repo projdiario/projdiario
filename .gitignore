@@ -14,6 +14,9 @@ R/validador/node_modules
 pagina.pdf
 config_oracle
 aplicacao.RDS
-
 .Rproj.user
 *.zip
+extrator/
+pdf/
+txt/
+
