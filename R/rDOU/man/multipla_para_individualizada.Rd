@@ -2,16 +2,16 @@
 % Please edit documentation in R/auxiliares.R
 \name{multipla_para_individualizada}
 \alias{multipla_para_individualizada}
-\title{Cria um objeto para cada portaria em objeto de portarias multiplas}
+\title{Cria um objeto para cada norma em objeto de normas multiplas}
 \usage{
-multipla_para_individualizada(portaria)
+multipla_para_individualizada(norma)
 }
 \arguments{
-\item{portaria}{um vetor o texto da portaria multipla}
+\item{norma}{um vetor o texto da norma multipla}
 }
 \value{
-um vetor com uma portaria em cada elemento
+um vetor com uma norma em cada elemento
 }
 \description{
-Cria um objeto para cada portaria em objeto de portarias multiplas
+Cria um objeto para cada norma em objeto de normas multiplas
 }

@@ -1,0 +1,50 @@
+---
+title: "Introdução"
+author: "Tomás de Siervi Barcellos"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Intro}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Introdução
+
+## Instalação
+
+```{r, eval = FALSE}
+# install.packages("devtools")
+devtools::install_github("projdiario/projdiario", subdir = "R/rDOU")
+```
+
+## Exemplo de uso
+
+### Extração das normas desejadas
+
+```{r}
+raiz <- system.file("tests", "testthat", "exemplos", package = "rDOU")
+paginas <- paste0(raiz, "/DOU2_2017_02_10_pg00", c(1, 3:5), ".txt")
+
+library(rDOU)
+normas <- pegar_normas_dou(paginas, "Agricultura")
+str(normas, give.attr = FALSE, vec.len = 1)
+attributes(normas)
+
+presid <- pegar_normas_dou(paginas, "República")
+str(presid, give.attr = FALSE, vec.len = 1)
+attributes(presid)
+```
+
+
+### Tabulação das normas
+
+```{r}
+library(dplyr)
+df_agric <- estruturar_normas(normas)
+glimpse(df_agric)
+
+df_pr <- estruturar_normas(presid)
+glimpse(df_pr)
+```
+

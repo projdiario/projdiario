@@ -1,15 +1,3 @@
-#' Procura um termo no inicio de uma string
-#'
-#' @param vetor um vetor de texto
-#' @param termo termo a ser buscado
-#'
-#' @return O índice do \code{vetor} em que o \code{termo} se encontra no inicio da string
-#'
-#' @export
-procurar_inicio <- function(vetor, termo) {
-  stringr::str_which(vetor, paste0('^', termo))
-}
-
 #' Remover erros de interpretacao (parse) do texto
 #'
 #' @param texto O texto que sera limpo
@@ -17,9 +5,13 @@ procurar_inicio <- function(vetor, termo) {
 #' @return O mesmo texto limpo
 #' @export
 limpar_texto <- function(texto) {
-  resp <- texto %>% stringr::str_replace_all("N(o|o-|°-|°)? ?(?=[0-9])", "Nº ") %>%
-    stringr::str_replace_all("(?<=[0-9])(o-|o|°-|°) ?", "º ") %>%
-    stringr::str_replace_all("(?<=[0-9])(a-|a) ?", "ª ") %>%
+  regex_n_ordinal <- desescapar("N(o|o-|\\u00b0-|\\u00b0)? ?(?=\\\\d)")
+  n_ordinal <- desescapar("N\\u00ba ")
+  regex_o_ordinal <- desescapar("(?<=\\\\d)(o-|o|\\u00b0-|\\u00b0) ?")
+
+  resp <- texto %>% stringr::str_replace_all(regex_n_ordinal, n_ordinal) %>%
+    stringr::str_replace_all(regex_o_ordinal, desescapar("\\u00ba ")) %>%
+    stringr::str_replace_all("(?<=\\d)(a-|a) ?", desescapar("\\u00aa ")) %>%
     stringr::str_trim("both") %>%
     # extract(!stringr::str_detect(., "Este documento pode ser verificado no endereço")) %>%
     eliminar_quebras() %>%
@@ -45,22 +37,9 @@ eliminar_quebras <- function(texto) {
     stringr::str_replace_all('(?<=,)\\n', ' ') %>%
     stringr::str_replace_all('(?<=\\s(DO|NO))\\n', ' ') %>%
     stringr::str_replace_all('\\n ?(?=[a-z][^\\)-])', ' ') %>%
-    stringr::str_replace_all('(?<![;:\\.]) ?\\n ?(?=[0-9]{2,})', ' ') %>%
-    stringr::str_replace_all('(?<=[0-9][\\.,\\/]) ?\\n ?(?=[0-9])', '') %>%
+    stringr::str_replace_all('(?<![;:\\.]) ?\\n ?(?=\\d{2,})', ' ') %>%
+    stringr::str_replace_all('(?<=\\d[\\.,\\/]) ?\\n ?(?=\\d)', '') %>%
     stringr::str_replace_all('[ ]{2,}', ' ')
-
-  # Casos ruins
-  # X Quebra depois de ',', '-', 'DO' ou 'NO'.
-  # X Quebra antes de '[a-z]' (frase quebrada no meio),
-  ## X '([0-9](.|-/\)[0-9]+)' (número de processo ou RG ou CPF),
-  ##
-
-  # Casos bons
-  # Quebra depois de '.', ';', ':',
-  # '\nDetermina que' (Quebra antes de letra maiúscula),
-  # 'II)', 'ii)', 'a)', 'A)',
-  # '1. asdklajsdkla.\n# 2. asiodasjlkda.'
-
 
   if (entrou_colapsado) {
     res <- texto # devolver com tamanho 1
@@ -89,180 +68,108 @@ eliminar_quebras <- function(texto) {
       resposta[i] <- suppressWarnings(max(limite[limite < conteudo[i]]))
     }
   }
+
   resposta[is.infinite(resposta)] <- NA_integer_
   resposta
-}
-
-#' Adiciona IDs ao data.frame
-#'
-#' @param df Um data.frame
-#' @param anterior Caminho do RDS com a tabela anterior de cujos ID devem se seguir
-#'
-#' @return O mesmo df precedido por novos IDs
-#'
-#' @export
-gerar_id <- function(df, anterior) {
-  # le atos já gravados
-  if (missing(anterior)) {
-    base_id <- 0
-  } else if (is.character(anterior)) {
-    base_id <- readRDS(anterior) %>%
-      `[[`('ID') %>% as.integer() %>% max()
-  } else if (is.numeric(anterior)) {
-    base_id <- anterior
-  } else {
-    stop('Argumento "anterior" foi passado com tipo inesperado.')
-  }
-
-  # cria sequências de novos IDs
-  ID_ATO <- seq(base_id + 1, by = 1, length.out = nrow(df)) %>%
-    format(width = 10) %>%
-    gsub(pattern = ' ', replacement = '0')
-
-  tibble::add_column(df, ID_ATO, .before = TRUE)
 }
 
 #' Transformar Texto em Parágrafos de HTML
 #'
 #' @param texto Um vetor com texto
 #' @param orgao Nome do orgao que sera inserido no texto
+#' @param cabecalho Cabecalho que sera incluido no inicio do texto
 #'
 #' @return O mesmo texto com as quebras de linha substituídas por tags de parágrafos \code{<p>}.
 #'         Adiciona um cabeçalho.
 #'
 #' @export
-texto_para_html <- function(texto, orgao) {
+texto_para_html <- function(texto, orgao, cabecalho) {
   resp <- gsub("\\n<" , "\r<", texto) %>%
     stringr::str_replace_all("\\n\\s" , "\n") %>%
     stringr::str_replace_all("\\n" , "</p>\n<p>") %>%
     stringr::str_replace_all("\\r" , "")
 
-  paste0("<p>MINISTÉRIO DA AGRICULTURA, PECUÁRIA E ABASTECIMENTO</p>",
-          "<p>", orgao,"</p>", resp)
+  paste0("<p>", cabecalho, "</p><p>", orgao,"</p>", resp)
 }
 
-#' Cria um objeto para cada portaria em objeto de portarias multiplas
+#' Criar indices
 #'
-#' @param portaria um vetor o texto da portaria multipla
+#' @param vetor_inicios Vetor de indices de inicios
 #'
-#' @return um vetor com uma portaria em cada elemento
+#' @return uma lista com os indices entre cada elemento de \code{vetor_inicios}
+criar_indices <- function(vetor_inicios) {
+  lapply(seq_len(length(vetor_inicios) - 1), function (i) {
+    vetor_inicios[i]:(vetor_inicios[i+1] - 1)
+  })
+}
+
+#' Cria um objeto para cada norma em objeto de normas multiplas
+#'
+#' @param norma um vetor o texto da norma multipla
+#'
+#' @return um vetor com uma norma em cada elemento
 #'
 #' @export
-multipla_para_individualizada <- function(portaria) {
+multipla_para_individualizada <- function(norma) {
   # Função para verificar existencia de "chunks"
   casos <- function(texto){
-    resolve <- grep("resolve[::punct::]", texto)
-    cessao <- grep("cess[ãa]o[\\.:]", texto)
+    resolve <- stringr::str_which(texto, "resolve[::punct::]")
+    cessao <- stringr::str_which(texto, desescapar("cess[\\u00e3a]o[\\\\.:]"))
     sort(unique(c(resolve, cessao)))
   }
 
-  if (length(procurar_inicio(portaria[length(portaria)], "<table><tr><td>")) == 1) {
-    portaria <- portaria[-length(portaria)]
-  }
+  padrao <- desescapar("N\\u00ba ?\\\\d+\\\\.?\\\\d*")
+  numeros <- stringr::str_extract(norma, padrao)
+  numeros <- numeros[!is.na(numeros)]
+  tipo <- stringr::str_extract(norma[1], '^.+?(?=DE)') %>%
+    stringr::str_replace(desescapar("\\u00d5ES\\\\b"), desescapar("\\u00c3O")) %>%
+    stringr::str_replace("AS\\b", "A") %>%
+    stringr::str_replace("OS\\b", "O")
+
+  dia_norma <- stringr::str_extract(norma[1], 'DE .+ \\d{4}')
+  nomes <- paste0(tipo, numeros, ', ', dia_norma)
+  inicios <- c(grep(padrao, norma), length(norma))
+  cabeca <- paste0(norma[2:( inicios[1] - 1 )], collapse = " ")
+  rodape <- norma[length(norma)] # por def tamanho 1
+
   # Regra para retificações
-  if (grepl('RETIFIC', portaria[1])) {
-    padrao <- 'onde se l[êe]:?'
-    inicios <- c(grep(padrao, tolower(portaria)), length(portaria) + 1)
+  if (grepl('RETIFIC', norma[1])) {
+    padrao <- desescapar("onde se l[\\u00eae]:?")
+    inicios <- c(grep(padrao, tolower(norma)), length(norma) + 1)
+    indices <- criar_indices(inicios)
 
-    indices <- vector("list", length(inicios) - 1)
+    retif <- desescapar("RETIFICA\\u00c7\\u00c3O\\n")
+    lista_normas <- purrr::map(
+      indices, ~ paste0(retif, paste0(norma[.x], collapse = "\n"))
+    )
 
-    for (i in seq_along(indices)) {
-      fim <- inicios[i+1] - 1
-      indices[[i]] <- inicios[i]:fim
-      rm(fim)
-    }
-
-    lista_portarias <- vector("list", length(indices))
-
-    for (i in seq_along(lista_portarias)) {
-      lista_portarias[[i]] <- paste0("RETIFICAÇÃO", "\n",
-                                     paste0(portaria[ indices[[i]] ], collapse = "\n"))
-    }
-
-    individualizadas <- gsub(paste0(padrao, ' ?-'), "", unlist(lista_portarias))
+    individualizadas <- gsub(paste0(padrao, ' ?-'), "", unlist(lista_normas))
     return(individualizadas)
   }
-  # Regra para caso de cultivares
-  if (length(casos(portaria)) == 0) {
-    # 'proteção:'
-    padrao <- 'Nº ?[0-9]+\\.?[0-9]*'
-    inicios <- c(grep(padrao, portaria), length(portaria))
-    numeros <- stringr::str_extract(portaria, padrao)
-    numeros <- numeros[!is.na(numeros)]
 
-    nomes <- paste0("DECISÃO ", numeros, ', ',
-                    stringr::str_extract(portaria[1], 'DE .+ [0-9]{4}'))
+  # Regra para tipos diferentes publicados juntos
+  if (length(casos(norma)) > 1) {
+    novas_ind <- c(casos(norma), length(norma))
+    nome <- norma[1]
+    lista_ind <- criar_indices(novas_ind)
 
-    cabeca <- paste0(portaria[2:( inicios[1]-1 )], collapse = " ")
+    novas <- purrr::map(lista_ind, ~ c(nome, norma[.x], rodape))
 
-    rodape <- portaria[length(portaria)] # por def tamanho 1
-
-    indices <- vector("list", length(inicios) - 1)
-
-    for (i in seq_along(indices)) {
-      indices[[i]] <- inicios[i]:eval(inicios[i+1] - 1)
-    }
-
-    lista_portarias <- vector("list", length(indices))
-
-    for (i in seq_along(lista_portarias)) {
-      lista_portarias[[i]] <- paste0(nomes[i], "\n", cabeca, "\n",
-                                     paste0(portaria[ indices[[i]] ], collapse = "\n"),
-                                     "\n", rodape)
-    }
-
-    individualizadas <- gsub(paste0(padrao, ' ?-'), "", unlist(lista_portarias))
-  } else if (length(casos(portaria)) != 1) {
-    novas_ind <- c(casos(portaria), length(portaria))
-    nome <- portaria[1]
-    rodape <- portaria[length(portaria)]
-
-    lista_ind <- vector("list", length(novas_ind) - 1 )
-
-    for (i in seq_along(lista_ind)) {
-      lista_ind[[i]] <- novas_ind[i]:(novas_ind[i + 1] - 1)
-    }
-
-    novas <- vector("list", length(lista_ind))
-
-    for (i in seq_along(novas)) {
-      novas[[i]] <- c(nome, portaria[ lista_ind[[i]] ], rodape)
-    }
-
-    if (any(sapply(novas, function(x) (length(casos(x)) != 1) ))) {
+    if (any(purrr::map_lgl(novas, ~ (length(casos(.x)) != 1) ))) {
       individualizadas <- "AJUSTE"
     } else {
       individualizadas <- unlist(lapply(novas, multipla_para_individualizada))
     }
   # Caso padrão: 1 resolve ou cessão
   } else {
-    padrao <- 'Nº ?[0-9]+\\.?[0-9]*'
-    inicios <- c(grep(padrao, portaria), length(portaria))
-    numeros <- stringr::str_extract(portaria, padrao)
-    numeros <- numeros[!is.na(numeros)]
+    indices <- criar_indices(inicios)
+    form <- ~ paste0(.x, "\n", cabeca, "\n",
+                     paste0(norma[ .y ], collapse = "\n"), "\n", rodape
+    )
 
-    nomes <- paste0("PORTARIA ", numeros, ', ',
-                    stringr::str_extract(portaria[1], 'DE .+ [0-9]{4}'))
+    lista_normas <- purrr::map2(nomes, indices, form)
 
-    cabeca <- paste0(portaria[2:( inicios[1]-1 )], collapse = " ")
-
-    rodape <- portaria[length(portaria)] # por def tamanho 1
-
-    indices <- vector("list", length(inicios) - 1)
-
-    for (i in seq_along(indices)) {
-      indices[[i]] <- inicios[i]:(inicios[i+1] - 1)
-    }
-
-    lista_portarias <- vector("list", length(indices))
-
-    for (i in seq_along(lista_portarias)) {
-      lista_portarias[[i]] <- paste0(nomes[i], "\n", cabeca, "\n",
-                                     paste0(portaria[ indices[[i]] ], collapse = "\n"),
-                                     "\n", rodape)
-    }
-
-    individualizadas <- gsub(paste0(padrao, ' ?-'), "", unlist(lista_portarias))
+    individualizadas <- gsub(paste0(padrao, ' ?-'), "", unlist(lista_normas))
   }
   individualizadas
 }
@@ -297,7 +204,7 @@ novas_observacoes <- function(lista_de_indices, df, arquivos, encodificacao) {
     CD_TIPO_ATO = 'A', # codigo é verificado na aplicação
     TX_TEXTO = novas_vetor,
     DT_PROMULGACAO = as.Date(repete_dado("DT_PROMULGACAO"), origin = "1970-01-01"),
-    TX_EMENTA = purrr::map(novas_vetor, ~strsplit(.x, '\n')[[1]]) %>%
+    TX_EMENTA = purrr::map(novas_vetor, ~ strsplit(.x, '\n')[[1]]) %>%
       sapply(pegar_resumo, USE.NAMES = FALSE),
     DS_TITULO = sapply(novas_vetor, pegar_titulo, USE.NAMES = FALSE),
     NM_PAGINA = sapply(novas_vetor, pegar_pagina, arquivos,
@@ -317,3 +224,5 @@ magrittr::extract
 #' @importFrom magrittr extract2
 magrittr::extract2
 
+#' @importFrom stringi stri_unescape_unicode
+desescapar <- stringi::stri_unescape_unicode
