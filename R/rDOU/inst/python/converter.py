@@ -45,6 +45,9 @@ from locale import LC_TIME
 import win32com.client as win32
 
 def converter(arg1, arg2):
+    arg1 = os.path.normpath(arg1)
+    arg2 = os.path.normpath(arg2)
+
     # Definir a língua de criação de pastas para a língua padrão da máquina
     setlocale(LC_TIME, "")
 
@@ -408,6 +411,6 @@ def converter(arg1, arg2):
     WORD.Quit()
 
 if "__main__":
-    pdf = os.path.normpath(sys.argv[1])
-    txt = os.path.normpath(sys.argv[2])
+    pdf = sys.argv[1]
+    txt = sys.argv[2]
     converter(pdf, txt)

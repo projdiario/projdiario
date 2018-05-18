@@ -234,6 +234,12 @@ desescapar <- stringi::stri_unescape_unicode
 #' @importFrom reticulate source_python
 #' @export
 download_dou <- function(data, dest_dir) {
+  if (!dir.exists(dest_dir)) {
+    stop("Informe um diretorio existente", call. = FALSE)
+  }
+  config <- reticulate::py_discover_config()
+  path_py3 <- grep("python3", config$python_versions, value = TRUE)[[1]]
+  reticulate::use_python(path_py3, TRUE)
   script <- system.file("python", "downloader.py", package = "rDOU")
   ambiente <- new.env()
   reticulate::source_python(script, ambiente)
@@ -249,30 +255,46 @@ download_dou <- function(data, dest_dir) {
 #' @export
 converter_pdf <- function(dir_pdf = "pdf", secao, data,
                           dest_dir = "txt") {
-  # script <- system.file("python", "converter.py", package = "rDOU")
-  script <- normalizePath("R/rDOU/inst/python/converter.py")
-  # reticulate::source_python(script)
-  # converter(stringi::stri_escape_unicode(normalizePath(pdf_dir)),
-  #           normalizePath(txt_dir))
-  
+  if (!dir.exists(dest_dir)) {
+    stop("Informe um diretorio existente como destino.", call. = FALSE)
+  }
+
   local <- ifelse(Sys.info()["sysname"] == "Windows", "Portuguese_Brazil.1252",
-                  "pt_BR.UTF-8")
+                  # locale esta falhando no outro script para linux
+                  # "pt_BR.UTF-8")
+                  Sys.getlocale("LC_TIME"))
   dt_data <- lubridate::dmy(data)
-  
+
   ano <- lubridate::year(dt_data)
-  mes <- dt_data %>% 
-    lubridate::month(label = TRUE, abbr = FALSE, locale = local) %>% 
+  mes <- dt_data %>%
+    lubridate::month(label = TRUE, abbr = FALSE, locale = local) %>%
     as.character()
-  dia <- lubridate::day(dt_data)
-  
+  dia <- lubridate::day(dt_data) %>% formatC(width = 2, flag = 0)
+
   arg1 <- paste0(
     stringr::str_replace_all(normalizePath(dir_pdf), "\\\\", "/"),
     "/DOU", secao, "/", ano, "/", mes, "/", dia
   )
+
+  if (!dir.exists(arg1)) {
+    print(arg1)
+    stop("Informe um diretorio existente com os arquivos PDF a ser convertidos.",
+         call. = FALSE)
+  }
+
   arg2 <- stringr::str_replace_all(normalizePath(dest_dir), "\\\\", "/")
-  comando <- paste("python", script, arg1, arg2)
-  print(comando)
-  system(comando)
+  # comando <- paste("python", script, arg1, arg2)
+  # print(comando)
+
+  config <- reticulate::py_discover_config()
+  path_py3 <- grep("python3", config$python_versions, value = TRUE)[[1]]
+  reticulate::use_python(path_py3, TRUE)
+  script <- system.file("python", "converter.py", package = "rDOU")
+  ambiente <- new.env()
+  reticulate::source_python(script, ambiente)
+  ambiente$converter(arg1, arg2)
+
+  # system(comando)
   invisible(
     dir(arg2, full.names = TRUE)
   )
