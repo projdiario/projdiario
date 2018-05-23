@@ -66,7 +66,6 @@ eliminar_quebras <- function(texto) {
 #'
 #' @return Em qual intervalo de \code{limite} encontra-se cada elemento de \code{conteudo}.
 #'
-#' @export
 `%em%` <- function(conteudo, limite) {
   resposta <- numeric(length(conteudo))
   for (i in seq_along(conteudo)) {
@@ -223,18 +222,6 @@ novas_observacoes <- function(lista_de_indices, df, arquivos, encodificacao) {
   novas_obs
 }
 
-#' @importFrom magrittr %>%
-magrittr::`%>%`
-
-#' @importFrom magrittr extract
-magrittr::extract
-
-#' @importFrom magrittr extract2
-magrittr::extract2
-
-#' @importFrom stringi stri_unescape_unicode
-desescapar <- stringi::stri_unescape_unicode
-
 #' Download dos PDFs do Diario Oficial da Uniao
 #' @param data Data que sera baixada
 #' @param pdf_dir Pasta onde estao os arquivos PDF
@@ -320,3 +307,23 @@ converter_pdf <- function(dir_pdf = "pdf", secao, data,
 }
 
 
+#' Pipe operator
+#'
+#' Veja \code{\link[magrittr]{\%>\%}} para mais detalhes.
+#'
+#' @name %>%
+#' @rdname pipe
+#' @keywords internal
+#' @export
+#' @importFrom magrittr %>%
+#' @usage lhs \%>\% rhs
+NULL
+
+#' @importFrom magrittr extract
+magrittr::extract
+
+#' @importFrom magrittr extract2
+magrittr::extract2
+
+#' @importFrom stringi stri_unescape_unicode
+desescapar <- stringi::stri_unescape_unicode

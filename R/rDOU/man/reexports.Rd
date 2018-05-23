@@ -3,8 +3,6 @@
 \docType{import}
 \name{reexports}
 \alias{reexports}
-\alias{\%>\%}
-\alias{reexports}
 \alias{extract}
 \alias{reexports}
 \alias{extract2}
@@ -15,6 +13,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{magrittr}{\code{\link[magrittr]{\%>\%}}, \code{\link[magrittr]{extract}}, \code{\link[magrittr]{extract2}}}
+  \item{magrittr}{\code{\link[magrittr]{extract}}, \code{\link[magrittr]{extract2}}}
 }}
 
