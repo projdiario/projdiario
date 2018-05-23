@@ -9,15 +9,23 @@ limpar_texto <- function(texto) {
   n_ordinal <- desescapar("N\\u00ba ")
   regex_o_ordinal <- desescapar("(?<=\\\\d)(o-|o|\\u00b0-|\\u00b0) ?")
 
+  # Rodape das paginas do DOU
+  regex_icp <- desescapar(paste0(
+    "Este documento pode ser verificado no endere\\u00e7o|",
+    "c\\u00f3digo \\\\d{10,19}\\\\sInfraestrutura de Chaves ",
+    "P\\u00fablicas Brasileira ?- ?ICP ?- ?Brasil"
+  ))
+
   resp <- texto %>% stringr::str_replace_all(regex_n_ordinal, n_ordinal) %>%
     stringr::str_replace_all(regex_o_ordinal, desescapar("\\u00ba ")) %>%
     stringr::str_replace_all("(?<=\\d)(a-|a) ?", desescapar("\\u00aa ")) %>%
     stringr::str_trim("both") %>%
-    # extract(!stringr::str_detect(., "Este documento pode ser verificado no endereço")) %>%
     eliminar_quebras() %>%
     stringr::str_trim("both")
 
-  resp[resp != ""]
+  chave_pub <- resp %>% stringr::str_detect(regex_icp)
+
+  resp[resp != "" & (!chave_pub)]
 }
 
 #' Eliminar quebras indesejadas
@@ -229,7 +237,7 @@ desescapar <- stringi::stri_unescape_unicode
 
 #' Download dos PDFs do Diario Oficial da Uniao
 #' @param data Data que sera baixada
-#' @param pdf_dir Pasta onde estao os arquivos PDF 
+#' @param pdf_dir Pasta onde estao os arquivos PDF
 #'
 #' @importFrom reticulate source_python
 #' @export
@@ -269,7 +277,7 @@ converter_pdf <- function(dir_pdf = "pdf", secao, data,
     warning("Esta funcao provavelmente nao funcionara fora do Windows.", call. = FALSE)
     Sys.getlocale("LC_TIME")
   })
-                  
+
   dt_data <- lubridate::dmy(data)
 
   ano <- lubridate::year(dt_data)
@@ -290,7 +298,7 @@ converter_pdf <- function(dir_pdf = "pdf", secao, data,
   }
 
   arg2 <- stringr::str_replace_all(normalizePath(dest_dir), "\\\\", "/")
-  
+
   # config <- reticulate::py_discover_config()
   # if (config$version < 3) {
   #   path_py3 <- grep("python3", config$python_versions, value = TRUE)[[1]]
@@ -298,16 +306,16 @@ converter_pdf <- function(dir_pdf = "pdf", secao, data,
   # }
 
   script <- system.file("python", "converter.py", package = "rDOU")
-  
+
   # ambiente <- new.env()
   # reticulate::source_python(script, ambiente)
   # ambiente$converter(arg1, arg2)
-  
+
   comando <- paste("python", script, arg1, arg2)
-  
+
   system(comando, TRUE)
   retorno <- paste0(arg2, "/DOU", secao, "/", ano, "/", mes, "/", dia)
-  
+
   invisible( dir(retorno, full.names = TRUE) )
 }
 
